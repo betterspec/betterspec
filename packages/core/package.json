@@ -1,6 +1,6 @@
 {
   "name": "@forgelore/core",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "Spec engine for forgelore: parsing, validation, drift detection, knowledge management",
   "type": "module",
   "main": "./dist/index.js",

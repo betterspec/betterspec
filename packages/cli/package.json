@@ -1,6 +1,6 @@
 {
   "name": "@forgelore/cli",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "Beautiful CLI for spec-driven development — forge knowledge, shape code",
   "type": "module",
   "bin": {
