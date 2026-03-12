@@ -64,3 +64,8 @@ export {
   type TaskSummary,
   type ProjectSummary,
 } from "./progress/index.js";
+
+// Drift detection
+export {
+  analyzeDrift,
+} from "./drift/index.js";
