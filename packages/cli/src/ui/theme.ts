@@ -1,19 +1,19 @@
 /**
  * forgelore CLI theme
- * Forge-inspired colors, gradients, and visual constants
+ * Sedona-inspired colors — warm red-rock tones (forge) + cool violet/cyan (lore)
  */
 
 import chalk from "chalk";
 import gradient from "gradient-string";
 
-// Brand colors — forge (warm) + lore (cool)
+// Brand colors — Sedona warm (forge) + cool (lore)
 export const colors = {
-  primary: chalk.hex("#FF6B35"),   // forge orange
+  primary: chalk.hex("#CC5500"),   // Sedona orange (red rock)
   secondary: chalk.hex("#06B6D4"), // lore cyan
-  accent: chalk.hex("#FFD700"),    // spark gold
+  accent: chalk.hex("#F5A050"),    // Sedona sunset gold
   lore: chalk.hex("#7C3AED"),      // lore violet
   success: chalk.hex("#10B981"),   // emerald
-  warning: chalk.hex("#F97316"),   // orange
+  warning: chalk.hex("#E07020"),   // Sedona warm warning
   error: chalk.hex("#EF4444"),     // red
   muted: chalk.hex("#6B7280"),     // gray
   dim: chalk.dim,
@@ -23,13 +23,13 @@ export const colors = {
 
 // Gradients
 export const gradients = {
-  brand: gradient(["#FF6B35", "#FFD700", "#7C3AED", "#06B6D4"]),
-  forge: gradient(["#FF6B35", "#FFD700"]),
+  brand: gradient(["#CC5500", "#F5A050", "#7C3AED", "#06B6D4"]),
+  forge: gradient(["#CC5500", "#F5A050"]),
   lore: gradient(["#7C3AED", "#06B6D4"]),
-  warm: gradient(["#F59E0B", "#EF4444"]),
+  warm: gradient(["#F5A050", "#EF4444"]),
   cool: gradient(["#06B6D4", "#7C3AED"]),
   success: gradient(["#10B981", "#06B6D4"]),
-  sunset: gradient(["#F97316", "#EF4444", "#7C3AED"]),
+  sunset: gradient(["#E07020", "#EF4444", "#7C3AED"]),
 };
 
 // Status icons

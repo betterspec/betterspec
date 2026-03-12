@@ -1,6 +1,10 @@
 /**
  * forgelore CLI banner and branding
- * Anvil + book ASCII art with forge spark animations
+ * Anvil + book ASCII art with forge heat-up animation
+ *
+ * Animation concept: the art starts cold (barely visible), heats up through
+ * Sedona red-rock tones to full color, then a burst of sparks erupts at the
+ * book-anvil junction. The title forges letter by letter from ember to final.
  */
 
 import boxen from "boxen";
@@ -8,27 +12,34 @@ import chalk from "chalk";
 import gradient from "gradient-string";
 import { colors } from "./theme.js";
 
-// Brand gradients: forge (warm) → lore (cool)
-const forgeGradient = gradient(["#FF6B35", "#FFD700"]);
-const loreGradient = gradient(["#7C3AED", "#06B6D4"]);
-const brandGradient = gradient(["#FF6B35", "#FFD700", "#7C3AED", "#06B6D4"]);
-const sparkColor = chalk.hex("#FFD700");
-const emberColor = chalk.hex("#FF6B35");
+// ─── Sedona Brand Palette ────────────────────────────────────
 
-// Per-character gradient for FORGELORE title
-const TITLE_GRADIENT = [
-  "#FF6B35", // F - forge orange
-  "#FF8E3C", // O
-  "#FFB347", // R
-  "#FFD700", // G - spark gold
-  "#C9A832", // E
-  "#9B6FC0", // L - transitioning
-  "#7C3AED", // O - lore violet
+const SEDONA         = "#CC5500"; // deep Sedona red-rock
+const SEDONA_GLOW    = "#E07020"; // bright warm Sedona
+const SEDONA_SUNSET  = "#F5A050"; // sunset gold
+const LORE_VIOLET    = "#7C3AED"; // lore violet
+const LORE_CYAN      = "#06B6D4"; // lore cyan
+const DARK           = "#2A2A2A"; // cold / unlit
+const FLASH_WARM     = "#FFF0D0"; // warm-white impact flash
+
+// Pre-built gradients
+const brandGradient = gradient([SEDONA, SEDONA_SUNSET, LORE_VIOLET, LORE_CYAN]);
+
+// Per-character title gradient: Sedona warm → lore cool
+const TITLE_COLORS = [
+  "#CC5500", // F — deep Sedona
+  "#D46020", // O
+  "#DC7030", // R
+  "#F5A050", // G — Sedona sunset
+  "#C09040", // E — transitioning
+  "#9060B0", // L — blending
+  "#7C3AED", // O — lore violet
   "#4196CB", // R
-  "#06B6D4", // E - lore cyan
+  "#06B6D4", // E — lore cyan
 ];
 
-// Book (lore) sitting on anvil (forge)
+// ─── ASCII Art ───────────────────────────────────────────────
+
 const BOOK_LINES = [
   "         .───────────.",
   "        ╱ ≡ ≡ ≡ ≡ ≡ ╱│",
@@ -49,66 +60,178 @@ const ANVIL_LINES = [
   "      ████████████████",
 ];
 
-const SPARK_CHARS = ["✦", "✧", "·", "✶", "∗"];
+const TOTAL_ART_LINES = BOOK_LINES.length + ANVIL_LINES.length;
+const JUNCTION = BOOK_LINES.length - 1; // line where book meets anvil
 
-function getColoredBook(): string[] {
-  return BOOK_LINES.map((l) => loreGradient(l));
+// Spark characters with warm Sedona color pools
+const SPARK_POOL = [
+  { char: "✦", bright: ["#F5A050", "#FFD090", "#FFF0D0"] },
+  { char: "✧", bright: ["#FFD090", "#FFF0D0"] },
+  { char: "✶", bright: ["#E07020", "#F5A050"] },
+  { char: "∗", bright: ["#CC5500", "#E07020"] },
+  { char: "·", bright: ["#F5A050", "#FFD090"] },
+  { char: "˚", bright: ["#CC8800", "#F5A050"] },
+];
+
+const EMBER_COLORS = ["#996600", "#805500"];
+
+// ─── ANSI Helpers ────────────────────────────────────────────
+
+const HIDE_CURSOR = "\x1b[?25l";
+const SHOW_CURSOR = "\x1b[?25h";
+const CLEAR_LINE  = "\x1b[2K";
+const moveUp = (n: number) => (n > 0 ? `\x1b[${n}A` : "");
+const sleep  = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+// ─── Color Math ──────────────────────────────────────────────
+
+function parseHex(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [
+    parseInt(h.substring(0, 2), 16),
+    parseInt(h.substring(2, 4), 16),
+    parseInt(h.substring(4, 6), 16),
+  ];
 }
 
-function getColoredAnvil(): string[] {
-  return ANVIL_LINES.map((l) => forgeGradient(l));
+function toHex(r: number, g: number, b: number): string {
+  const c = (v: number) => Math.max(0, Math.min(255, Math.round(v)));
+  return (
+    "#" +
+    c(r).toString(16).padStart(2, "0") +
+    c(g).toString(16).padStart(2, "0") +
+    c(b).toString(16).padStart(2, "0")
+  );
 }
+
+function lerpHex(a: string, b: string, t: number): string {
+  const [r1, g1, b1] = parseHex(a);
+  const [r2, g2, b2] = parseHex(b);
+  return toHex(r1 + (r2 - r1) * t, g1 + (g2 - g1) * t, b1 + (b2 - b1) * t);
+}
+
+// ─── Art Coloring ────────────────────────────────────────────
+
+/**
+ * Color the full art at a given heat level.
+ *   heat  — 0 (cold, dark gray) to 1 (full Sedona / lore color)
+ *   flash — 0–1, brightens junction lines toward warm-white
+ */
+function colorArt(heat: number, flash = 0): string[] {
+  const t = Math.max(0, Math.min(1, heat));
+  const f = Math.max(0, Math.min(1, flash));
+
+  // Book: lore gradient modulated by heat
+  const bkS = lerpHex(DARK, LORE_VIOLET, t);
+  const bkE = lerpHex(DARK, LORE_CYAN, t);
+  // Anvil: forge gradient modulated by heat
+  const avS = lerpHex(DARK, SEDONA, t);
+  const avE = lerpHex(DARK, SEDONA_SUNSET, t);
+
+  // Junction flash variants
+  const fbkS = lerpHex(bkS, FLASH_WARM, f);
+  const fbkE = lerpHex(bkE, FLASH_WARM, f);
+  const favS = lerpHex(avS, FLASH_WARM, f);
+  const favE = lerpHex(avE, FLASH_WARM, f);
+
+  const bookColored = BOOK_LINES.map((line, i) => {
+    if (f > 0 && i >= BOOK_LINES.length - 2) {
+      return gradient([fbkS, fbkE])(line);
+    }
+    return gradient([bkS, bkE])(line);
+  });
+
+  const anvilColored = ANVIL_LINES.map((line, i) => {
+    if (f > 0 && i < 2) {
+      return gradient([favS, favE])(line);
+    }
+    return gradient([avS, avE])(line);
+  });
+
+  return [...bookColored, ...anvilColored];
+}
+
+// ─── Sparks ──────────────────────────────────────────────────
+
+function randomSpark(bright = true): string {
+  const s = SPARK_POOL[Math.floor(Math.random() * SPARK_POOL.length)];
+  const pool = bright ? s.bright : EMBER_COLORS;
+  return chalk.hex(pool[Math.floor(Math.random() * pool.length)])(s.char);
+}
+
+/**
+ * Generate spark decorations for each art line at a burst frame.
+ *   0 = tight burst, 1–2 = expanding, 3 = last embers, 4+ = clear
+ */
+function sparkOverlay(frame: number): Map<number, string> {
+  const sp = new Map<number, string>();
+  const j = JUNCTION;
+
+  if (frame === 0) {
+    sp.set(j - 1, "  " + randomSpark() + randomSpark());
+    sp.set(j,     "   " + randomSpark() + " " + randomSpark() + randomSpark());
+    sp.set(j + 1, "  " + randomSpark() + randomSpark());
+    sp.set(j + 2, " " + randomSpark());
+  } else if (frame === 1) {
+    sp.set(j - 3, "      " + randomSpark());
+    sp.set(j - 2, "    " + randomSpark() + " " + randomSpark());
+    sp.set(j - 1, "   " + randomSpark() + "  " + randomSpark());
+    sp.set(j,     "  " + randomSpark() + "   " + randomSpark());
+    sp.set(j + 1, "   " + randomSpark() + " " + randomSpark());
+    sp.set(j + 2, "    " + randomSpark());
+    sp.set(j + 3, "      " + randomSpark());
+  } else if (frame === 2) {
+    sp.set(j - 4, "        " + randomSpark(false));
+    sp.set(j - 2, "      " + randomSpark());
+    sp.set(j,     "    " + randomSpark(false) + "  " + randomSpark());
+    sp.set(j + 2, "      " + randomSpark(false));
+    sp.set(j + 4, "        " + randomSpark(false));
+  } else if (frame === 3) {
+    sp.set(j - 3, "         " + randomSpark(false));
+    sp.set(j + 1, "     " + randomSpark(false));
+  }
+  return sp;
+}
+
+// ─── Frame Output ────────────────────────────────────────────
+
+function writeFrame(lines: string[], sparks: Map<number, string>): void {
+  for (let i = 0; i < lines.length; i++) {
+    process.stdout.write(CLEAR_LINE + lines[i] + (sparks.get(i) || "") + "\n");
+  }
+}
+
+// ─── Title ───────────────────────────────────────────────────
 
 function getTitle(): string {
   return "FORGELORE"
     .split("")
-    .map((ch, i) => chalk.bold(chalk.hex(TITLE_GRADIENT[i])(ch)))
+    .map((ch, i) => chalk.bold(chalk.hex(TITLE_COLORS[i])(ch)))
     .join("");
 }
 
-function randomSpark(): string {
-  return sparkColor(
-    SPARK_CHARS[Math.floor(Math.random() * SPARK_CHARS.length)]
-  );
-}
-
-function generateSparkLine(width = 30): string {
-  const chars = new Array(width).fill(" ");
-  const count = 2 + Math.floor(Math.random() * 4);
-  for (let i = 0; i < count; i++) {
-    const pos = Math.floor(Math.random() * width);
-    chars[pos] = randomSpark();
-  }
-  return chars.join("");
-}
-
-// ANSI helpers
-const HIDE_CURSOR = "\x1b[?25l";
-const SHOW_CURSOR = "\x1b[?25h";
-const CLEAR_LINE = "\x1b[2K";
-function moveUp(n: number): string {
-  return n > 0 ? `\x1b[${n}A` : "";
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((r) => setTimeout(r, ms));
-}
+// ─── Public API ──────────────────────────────────────────────
 
 /**
- * Static banner — used in non-TTY or when animation isn't wanted
+ * Static banner — used in non-TTY or when animation is skipped
  */
 export function renderBanner(): string {
-  const book = getColoredBook().join("\n");
-  const anvil = getColoredAnvil().join("\n");
+  const art = colorArt(1).join("\n");
   const title = `  ${getTitle()}`;
   const tagline = colors.muted("  forge knowledge, shape code");
   const version = chalk.dim("  v0.1.0");
-  return `\n${book}\n${anvil}\n\n${title}\n${tagline}${version}\n`;
+  return `\n${art}\n\n${title}\n${tagline}${version}\n`;
 }
 
 /**
- * Animated banner — anvil rises, book drops, sparks fly, title types out
- * Only runs in interactive TTY; falls back to static otherwise
+ * Animated banner — forge heat-up, impact sparks, title forging
+ *
+ * Timeline (~1.6s):
+ *   Cold reveal    280ms  (14 lines × 20ms)
+ *   Heat-up        330ms  (6 steps × 55ms)
+ *   Impact burst   325ms  (5 frames × 65ms)
+ *   Title forge    495ms  (9 letters × 55ms)
+ *   Tagline        120ms  (pause + print)
  */
 export async function renderAnimatedBanner(): Promise<void> {
   if (!process.stdout.isTTY) {
@@ -116,91 +239,71 @@ export async function renderAnimatedBanner(): Promise<void> {
     return;
   }
 
-  const bookColored = getColoredBook();
-  const anvilColored = getColoredAnvil();
-  const allLines = [...bookColored, ...anvilColored];
-  const totalHeight = allLines.length;
-
   process.stdout.write(HIDE_CURSOR);
 
   try {
-    console.log(""); // top spacing
+    console.log(""); // top padding
 
-    // Phase 1: Anvil rises from below (bottom-up reveal)
-    for (let i = anvilColored.length - 1; i >= 0; i--) {
-      const visible = anvilColored.slice(i);
-      for (const line of visible) {
-        process.stdout.write(CLEAR_LINE + line + "\n");
-      }
-      await sleep(45);
-      if (i > 0) {
-        process.stdout.write(moveUp(visible.length));
-      }
+    // ── Phase 1: Cold reveal ──────────────────────────────────
+    // Lines appear barely visible, like cooling metal in the dark
+    const coldArt = colorArt(0.08);
+    for (const line of coldArt) {
+      process.stdout.write(CLEAR_LINE + line + "\n");
+      await sleep(20);
     }
 
-    // Phase 2: Book drops onto anvil (top-down reveal)
-    const anvilHeight = anvilColored.length;
-    process.stdout.write(moveUp(anvilHeight));
-
-    for (let i = bookColored.length - 1; i >= 0; i--) {
-      const visibleBook = bookColored.slice(i);
-      const frame = [...visibleBook, ...anvilColored];
+    // ── Phase 2: Heat-up ──────────────────────────────────────
+    // Art warms from dark to full Sedona / lore color
+    const heatSteps = [0.15, 0.30, 0.50, 0.70, 0.85, 1.0];
+    for (const heat of heatSteps) {
+      process.stdout.write(moveUp(TOTAL_ART_LINES));
+      const frame = colorArt(heat);
       for (const line of frame) {
         process.stdout.write(CLEAR_LINE + line + "\n");
       }
-      await sleep(35);
-      process.stdout.write(moveUp(frame.length));
+      await sleep(55);
     }
 
-    // Redraw complete art
-    for (const line of allLines) {
-      process.stdout.write(CLEAR_LINE + line + "\n");
+    // ── Phase 3: Impact flash + spark burst ───────────────────
+    // Junction flashes white-hot, sparks erupt outward
+    process.stdout.write(moveUp(TOTAL_ART_LINES));
+    writeFrame(colorArt(1.0, 0.6), sparkOverlay(0));
+    await sleep(65);
+
+    // Burst frames with decaying flash
+    for (let f = 1; f <= 4; f++) {
+      const flashDecay = Math.max(0, 0.45 - f * 0.15);
+      process.stdout.write(moveUp(TOTAL_ART_LINES));
+      writeFrame(colorArt(1.0, flashDecay), sparkOverlay(f));
+      await sleep(65);
     }
 
-    // Phase 3: Sparks fly from the anvil
-    for (let cycle = 0; cycle < 5; cycle++) {
-      await sleep(90);
-      process.stdout.write(moveUp(totalHeight));
+    // Clean final art
+    process.stdout.write(moveUp(TOTAL_ART_LINES));
+    writeFrame(colorArt(1.0), new Map());
 
-      for (let i = 0; i < totalHeight; i++) {
-        const line = allLines[i];
-        // Add random sparks to the right of anvil lines and around the impact point
-        let spark = "";
-        if (i >= bookColored.length - 2 && i <= bookColored.length + 2) {
-          // Near the book-anvil junction — more sparks
-          if (Math.random() > 0.3) {
-            spark = "  " + randomSpark();
-            if (Math.random() > 0.5) spark += " " + randomSpark();
-          }
-        } else if (Math.random() > 0.7) {
-          spark = "  " + randomSpark();
-        }
-        process.stdout.write(CLEAR_LINE + line + spark + "\n");
-      }
-    }
-
-    // Final clean render (no sparks)
-    process.stdout.write(moveUp(totalHeight));
-    for (const line of allLines) {
-      process.stdout.write(CLEAR_LINE + line + "\n");
-    }
-
-    // Phase 4: Title types out letter by letter
+    // ── Phase 4: Title forging ────────────────────────────────
+    // Each letter: ember block → cooling metal → final color
     console.log("");
     process.stdout.write("  ");
     const title = "FORGELORE";
     for (let i = 0; i < title.length; i++) {
-      // Flash as ember block, then resolve to colored letter
-      process.stdout.write(emberColor("█"));
-      await sleep(35);
-      process.stdout.write("\b" + chalk.bold(chalk.hex(TITLE_GRADIENT[i])(title[i])));
-      await sleep(50);
+      process.stdout.write(chalk.hex(SEDONA_GLOW)("█"));
+      await sleep(15);
+      process.stdout.write("\b" + chalk.hex("#CC7744")("▓"));
+      await sleep(15);
+      process.stdout.write(
+        "\b" + chalk.bold(chalk.hex(TITLE_COLORS[i])(title[i]))
+      );
+      await sleep(25);
     }
     console.log("");
 
-    // Phase 5: Tagline fades in
-    await sleep(200);
-    console.log(colors.muted("  forge knowledge, shape code") + chalk.dim("  v0.1.0"));
+    // ── Phase 5: Tagline ──────────────────────────────────────
+    await sleep(120);
+    console.log(
+      colors.muted("  forge knowledge, shape code") + chalk.dim("  v0.1.0")
+    );
     console.log("");
   } finally {
     process.stdout.write(SHOW_CURSOR);
@@ -208,12 +311,12 @@ export async function renderAnimatedBanner(): Promise<void> {
 }
 
 /**
- * Render a boxed section with forge-themed border
+ * Render a boxed section with Sedona-themed border
  */
 export function renderBox(
   content: string,
   title?: string,
-  borderColor = "#FF6B35"
+  borderColor = SEDONA
 ): string {
   return boxen(content, {
     padding: 1,
