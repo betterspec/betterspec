@@ -167,7 +167,7 @@ function writeFrame(lines: string[], sparks: Map<number, string>): void {
 export function renderBanner(): string {
   const logo = colorLogo(1).join("\n");
   const tagline = colors.muted("  forge knowledge, shape code");
-  const version = chalk.dim("  v0.2.2");
+  const version = chalk.dim("  v0.2.3");
   return `\n${logo}\n\n${tagline}${version}\n`;
 }
 
@@ -230,7 +230,7 @@ export async function renderAnimatedBanner(): Promise<void> {
     await sleep(150);
     console.log("");
     console.log(
-      colors.muted("  forge knowledge, shape code") + chalk.dim("  v0.2.2")
+      colors.muted("  forge knowledge, shape code") + chalk.dim("  v0.2.3")
     );
     console.log("");
   } finally {
