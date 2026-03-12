@@ -1,0 +1,16 @@
+{
+  "$schema": "https://forgelore.dev/config.json",
+  "version": "0.1.0",
+  "mode": "local",
+  "orchestration": {
+    "defaultMode": "sequential",
+    "maxRetries": 3,
+    "parallelTracks": 3
+  },
+  "enforcement": {
+    "requireSpecForChanges": true,
+    "warnOnUnspeccedEdits": true,
+    "blockArchiveOnDrift": true,
+    "autoInjectContext": true
+  }
+}
