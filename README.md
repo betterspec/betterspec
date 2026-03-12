@@ -121,13 +121,13 @@ Forgelore ships with **generic agent skills** in the `skills/` directory. These 
 
 ### OpenCode Integration
 
-For [OpenCode](https://opencode.ai) users, the companion plugin [`opencode-forgelore`](https://github.com/DxVapor/opencode-forgelore) provides multi-agent orchestration with dedicated builder, validator, planner, and archivist agents.
+For [OpenCode](https://opencode.ai) users, the companion plugin [`opencode-forgelore`](https://github.com/forgelore/opencode-forgelore) provides multi-agent orchestration with dedicated builder, validator, planner, and archivist agents.
 
 ## Development
 
 ```bash
 # Clone
-git clone https://github.com/DxVapor/forgelore.git
+git clone https://github.com/forgelore/forgelore.git
 cd forgelore
 
 # Install
