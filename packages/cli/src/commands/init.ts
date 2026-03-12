@@ -15,7 +15,7 @@ import {
   type SpecMode,
   type ForgeloreConfig,
 } from "@forgelore/core";
-import { scaffoldSpecDirs } from "@forgelore/core";
+import { scaffoldSpecDirs, scaffoldSkill } from "@forgelore/core";
 import { scaffoldKnowledge } from "@forgelore/core";
 import { renderBanner, renderBox } from "../ui/banner.js";
 import { colors, icons, gradients } from "../ui/theme.js";
@@ -116,6 +116,9 @@ export async function initCommand(options: { cwd?: string }): Promise<void> {
     spinner.text = "Setting up knowledge base...";
     await scaffoldKnowledge(projectRoot);
 
+    spinner.text = "Creating skill...";
+    await scaffoldSkill(projectRoot);
+
     spinner.text = "Writing config...";
     await writeConfig(projectRoot, config);
 
@@ -136,6 +139,7 @@ export async function initCommand(options: { cwd?: string }): Promise<void> {
     `  ${icons.bullet} ${colors.muted("forgelore/knowledge/glossary.md")}`,
     `  ${icons.bullet} ${colors.muted("forgelore/knowledge/capabilities/")}`,
     `  ${icons.bullet} ${colors.muted("forgelore/knowledge/decisions/")}`,
+    `  ${icons.bullet} ${colors.muted("skills/forgelore/SKILL.md")}`,
     "",
     `${icons.info} Mode: ${colors.primary(mode)}`,
   ];

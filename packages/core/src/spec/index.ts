@@ -32,6 +32,88 @@ export async function scaffoldSpecDirs(projectRoot: string): Promise<void> {
   await mkdir(join(forgeloreDir, "knowledge", "decisions"), { recursive: true });
 }
 
+/**
+ * Scaffold the forgelore skill — agent-agnostic instructions for using
+ * the forgelore CLI. This goes into the project root so any agent system
+ * (OpenCode, Claude Code, Cursor, etc.) can discover it.
+ */
+export async function scaffoldSkill(projectRoot: string): Promise<void> {
+  const skillDir = join(projectRoot, "skills", "forgelore");
+  await mkdir(skillDir, { recursive: true });
+
+  const skillPath = join(skillDir, "SKILL.md");
+  if (await fileExists(skillPath)) {
+    return; // Don't overwrite existing skill
+  }
+
+  const content = `# Forgelore — Spec-Driven Development
+
+This project uses **forgelore** for spec-driven development. All significant changes
+should go through the spec workflow before implementation begins.
+
+## When to Use Forgelore
+
+- Before starting any new feature or significant change
+- When requirements are unclear and need to be formalized
+- When multiple agents or developers will collaborate on a change
+- Before refactoring that touches multiple modules
+
+## CLI Commands
+
+| Command | Purpose |
+|---------|---------|
+| \`forgelore status\` | Show project status dashboard — start here |
+| \`forgelore list\` | List all changes and their states |
+| \`forgelore propose "idea"\` | Create a new change proposal |
+| \`forgelore clarify <change>\` | Refine requirements interactively |
+| \`forgelore verify <change>\` | Check spec completeness (structural) |
+| \`forgelore diff <change>\` | Show drift between specs and code |
+| \`forgelore archive <change>\` | Archive a completed change, extract knowledge |
+| \`forgelore doctor\` | Health check for the forgelore setup |
+| \`forgelore capabilities\` | List all registered capabilities |
+| \`forgelore config [key] [value]\` | Get or set configuration |
+
+## Workflow
+
+1. **Propose** — \`forgelore propose "add user authentication"\`
+2. **Plan** — Fill in \`forgelore/changes/<name>/specs/requirements.md\`, \`scenarios.md\`, \`design.md\`, and \`tasks.md\`
+3. **Verify** — \`forgelore verify <name>\` to check spec completeness
+4. **Build** — Implement tasks, updating status as you go
+5. **Validate** — Review implementation against specs
+6. **Archive** — \`forgelore archive <name>\` to capture knowledge
+
+## Key Directories
+
+\`\`\`
+forgelore/
+├── forgelore.json              # Configuration
+├── changes/                    # Active change specs
+│   └── <change-name>/
+│       ├── proposal.md         # Original idea
+│       ├── specs/
+│       │   ├── requirements.md # What to build
+│       │   └── scenarios.md    # How it should work
+│       ├── design.md           # Technical approach
+│       └── tasks.md            # Atomic task breakdown
+└── knowledge/                  # Project knowledge base
+    ├── architecture.md         # System architecture
+    ├── patterns.md             # Code patterns and conventions
+    ├── glossary.md             # Domain terminology
+    ├── capabilities/           # Extracted capabilities (JSON)
+    └── decisions/              # Architecture decision records
+\`\`\`
+
+## Rules
+
+- **Spec first.** Do not start coding without a spec for non-trivial changes.
+- **Follow patterns.** Read \`forgelore/knowledge/patterns.md\` before writing code.
+- **Update tasks.** Mark task status as you work (\`pending\` → \`in-progress\` → \`implemented\`).
+- **Knowledge compounds.** After completing a change, archive it to capture capabilities and update the knowledge base.
+`;
+
+  await writeFile(skillPath, content, "utf-8");
+}
+
 // --- Create ---
 
 export async function createChange(

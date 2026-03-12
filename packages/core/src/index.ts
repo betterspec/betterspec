@@ -29,6 +29,7 @@ export {
   updateTaskStatus,
   archiveChange,
   scaffoldSpecDirs,
+  scaffoldSkill,
   getChangesDir,
   getArchiveDir,
   getChangePath,
