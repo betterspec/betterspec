@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forgelore.dev/schemas/capability.schema.json",
+  "title": "forgelore Capability",
+  "description": "A capability extracted from an archived change",
+  "type": "object",
+  "required": ["id", "name", "description", "sourceChange", "archivedAt", "files"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "URL-safe identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable capability name"
+    },
+    "description": {
+      "type": "string",
+      "description": "What this capability does"
+    },
+    "sourceChange": {
+      "type": "string",
+      "description": "Name of the archived change this was extracted from"
+    },
+    "archivedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the capability was registered"
+    },
+    "files": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Key implementation files"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Categorization tags"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forgelore.dev/schemas/forgelore-config.schema.json",
+  "title": "forgelore Configuration",
+  "description": "Configuration for forgelore spec-driven development",
+  "type": "object",
+  "required": ["version", "mode", "orchestration", "enforcement"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON schema reference"
+    },
+    "version": {
+      "type": "string",
+      "description": "forgelore version",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["local", "local+global", "global"],
+      "description": "Spec management mode"
+    },
+    "global": {
+      "type": "object",
+      "description": "Global spec repository configuration",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Filesystem path or GitHub URL to global specs"
+        },
+        "path": {
+          "type": "string",
+          "description": "Resolved local path (cache dir for remote sources)"
+        },
+        "autoSync": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically sync on session start"
+        }
+      },
+      "required": ["source", "path"]
+    },
+    "orchestration": {
+      "type": "object",
+      "description": "Agent orchestration settings",
+      "properties": {
+        "defaultMode": {
+          "type": "string",
+          "enum": ["sequential", "parallel", "swarm"],
+          "default": "sequential"
+        },
+        "maxRetries": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10,
+          "default": 3
+        },
+        "parallelTracks": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3
+        }
+      },
+      "required": ["defaultMode", "maxRetries", "parallelTracks"]
+    },
+    "enforcement": {
+      "type": "object",
+      "description": "Spec enforcement settings",
+      "properties": {
+        "requireSpecForChanges": {
+          "type": "boolean",
+          "default": true,
+          "description": "Require a spec before allowing code changes"
+        },
+        "warnOnUnspeccedEdits": {
+          "type": "boolean",
+          "default": true,
+          "description": "Warn when editing files not covered by a spec"
+        },
+        "blockArchiveOnDrift": {
+          "type": "boolean",
+          "default": true,
+          "description": "Block archive if specs have drifted from implementation"
+        },
+        "autoInjectContext": {
+          "type": "boolean",
+          "default": true,
+          "description": "Inject spec context into agent sessions automatically"
+        }
+      },
+      "required": ["requireSpecForChanges", "warnOnUnspeccedEdits", "blockArchiveOnDrift", "autoInjectContext"]
+    }
+  },
+  "additionalProperties": false
+}

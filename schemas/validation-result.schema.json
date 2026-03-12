@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forgelore.dev/schemas/validation-result.schema.json",
+  "title": "forgelore Validation Result",
+  "description": "Structured output from a validation agent",
+  "type": "object",
+  "required": ["verdict", "confidence", "requirements", "issues", "suggestions"],
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["PASS", "FAIL", "NEEDS_REVIEW"],
+      "description": "Overall validation verdict"
+    },
+    "confidence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Confidence level 0-100"
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["requirement", "status"],
+        "properties": {
+          "requirement": {
+            "type": "string",
+            "description": "The requirement being validated"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pass", "fail", "partial"],
+            "description": "Validation status for this requirement"
+          },
+          "evidence": {
+            "type": "string",
+            "description": "Evidence supporting the verdict"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason for failure or partial status"
+          }
+        }
+      },
+      "description": "Per-requirement validation results"
+    },
+    "issues": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Issues found during validation"
+    },
+    "suggestions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Improvement suggestions"
+    }
+  },
+  "additionalProperties": false
+}
