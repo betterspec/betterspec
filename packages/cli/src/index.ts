@@ -24,7 +24,7 @@ const program = new Command();
 program
   .name("forgelore")
   .description("Spec-driven development for AI-assisted teams — forge knowledge, shape code")
-  .version("0.2.1");
+  .version("0.2.2");
 
 // --- init ---
 program
