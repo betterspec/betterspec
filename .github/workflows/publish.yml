@@ -36,14 +36,11 @@ jobs:
           CORE_VERSION=$(node -p "require('./packages/core/package.json').version")
           sed -i "s|\"workspace:\*\"|\"^${CORE_VERSION}\"|g" packages/cli/package.json
 
+      # Trusted publishing via OIDC — no NPM_TOKEN needed
       - name: Publish @betterspec/core
         working-directory: packages/core
-        run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
 
       - name: Publish @betterspec/cli
         working-directory: packages/cli
-        run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
