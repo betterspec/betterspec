@@ -1,4 +1,4 @@
-# forgelore Archive Skill
+# betterspec Archive Skill
 
 You are responsible for **archiving completed changes** and extracting knowledge from them.
 
@@ -44,14 +44,14 @@ For each capability listed in `outcome.md`, create a capability record:
 }
 ```
 
-Register each capability using `forgelore` core:
-- File goes to `forgelore/knowledge/capabilities/<id>.json`
+Register each capability using `betterspec` core:
+- File goes to `betterspec/knowledge/capabilities/<id>.json`
 
 ### Step 3: Archive the Change
 
-Run `forgelore archive <change-name>` which:
+Run `betterspec archive <change-name>` which:
 1. Sets status to "archived"
-2. Moves the change directory to `forgelore/changes/archive/<date>-<name>/`
+2. Moves the change directory to `betterspec/changes/archive/<date>-<name>/`
 
 ### Step 4: Update Knowledge Base
 

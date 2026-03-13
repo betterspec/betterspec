@@ -1,5 +1,5 @@
 /**
- * forgelore list command
+ * betterspec list command
  * List all changes with status and progress
  */
 
@@ -8,8 +8,8 @@ import Table from "cli-table3";
 import {
   configExists,
   listChanges,
-} from "@forgelore/core";
-import { summarizeTasks } from "@forgelore/core";
+} from "@betterspec/core";
+import { summarizeTasks } from "@betterspec/core";
 import { renderBox, renderSection } from "../ui/banner.js";
 import { colors, icons, statusColor, progressBar } from "../ui/theme.js";
 
@@ -23,7 +23,7 @@ export async function listCommand(options?: {
   if (!(await configExists(projectRoot))) {
     console.log(
       renderBox(
-        `${icons.error} forgelore is not initialized.\nRun ${colors.primary("forgelore init")} first.`,
+        `${icons.error} betterspec is not initialized.\nRun ${colors.primary("betterspec init")} first.`,
         "Not Initialized",
         "#EF4444"
       )
@@ -44,7 +44,7 @@ export async function listCommand(options?: {
       : "No changes found.";
     console.log(
       renderBox(
-        `${icons.info} ${msg}\nRun ${colors.primary("forgelore propose")} to create one.`,
+        `${icons.info} ${msg}\nRun ${colors.primary("betterspec propose")} to create one.`,
         "Changes"
       )
     );

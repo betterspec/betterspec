@@ -1,5 +1,5 @@
 /**
- * forgelore diff command
+ * betterspec diff command
  * Show structural drift between specs and current project state
  * NOTE: This is a structural check, not an LLM-powered analysis
  */
@@ -15,7 +15,7 @@ import {
   readChangeFile,
   getChangesDir,
   fileExists,
-} from "@forgelore/core";
+} from "@betterspec/core";
 import { renderBox, renderSection } from "../ui/banner.js";
 import { colors, icons, gradients } from "../ui/theme.js";
 
@@ -34,7 +34,7 @@ export async function diffCommand(
   if (!(await configExists(projectRoot))) {
     console.log(
       renderBox(
-        `${icons.error} forgelore is not initialized.\nRun ${colors.primary("forgelore init")} first.`,
+        `${icons.error} betterspec is not initialized.\nRun ${colors.primary("betterspec init")} first.`,
         "Not Initialized",
         "#EF4444"
       )
@@ -66,7 +66,7 @@ export async function diffCommand(
     if (changes.length === 0) {
       console.log(
         renderBox(
-          `${icons.info} No active changes to analyze.\nRun ${colors.primary("forgelore propose")} to create one.`,
+          `${icons.info} No active changes to analyze.\nRun ${colors.primary("betterspec propose")} to create one.`,
           "No Changes"
         )
       );

@@ -1,11 +1,11 @@
-# forgelore Knowledge Management Skill
+# betterspec Knowledge Management Skill
 
 You are responsible for maintaining the project's **knowledge base**. The knowledge base is the long-term memory of the project — it survives after individual changes are archived.
 
 ## Knowledge Base Structure
 
 ```
-forgelore/knowledge/
+betterspec/knowledge/
   architecture.md      # System architecture overview
   patterns.md          # Established code patterns
   glossary.md          # Domain-specific terminology

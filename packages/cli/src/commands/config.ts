@@ -1,5 +1,5 @@
 /**
- * forgelore config command
+ * betterspec config command
  * Get, set, or list configuration values
  */
 
@@ -9,7 +9,7 @@ import {
   readConfig,
   getConfigValue,
   setConfigValue,
-} from "@forgelore/core";
+} from "@betterspec/core";
 import { renderBox, renderSection } from "../ui/banner.js";
 import { colors, icons } from "../ui/theme.js";
 
@@ -23,7 +23,7 @@ export async function configCommand(
   if (!(await configExists(projectRoot))) {
     console.log(
       renderBox(
-        `${icons.error} forgelore is not initialized.\nRun ${colors.primary("forgelore init")} first.`,
+        `${icons.error} betterspec is not initialized.\nRun ${colors.primary("betterspec init")} first.`,
         "Not Initialized",
         "#EF4444"
       )

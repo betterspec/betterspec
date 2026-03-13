@@ -1,6 +1,6 @@
-# Contributing to forgelore
+# Contributing to betterspec
 
-Thank you for your interest in contributing to forgelore! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to betterspec! This document provides guidelines and instructions for contributing.
 
 ## Code of Conduct
 
@@ -10,7 +10,7 @@ Be respectful, constructive, and inclusive. We're building tools for collaborati
 
 ### Reporting Issues
 
-- Use [GitHub Issues](https://github.com/forgelore/forgelore/issues) to report bugs or request features
+- Use [GitHub Issues](https://github.com/betterspec/betterspec/issues) to report bugs or request features
 - Check existing issues before creating a new one
 - Include reproduction steps, expected behavior, and actual behavior for bug reports
 
@@ -28,8 +28,8 @@ All changes to `main` must come through pull requests. Direct pushes to `main` a
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/forgelore.git
-cd forgelore
+git clone https://github.com/YOUR_USERNAME/betterspec.git
+cd betterspec
 
 # Install dependencies
 bun install
@@ -46,8 +46,8 @@ bun test --filter cli
 
 This is a Turborepo monorepo with two packages:
 
-- `packages/core` — `@forgelore/core` — spec engine, config, knowledge base, capabilities, drift detection
-- `packages/cli` — `@forgelore/cli` — CLI commands, UI, banner
+- `packages/core` — `@betterspec/core` — spec engine, config, knowledge base, capabilities, drift detection
+- `packages/cli` — `@betterspec/cli` — CLI commands, UI, banner
 
 ### Code Guidelines
 
@@ -60,16 +60,16 @@ This is a Turborepo monorepo with two packages:
 
 ### Spec-Driven Development
 
-forgelore dogfoods itself. For significant changes:
+betterspec dogfoods itself. For significant changes:
 
-1. Run `forgelore propose "your idea"` to create a change spec
+1. Run `betterspec propose "your idea"` to create a change spec
 2. Fill in requirements, scenarios, design, and tasks
-3. Run `forgelore verify <change-name>` to validate completeness
+3. Run `betterspec verify <change-name>` to validate completeness
 4. Implement from the spec
-5. Archive when done with `forgelore archive <change-name>`
+5. Archive when done with `betterspec archive <change-name>`
 
 This isn't required for small fixes, but it's encouraged for new features.
 
 ## Questions?
 
-Open a [discussion](https://github.com/forgelore/forgelore/discussions) or an issue. We're happy to help.
+Open a [discussion](https://github.com/betterspec/betterspec/discussions) or an issue. We're happy to help.

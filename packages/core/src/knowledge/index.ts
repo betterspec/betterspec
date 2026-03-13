@@ -5,13 +5,13 @@
 
 import { readFile, writeFile, readdir, mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import { fileExists, getForgeloreDir } from "../config/index.js";
+import { fileExists, getbetterspecDir } from "../config/index.js";
 import type { Capability, Decision, KnowledgeBase } from "../types/index.js";
 
 // --- Paths ---
 
 export function getKnowledgeDir(projectRoot: string): string {
-  return join(getForgeloreDir(projectRoot), "knowledge");
+  return join(getbetterspecDir(projectRoot), "knowledge");
 }
 
 export function getCapabilitiesDir(projectRoot: string): string {

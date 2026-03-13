@@ -1,5 +1,5 @@
 /**
- * forgelore clarify command
+ * betterspec clarify command
  * Review and refine requirements for a change
  */
 
@@ -11,7 +11,7 @@ import {
   readChangeFile,
   updateChangeStatus,
   getChangePath,
-} from "@forgelore/core";
+} from "@betterspec/core";
 import { renderBox, renderSection } from "../ui/banner.js";
 import { colors, icons, gradients } from "../ui/theme.js";
 
@@ -24,7 +24,7 @@ export async function clarifyCommand(
   if (!(await configExists(projectRoot))) {
     console.log(
       renderBox(
-        `${icons.error} forgelore is not initialized.\nRun ${colors.primary("forgelore init")} first.`,
+        `${icons.error} betterspec is not initialized.\nRun ${colors.primary("betterspec init")} first.`,
         "Not Initialized",
         "#EF4444"
       )
@@ -32,7 +32,7 @@ export async function clarifyCommand(
     process.exit(1);
   }
 
-  p.intro(gradients.brand(" forgelore clarify "));
+  p.intro(gradients.brand(" betterspec clarify "));
 
   let change;
   try {
@@ -40,7 +40,7 @@ export async function clarifyCommand(
   } catch {
     console.log(
       renderBox(
-        `${icons.error} Change ${colors.primary(changeName)} not found.\nRun ${colors.primary("forgelore list")} to see available changes.`,
+        `${icons.error} Change ${colors.primary(changeName)} not found.\nRun ${colors.primary("betterspec list")} to see available changes.`,
         "Not Found",
         "#EF4444"
       )
@@ -131,7 +131,7 @@ export async function clarifyCommand(
       renderBox(
         `${icons.warning} Change ${colors.primary(changeName)} needs more clarification:\n\n` +
           incomplete.join("\n") +
-          `\n\n${colors.muted("Edit the spec files and run")} ${colors.primary("forgelore clarify " + changeName)} ${colors.muted("again.")}`,
+          `\n\n${colors.muted("Edit the spec files and run")} ${colors.primary("betterspec clarify " + changeName)} ${colors.muted("again.")}`,
         "Needs Work",
         "#F59E0B"
       )

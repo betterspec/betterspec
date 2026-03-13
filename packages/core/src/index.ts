@@ -1,6 +1,6 @@
 /**
- * @forgelore/core
- * Provider-agnostic spec engine for forgelore
+ * @betterspec/core
+ * Provider-agnostic spec engine for betterspec
  */
 
 // Types
@@ -14,7 +14,7 @@ export {
   configExists,
   getConfigValue,
   setConfigValue,
-  getForgeloreDir,
+  getbetterspecDir,
   getConfigPath,
   fileExists,
 } from "./config/index.js";

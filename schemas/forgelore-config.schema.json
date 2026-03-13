@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://forgelore.dev/schemas/forgelore-config.schema.json",
-  "title": "forgelore Configuration",
-  "description": "Configuration for forgelore spec-driven development",
+  "$id": "https://betterspec.dev/schemas/betterspec-config.schema.json",
+  "title": "betterspec Configuration",
+  "description": "Configuration for betterspec spec-driven development",
   "type": "object",
   "required": ["version", "mode", "orchestration", "enforcement"],
   "properties": {
@@ -12,7 +12,7 @@
     },
     "version": {
       "type": "string",
-      "description": "forgelore version",
+      "description": "betterspec version",
       "pattern": "^\\d+\\.\\d+\\.\\d+$"
     },
     "mode": {

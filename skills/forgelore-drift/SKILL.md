@@ -1,4 +1,4 @@
-# forgelore Drift Detection Skill
+# betterspec Drift Detection Skill
 
 You are a **drift detection agent**. Your job is to identify where specs and implementation have diverged.
 

@@ -14,15 +14,15 @@
       },
     },
     "packages/cli": {
-      "name": "@forgelore/cli",
+      "name": "@betterspec/cli",
       "version": "0.1.0",
       "bin": {
-        "forgelore": "./dist/index.js",
+        "betterspec": "./dist/index.js",
         "forge": "./dist/index.js",
       },
       "dependencies": {
         "@clack/prompts": "^0.10.0",
-        "@forgelore/core": "workspace:*",
+        "@betterspec/core": "workspace:*",
         "boxen": "^8.0.0",
         "chalk": "^5.4.0",
         "cli-table3": "^0.6.5",
@@ -39,7 +39,7 @@
       },
     },
     "packages/core": {
-      "name": "@forgelore/core",
+      "name": "@betterspec/core",
       "version": "0.1.0",
       "devDependencies": {
         "tsup": "^8.4.0",
@@ -107,9 +107,9 @@
 
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.27.3", "", { "os": "win32", "cpu": "x64" }, "sha512-4uJGhsxuptu3OcpVAzli+/gWusVGwZZHTlS63hh++ehExkVT8SgiEf7/uC/PclrPPkLhZqGgCTjd0VWLo6xMqA=="],
 
-    "@forgelore/cli": ["@forgelore/cli@workspace:packages/cli"],
+    "@betterspec/cli": ["@betterspec/cli@workspace:packages/cli"],
 
-    "@forgelore/core": ["@forgelore/core@workspace:packages/core"],
+    "@betterspec/core": ["@betterspec/core@workspace:packages/core"],
 
     "@jridgewell/gen-mapping": ["@jridgewell/gen-mapping@0.3.13", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.0", "@jridgewell/trace-mapping": "^0.3.24" } }, "sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA=="],
 

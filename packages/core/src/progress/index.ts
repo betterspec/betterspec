@@ -3,7 +3,7 @@
  * Calculate completion percentages and status summaries
  */
 
-import type { Change, Task, TaskStatus, ForgeloreProject } from "../types/index.js";
+import type { Change, Task, TaskStatus, betterspecProject } from "../types/index.js";
 import { listChanges } from "../spec/index.js";
 import { listCapabilities } from "../knowledge/index.js";
 

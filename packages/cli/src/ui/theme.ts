@@ -1,17 +1,17 @@
 /**
- * forgelore CLI theme
- * Sedona-inspired colors — warm red-rock tones (forge) + cool violet/cyan (lore)
+ * betterspec CLI theme
+ * Sedona-inspired colors — warm red-rock tones + cool violet/cyan
  */
 
 import chalk from "chalk";
 import gradient from "gradient-string";
 
-// Brand colors — Sedona warm (forge) + cool (lore)
+// Brand colors — Sedona warm + cool
 export const colors = {
   primary: chalk.hex("#CC5500"),   // Sedona orange (red rock)
-  secondary: chalk.hex("#06B6D4"), // lore cyan
+  secondary: chalk.hex("#06B6D4"), // brand cyan
   accent: chalk.hex("#F5A050"),    // Sedona sunset gold
-  lore: chalk.hex("#7C3AED"),      // lore violet
+  violet: chalk.hex("#7C3AED"),    // brand violet
   success: chalk.hex("#10B981"),   // emerald
   warning: chalk.hex("#E07020"),   // Sedona warm warning
   error: chalk.hex("#EF4444"),     // red
@@ -24,8 +24,8 @@ export const colors = {
 // Gradients
 export const gradients = {
   brand: gradient(["#CC5500", "#F5A050", "#7C3AED", "#06B6D4"]),
-  forge: gradient(["#CC5500", "#F5A050"]),
-  lore: gradient(["#7C3AED", "#06B6D4"]),
+  sedona: gradient(["#CC5500", "#F5A050"]),
+  violet: gradient(["#7C3AED", "#06B6D4"]),
   warm: gradient(["#F5A050", "#EF4444"]),
   cool: gradient(["#06B6D4", "#7C3AED"]),
   success: gradient(["#10B981", "#06B6D4"]),

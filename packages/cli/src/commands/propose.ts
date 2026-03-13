@@ -1,5 +1,5 @@
 /**
- * forgelore propose command
+ * betterspec propose command
  * Create a new change with proposal, specs, design, and tasks
  */
 
@@ -9,7 +9,7 @@ import { resolve } from "node:path";
 import {
   configExists,
   createChange,
-} from "@forgelore/core";
+} from "@betterspec/core";
 import { renderBanner, renderBox } from "../ui/banner.js";
 import { colors, icons, gradients } from "../ui/theme.js";
 
@@ -30,8 +30,8 @@ export async function proposeCommand(
   if (!(await configExists(projectRoot))) {
     console.log(
       renderBox(
-        `${icons.error} forgelore is not initialized.\n` +
-          `Run ${colors.primary("forgelore init")} first.`,
+        `${icons.error} betterspec is not initialized.\n` +
+          `Run ${colors.primary("betterspec init")} first.`,
         "Not Initialized",
         "#EF4444"
       )
@@ -39,7 +39,7 @@ export async function proposeCommand(
     process.exit(1);
   }
 
-  p.intro(gradients.brand(" forgelore propose "));
+  p.intro(gradients.brand(" betterspec propose "));
 
   // Get the idea if not provided
   let ideaText = idea;
@@ -127,11 +127,11 @@ export async function proposeCommand(
     spinner.succeed(colors.success(`Created change: ${changeName}`));
 
     const files = [
-      `forgelore/changes/${changeName}/proposal.md`,
-      `forgelore/changes/${changeName}/specs/requirements.md`,
-      `forgelore/changes/${changeName}/specs/scenarios.md`,
-      `forgelore/changes/${changeName}/design.md`,
-      `forgelore/changes/${changeName}/tasks.md`,
+      `betterspec/changes/${changeName}/proposal.md`,
+      `betterspec/changes/${changeName}/specs/requirements.md`,
+      `betterspec/changes/${changeName}/specs/scenarios.md`,
+      `betterspec/changes/${changeName}/design.md`,
+      `betterspec/changes/${changeName}/tasks.md`,
     ];
 
     const summary = [
@@ -158,6 +158,6 @@ export async function proposeCommand(
   }
 
   p.outro(
-    `Run ${colors.primary("forgelore clarify")} ${colors.muted(changeName)} to refine requirements.`
+    `Run ${colors.primary("betterspec clarify")} ${colors.muted(changeName)} to refine requirements.`
   );
 }

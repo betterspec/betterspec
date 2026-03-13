@@ -10,7 +10,7 @@ import type { Task } from "../types/index.js";
 const TEST_ROOT = join(import.meta.dirname, "__test_progress__");
 
 beforeEach(async () => {
-  await mkdir(join(TEST_ROOT, "forgelore"), { recursive: true });
+  await mkdir(join(TEST_ROOT, "betterspec"), { recursive: true });
   await writeConfig(TEST_ROOT, createDefaultConfig("local"));
   await scaffoldSpecDirs(TEST_ROOT);
   await scaffoldKnowledge(TEST_ROOT);

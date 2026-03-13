@@ -5,13 +5,13 @@
 
 import { readFile, writeFile, readdir, mkdir, rename, rm } from "node:fs/promises";
 import { join, basename } from "node:path";
-import { fileExists, getForgeloreDir } from "../config/index.js";
+import { fileExists, getbetterspecDir } from "../config/index.js";
 import type { Change, ChangeStatus, Task, TaskStatus } from "../types/index.js";
 
 // --- Paths ---
 
 export function getChangesDir(projectRoot: string): string {
-  return join(getForgeloreDir(projectRoot), "changes");
+  return join(getbetterspecDir(projectRoot), "changes");
 }
 
 export function getArchiveDir(projectRoot: string): string {
@@ -25,20 +25,20 @@ export function getChangePath(projectRoot: string, changeName: string): string {
 // --- Scaffold ---
 
 export async function scaffoldSpecDirs(projectRoot: string): Promise<void> {
-  const forgeloreDir = getForgeloreDir(projectRoot);
-  await mkdir(join(forgeloreDir, "changes"), { recursive: true });
-  await mkdir(join(forgeloreDir, "changes", "archive"), { recursive: true });
-  await mkdir(join(forgeloreDir, "knowledge", "capabilities"), { recursive: true });
-  await mkdir(join(forgeloreDir, "knowledge", "decisions"), { recursive: true });
+  const betterspecDir = getbetterspecDir(projectRoot);
+  await mkdir(join(betterspecDir, "changes"), { recursive: true });
+  await mkdir(join(betterspecDir, "changes", "archive"), { recursive: true });
+  await mkdir(join(betterspecDir, "knowledge", "capabilities"), { recursive: true });
+  await mkdir(join(betterspecDir, "knowledge", "decisions"), { recursive: true });
 }
 
 /**
- * Scaffold the forgelore skill — agent-agnostic instructions for using
- * the forgelore CLI. This goes into the project root so any agent system
+ * Scaffold the betterspec skill — agent-agnostic instructions for using
+ * the betterspec CLI. This goes into the project root so any agent system
  * (OpenCode, Claude Code, Cursor, etc.) can discover it.
  */
 export async function scaffoldSkill(projectRoot: string): Promise<void> {
-  const skillDir = join(projectRoot, "skills", "forgelore");
+  const skillDir = join(projectRoot, "skills", "betterspec");
   await mkdir(skillDir, { recursive: true });
 
   const skillPath = join(skillDir, "SKILL.md");
@@ -46,12 +46,12 @@ export async function scaffoldSkill(projectRoot: string): Promise<void> {
     return; // Don't overwrite existing skill
   }
 
-  const content = `# Forgelore — Spec-Driven Development
+  const content = `# betterspec — Spec-Driven Development
 
-This project uses **forgelore** for spec-driven development. All significant changes
+This project uses **betterspec** for spec-driven development. All significant changes
 should go through the spec workflow before implementation begins.
 
-## When to Use Forgelore
+## When to Use betterspec
 
 - Before starting any new feature or significant change
 - When requirements are unclear and need to be formalized
@@ -62,31 +62,31 @@ should go through the spec workflow before implementation begins.
 
 | Command | Purpose |
 |---------|---------|
-| \`forgelore status\` | Show project status dashboard — start here |
-| \`forgelore list\` | List all changes and their states |
-| \`forgelore propose "idea"\` | Create a new change proposal |
-| \`forgelore clarify <change>\` | Refine requirements interactively |
-| \`forgelore verify <change>\` | Check spec completeness (structural) |
-| \`forgelore diff <change>\` | Show drift between specs and code |
-| \`forgelore archive <change>\` | Archive a completed change, extract knowledge |
-| \`forgelore doctor\` | Health check for the forgelore setup |
-| \`forgelore capabilities\` | List all registered capabilities |
-| \`forgelore config [key] [value]\` | Get or set configuration |
+| \`betterspec status\` | Show project status dashboard — start here |
+| \`betterspec list\` | List all changes and their states |
+| \`betterspec propose "idea"\` | Create a new change proposal |
+| \`betterspec clarify <change>\` | Refine requirements interactively |
+| \`betterspec verify <change>\` | Check spec completeness (structural) |
+| \`betterspec diff <change>\` | Show drift between specs and code |
+| \`betterspec archive <change>\` | Archive a completed change, extract knowledge |
+| \`betterspec doctor\` | Health check for the betterspec setup |
+| \`betterspec capabilities\` | List all registered capabilities |
+| \`betterspec config [key] [value]\` | Get or set configuration |
 
 ## Workflow
 
-1. **Propose** — \`forgelore propose "add user authentication"\`
-2. **Plan** — Fill in \`forgelore/changes/<name>/specs/requirements.md\`, \`scenarios.md\`, \`design.md\`, and \`tasks.md\`
-3. **Verify** — \`forgelore verify <name>\` to check spec completeness
+1. **Propose** — \`betterspec propose "add user authentication"\`
+2. **Plan** — Fill in \`betterspec/changes/<name>/specs/requirements.md\`, \`scenarios.md\`, \`design.md\`, and \`tasks.md\`
+3. **Verify** — \`betterspec verify <name>\` to check spec completeness
 4. **Build** — Implement tasks, updating status as you go
 5. **Validate** — Review implementation against specs
-6. **Archive** — \`forgelore archive <name>\` to capture knowledge
+6. **Archive** — \`betterspec archive <name>\` to capture knowledge
 
 ## Key Directories
 
 \`\`\`
-forgelore/
-├── forgelore.json              # Configuration
+betterspec/
+├── betterspec.json              # Configuration
 ├── changes/                    # Active change specs
 │   └── <change-name>/
 │       ├── proposal.md         # Original idea
@@ -106,7 +106,7 @@ forgelore/
 ## Rules
 
 - **Spec first.** Do not start coding without a spec for non-trivial changes.
-- **Follow patterns.** Read \`forgelore/knowledge/patterns.md\` before writing code.
+- **Follow patterns.** Read \`betterspec/knowledge/patterns.md\` before writing code.
 - **Update tasks.** Mark task status as you work (\`pending\` → \`in-progress\` → \`implemented\`).
 - **Knowledge compounds.** After completing a change, archive it to capture capabilities and update the knowledge base.
 `;
@@ -171,7 +171,7 @@ export async function createChange(
 
   // Write metadata
   await writeFile(
-    join(changePath, ".forge-meta.json"),
+    join(changePath, ".betterspec-meta.json"),
     JSON.stringify(change, null, 2) + "\n",
     "utf-8"
   );
@@ -186,7 +186,7 @@ export async function readChange(
   name: string
 ): Promise<Change> {
   const changePath = getChangePath(projectRoot, name);
-  const metaPath = join(changePath, ".forge-meta.json");
+  const metaPath = join(changePath, ".betterspec-meta.json");
 
   if (!(await fileExists(metaPath))) {
     throw new Error(`Change '${name}' not found at ${changePath}`);
@@ -226,7 +226,7 @@ export async function listChanges(
   for (const entry of entries) {
     if (!entry.isDirectory() || entry.name === "archive") continue;
 
-    const metaPath = join(changesDir, entry.name, ".forge-meta.json");
+    const metaPath = join(changesDir, entry.name, ".betterspec-meta.json");
     if (await fileExists(metaPath)) {
       const raw = await readFile(metaPath, "utf-8");
       changes.push(JSON.parse(raw) as Change);
@@ -239,7 +239,7 @@ export async function listChanges(
       const archiveEntries = await readdir(archiveDir, { withFileTypes: true });
       for (const entry of archiveEntries) {
         if (!entry.isDirectory()) continue;
-        const metaPath = join(archiveDir, entry.name, ".forge-meta.json");
+        const metaPath = join(archiveDir, entry.name, ".betterspec-meta.json");
         if (await fileExists(metaPath)) {
           const raw = await readFile(metaPath, "utf-8");
           changes.push(JSON.parse(raw) as Change);
@@ -264,7 +264,7 @@ export async function updateChangeStatus(
   change.status = status;
   change.updatedAt = new Date().toISOString();
 
-  const metaPath = join(change.path, ".forge-meta.json");
+  const metaPath = join(change.path, ".betterspec-meta.json");
   await writeFile(metaPath, JSON.stringify(change, null, 2) + "\n", "utf-8");
 
   return change;
@@ -283,7 +283,7 @@ export async function updateTaskStatus(
   }
   change.updatedAt = new Date().toISOString();
 
-  const metaPath = join(change.path, ".forge-meta.json");
+  const metaPath = join(change.path, ".betterspec-meta.json");
   await writeFile(metaPath, JSON.stringify(change, null, 2) + "\n", "utf-8");
 }
 

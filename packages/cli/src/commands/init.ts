@@ -1,6 +1,6 @@
 /**
- * forgelore init command
- * Scaffold forgelore in a project, configure mode and paths
+ * betterspec init command
+ * Scaffold betterspec in a project, configure mode and paths
  */
 
 import * as p from "@clack/prompts";
@@ -11,12 +11,12 @@ import {
   createDefaultConfig,
   writeConfig,
   configExists,
-  getForgeloreDir,
+  getbetterspecDir,
   type SpecMode,
-  type ForgeloreConfig,
-} from "@forgelore/core";
-import { scaffoldSpecDirs, scaffoldSkill } from "@forgelore/core";
-import { scaffoldKnowledge } from "@forgelore/core";
+  type betterspecConfig,
+} from "@betterspec/core";
+import { scaffoldSpecDirs, scaffoldSkill } from "@betterspec/core";
+import { scaffoldKnowledge } from "@betterspec/core";
 import { renderBanner, renderBox } from "../ui/banner.js";
 import { colors, icons, gradients } from "../ui/theme.js";
 
@@ -29,15 +29,15 @@ export async function initCommand(options: { cwd?: string }): Promise<void> {
   if (await configExists(projectRoot)) {
     console.log(
       renderBox(
-        `${icons.warning} forgelore is already initialized in this project.\n` +
-          `${colors.muted("Run")} ${colors.primary("forgelore status")} ${colors.muted("to see current state.")}`,
+        `${icons.warning} betterspec is already initialized in this project.\n` +
+          `${colors.muted("Run")} ${colors.primary("betterspec status")} ${colors.muted("to see current state.")}`,
         "Already Initialized"
       )
     );
     return;
   }
 
-  p.intro(gradients.brand(" forgelore init "));
+  p.intro(gradients.brand(" betterspec init "));
 
   // Choose mode
   const mode = (await p.select({
@@ -94,7 +94,7 @@ export async function initCommand(options: { cwd?: string }): Promise<void> {
     config.global = {
       source: globalSource,
       path: isUrl
-        ? `~/.cache/forgelore/global/${globalSource.split("/").pop()}`
+        ? `~/.cache/betterspec/global/${globalSource.split("/").pop()}`
         : globalSource,
       autoSync: true,
     };
@@ -102,13 +102,13 @@ export async function initCommand(options: { cwd?: string }): Promise<void> {
 
   // Scaffold
   const spinner = ora({
-    text: "Scaffolding forgelore...",
+    text: "Scaffolding betterspec...",
     color: "magenta",
   }).start();
 
   try {
-    const forgeloreDir = getForgeloreDir(projectRoot);
-    await mkdir(forgeloreDir, { recursive: true });
+    const betterspecDir = getbetterspecDir(projectRoot);
+    await mkdir(betterspecDir, { recursive: true });
 
     spinner.text = "Creating directory structure...";
     await scaffoldSpecDirs(projectRoot);
@@ -122,9 +122,9 @@ export async function initCommand(options: { cwd?: string }): Promise<void> {
     spinner.text = "Writing config...";
     await writeConfig(projectRoot, config);
 
-    spinner.succeed(colors.success("forgelore initialized"));
+    spinner.succeed(colors.success("betterspec initialized"));
   } catch (err) {
-    spinner.fail(colors.error("Failed to initialize forgelore"));
+    spinner.fail(colors.error("Failed to initialize betterspec"));
     console.error(err);
     process.exit(1);
   }
@@ -132,14 +132,14 @@ export async function initCommand(options: { cwd?: string }): Promise<void> {
   // Summary
   const summary = [
     `${icons.success} ${colors.white("Created:")}`,
-    `  ${icons.bullet} ${colors.muted("forgelore/forgelore.json")}`,
-    `  ${icons.bullet} ${colors.muted("forgelore/changes/")}`,
-    `  ${icons.bullet} ${colors.muted("forgelore/knowledge/architecture.md")}`,
-    `  ${icons.bullet} ${colors.muted("forgelore/knowledge/patterns.md")}`,
-    `  ${icons.bullet} ${colors.muted("forgelore/knowledge/glossary.md")}`,
-    `  ${icons.bullet} ${colors.muted("forgelore/knowledge/capabilities/")}`,
-    `  ${icons.bullet} ${colors.muted("forgelore/knowledge/decisions/")}`,
-    `  ${icons.bullet} ${colors.muted("skills/forgelore/SKILL.md")}`,
+    `  ${icons.bullet} ${colors.muted("betterspec/betterspec.json")}`,
+    `  ${icons.bullet} ${colors.muted("betterspec/changes/")}`,
+    `  ${icons.bullet} ${colors.muted("betterspec/knowledge/architecture.md")}`,
+    `  ${icons.bullet} ${colors.muted("betterspec/knowledge/patterns.md")}`,
+    `  ${icons.bullet} ${colors.muted("betterspec/knowledge/glossary.md")}`,
+    `  ${icons.bullet} ${colors.muted("betterspec/knowledge/capabilities/")}`,
+    `  ${icons.bullet} ${colors.muted("betterspec/knowledge/decisions/")}`,
+    `  ${icons.bullet} ${colors.muted("skills/betterspec/SKILL.md")}`,
     "",
     `${icons.info} Mode: ${colors.primary(mode)}`,
   ];
@@ -151,6 +151,6 @@ export async function initCommand(options: { cwd?: string }): Promise<void> {
   console.log(renderBox(summary.join("\n"), "Setup Complete", "#10B981"));
 
   p.outro(
-    `Run ${colors.primary("forgelore propose")} ${colors.muted('"your idea"')} to create your first spec.`
+    `Run ${colors.primary("betterspec propose")} ${colors.muted('"your idea"')} to create your first spec.`
   );
 }

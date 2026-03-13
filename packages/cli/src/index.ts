@@ -1,7 +1,7 @@
 /**
- * forgelore CLI
+ * betterspec CLI
  * Spec-driven development for AI-assisted teams
- * Forge knowledge, shape code.
+ * Better specs, better code.
  */
 
 import { Command } from "commander";
@@ -22,14 +22,14 @@ import { renderAnimatedBanner } from "./ui/banner.js";
 const program = new Command();
 
 program
-  .name("forgelore")
-  .description("Spec-driven development for AI-assisted teams — forge knowledge, shape code")
-  .version("0.2.3");
+  .name("betterspec")
+  .description("Spec-driven development for AI-assisted teams — better specs, better code")
+  .version("0.3.2");
 
 // --- init ---
 program
   .command("init")
-  .description("Initialize forgelore in the current project")
+  .description("Initialize betterspec in the current project")
   .option("-C, --cwd <path>", "Working directory")
   .action((opts) => initCommand({ cwd: opts.cwd }));
 
@@ -89,7 +89,7 @@ program
 // --- doctor ---
 program
   .command("doctor")
-  .description("Check forgelore health and diagnose issues")
+  .description("Check betterspec health and diagnose issues")
   .option("--fix", "Attempt to fix detected issues")
   .option("-C, --cwd <path>", "Working directory")
   .action((opts) => doctorCommand({ fix: opts.fix, cwd: opts.cwd }));

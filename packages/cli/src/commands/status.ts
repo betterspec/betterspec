@@ -1,5 +1,5 @@
 /**
- * forgelore status command
+ * betterspec status command
  * Beautiful dashboard showing all changes, progress, and capabilities
  */
 
@@ -10,7 +10,7 @@ import {
   readConfig,
   listCapabilities,
   getProjectSummary,
-} from "@forgelore/core";
+} from "@betterspec/core";
 import { renderBanner, renderBox, renderSection } from "../ui/banner.js";
 import { colors, icons, gradients, statusColor, progressBar } from "../ui/theme.js";
 
@@ -21,8 +21,8 @@ export async function statusCommand(options?: { cwd?: string }): Promise<void> {
   if (!(await configExists(projectRoot))) {
     console.log(
       renderBox(
-        `${icons.error} forgelore is not initialized.\n` +
-          `Run ${colors.primary("forgelore init")} first.`,
+        `${icons.error} betterspec is not initialized.\n` +
+          `Run ${colors.primary("betterspec init")} first.`,
         "Not Initialized",
         "#EF4444"
       )
@@ -44,7 +44,7 @@ export async function statusCommand(options?: { cwd?: string }): Promise<void> {
     `${colors.muted("mode:")} ${colors.accent(config.mode)}`,
   ].join(colors.muted("  \u2502  "));
 
-  console.log(renderBox(statsLine, "forgelore status", "#7C3AED"));
+  console.log(renderBox(statsLine, "betterspec status", "#7C3AED"));
 
   // Active changes table
   if (summary.changes.length > 0) {
@@ -81,7 +81,7 @@ export async function statusCommand(options?: { cwd?: string }): Promise<void> {
     console.log(
       renderSection(
         "Active Changes",
-        `  ${colors.muted("No active changes.")} Run ${colors.primary("forgelore propose")} to create one.`
+        `  ${colors.muted("No active changes.")} Run ${colors.primary("betterspec propose")} to create one.`
       )
     );
   }
@@ -108,7 +108,7 @@ export async function statusCommand(options?: { cwd?: string }): Promise<void> {
 
     const moreText =
       capabilities.length > 10
-        ? `\n  ${colors.muted(`...and ${capabilities.length - 10} more. Run`)} ${colors.primary("forgelore capabilities")} ${colors.muted("to see all.")}`
+        ? `\n  ${colors.muted(`...and ${capabilities.length - 10} more. Run`)} ${colors.primary("betterspec capabilities")} ${colors.muted("to see all.")}`
         : "";
 
     console.log(

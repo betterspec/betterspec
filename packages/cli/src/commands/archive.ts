@@ -1,5 +1,5 @@
 /**
- * forgelore archive command
+ * betterspec archive command
  * Two-step archive: 1) write outcome.md, 2) move to archive + extract capabilities
  */
 
@@ -13,7 +13,7 @@ import {
   readOutcome,
   writeOutcome,
   getChangePath,
-} from "@forgelore/core";
+} from "@betterspec/core";
 import { renderBox } from "../ui/banner.js";
 import { colors, icons, gradients } from "../ui/theme.js";
 
@@ -26,7 +26,7 @@ export async function archiveCommand(
   if (!(await configExists(projectRoot))) {
     console.log(
       renderBox(
-        `${icons.error} forgelore is not initialized.\nRun ${colors.primary("forgelore init")} first.`,
+        `${icons.error} betterspec is not initialized.\nRun ${colors.primary("betterspec init")} first.`,
         "Not Initialized",
         "#EF4444"
       )
@@ -34,7 +34,7 @@ export async function archiveCommand(
     process.exit(1);
   }
 
-  p.intro(gradients.brand(" forgelore archive "));
+  p.intro(gradients.brand(" betterspec archive "));
 
   let change;
   try {
@@ -67,7 +67,7 @@ export async function archiveCommand(
           `  ${icons.bullet} Lessons learned and patterns established`,
           "",
           `${colors.muted("An AI agent can generate this, or you can write it manually.")}`,
-          `${colors.muted("Create")} ${colors.primary(`forgelore/changes/${changeName}/outcome.md`)} ${colors.muted("and run archive again.")}`,
+          `${colors.muted("Create")} ${colors.primary(`betterspec/changes/${changeName}/outcome.md`)} ${colors.muted("and run archive again.")}`,
         ].join("\n"),
         "Step 1: Outcome",
         "#F59E0B"
@@ -121,7 +121,7 @@ export async function archiveCommand(
 
   // Step 2: Archive
   const confirmArchive = await p.confirm({
-    message: `Archive "${changeName}"? This will move it to forgelore/changes/archive/`,
+    message: `Archive "${changeName}"? This will move it to betterspec/changes/archive/`,
     initialValue: true,
   });
 
@@ -147,8 +147,8 @@ export async function archiveCommand(
           "",
           `${colors.muted("Next steps:")}`,
           `  1. Review ${colors.primary("outcome.md")} and extract capabilities`,
-          `  2. Run ${colors.primary("forgelore capabilities")} to view the knowledge base`,
-          `  3. Update ${colors.primary("forgelore/knowledge/architecture.md")} if needed`,
+          `  2. Run ${colors.primary("betterspec capabilities")} to view the knowledge base`,
+          `  3. Update ${colors.primary("betterspec/knowledge/architecture.md")} if needed`,
         ].join("\n"),
         "Archived",
         "#10B981"

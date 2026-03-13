@@ -1,5 +1,5 @@
 /**
- * forgelore capabilities command
+ * betterspec capabilities command
  * List all registered capabilities in the knowledge base
  */
 
@@ -8,8 +8,8 @@ import Table from "cli-table3";
 import {
   configExists,
   listCapabilities,
-} from "@forgelore/core";
-import type { Capability } from "@forgelore/core";
+} from "@betterspec/core";
+import type { Capability } from "@betterspec/core";
 import { renderBox, renderSection } from "../ui/banner.js";
 import { colors, icons } from "../ui/theme.js";
 
@@ -22,7 +22,7 @@ export async function capabilitiesCommand(options?: {
   if (!(await configExists(projectRoot))) {
     console.log(
       renderBox(
-        `${icons.error} forgelore is not initialized.\nRun ${colors.primary("forgelore init")} first.`,
+        `${icons.error} betterspec is not initialized.\nRun ${colors.primary("betterspec init")} first.`,
         "Not Initialized",
         "#EF4444"
       )
@@ -37,7 +37,7 @@ export async function capabilitiesCommand(options?: {
       renderBox(
         `${icons.info} No capabilities registered yet.\n\n` +
           `Capabilities are extracted when changes are archived.\n` +
-          `Archive a completed change with ${colors.primary("forgelore archive <change>")} to start building\nyour knowledge base.`,
+          `Archive a completed change with ${colors.primary("betterspec archive <change>")} to start building\nyour knowledge base.`,
         "Capabilities"
       )
     );

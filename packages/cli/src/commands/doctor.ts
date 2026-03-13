@@ -1,6 +1,6 @@
 /**
- * forgelore doctor command
- * Health check and diagnostics for forgelore configuration
+ * betterspec doctor command
+ * Health check and diagnostics for betterspec configuration
  */
 
 import ora from "ora";
@@ -10,10 +10,10 @@ import {
   configExists,
   readConfig,
   fileExists,
-  getForgeloreDir,
+  getbetterspecDir,
   listChanges,
   listCapabilities,
-} from "@forgelore/core";
+} from "@betterspec/core";
 import { renderBox, renderSection } from "../ui/banner.js";
 import { colors, icons } from "../ui/theme.js";
 
@@ -29,13 +29,13 @@ export async function doctorCommand(options?: {
   cwd?: string;
 }): Promise<void> {
   const projectRoot = resolve(options?.cwd || process.cwd());
-  const forgeloreDir = getForgeloreDir(projectRoot);
+  const betterspecDir = getbetterspecDir(projectRoot);
   const checks: HealthCheck[] = [];
 
   console.log(
     renderBox(
       `${icons.info} Running health checks...`,
-      "forgelore doctor"
+      "betterspec doctor"
     )
   );
 
@@ -45,8 +45,8 @@ export async function doctorCommand(options?: {
     name: "Configuration",
     passed: hasConfig,
     message: hasConfig
-      ? "forgelore.json found"
-      : "forgelore.json not found — run forgelore init",
+      ? "betterspec.json found"
+      : "betterspec.json not found — run betterspec init",
   });
 
   if (!hasConfig) {
@@ -75,11 +75,11 @@ export async function doctorCommand(options?: {
 
   // 3. Directory structure
   const dirs = [
-    { path: join(forgeloreDir, "changes"), name: "changes/" },
-    { path: join(forgeloreDir, "changes", "archive"), name: "changes/archive/" },
-    { path: join(forgeloreDir, "knowledge"), name: "knowledge/" },
-    { path: join(forgeloreDir, "knowledge", "capabilities"), name: "knowledge/capabilities/" },
-    { path: join(forgeloreDir, "knowledge", "decisions"), name: "knowledge/decisions/" },
+    { path: join(betterspecDir, "changes"), name: "changes/" },
+    { path: join(betterspecDir, "changes", "archive"), name: "changes/archive/" },
+    { path: join(betterspecDir, "knowledge"), name: "knowledge/" },
+    { path: join(betterspecDir, "knowledge", "capabilities"), name: "knowledge/capabilities/" },
+    { path: join(betterspecDir, "knowledge", "decisions"), name: "knowledge/decisions/" },
   ];
 
   for (const dir of dirs) {
@@ -98,9 +98,9 @@ export async function doctorCommand(options?: {
 
   // 4. Knowledge base files
   const knowledgeFiles = [
-    { path: join(forgeloreDir, "knowledge", "architecture.md"), name: "architecture.md" },
-    { path: join(forgeloreDir, "knowledge", "patterns.md"), name: "patterns.md" },
-    { path: join(forgeloreDir, "knowledge", "glossary.md"), name: "glossary.md" },
+    { path: join(betterspecDir, "knowledge", "architecture.md"), name: "architecture.md" },
+    { path: join(betterspecDir, "knowledge", "patterns.md"), name: "patterns.md" },
+    { path: join(betterspecDir, "knowledge", "glossary.md"), name: "glossary.md" },
   ];
 
   for (const file of knowledgeFiles) {
@@ -148,7 +148,7 @@ export async function doctorCommand(options?: {
       passed: globalExists,
       message: globalExists
         ? `Global specs available at ${config.global.path}`
-        : `Global specs not found at ${config.global.path} — run forgelore sync`,
+        : `Global specs not found at ${config.global.path} — run betterspec sync`,
     });
   }
 
@@ -179,7 +179,7 @@ function printResults(checks: HealthCheck[], didFix?: boolean): void {
     const fixable = checks.filter((c) => !c.passed && c.fixable).length;
     if (fixable > 0) {
       console.log(
-        colors.muted(`  Run ${colors.primary("forgelore doctor --fix")} to auto-fix ${fixable} issue${fixable === 1 ? "" : "s"}.`)
+        colors.muted(`  Run ${colors.primary("betterspec doctor --fix")} to auto-fix ${fixable} issue${fixable === 1 ? "" : "s"}.`)
       );
     }
   }

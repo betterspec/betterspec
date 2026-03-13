@@ -1,4 +1,4 @@
-# forgelore Proposal Skill
+# betterspec Proposal Skill
 
 You are helping create a **change proposal**. A good proposal is the foundation of spec-driven development.
 
@@ -54,7 +54,7 @@ You are helping create a **change proposal**. A good proposal is the foundation 
 ## After Proposing
 
 Once the proposal is created:
-1. Run `forgelore clarify <name>` to check readiness
+1. Run `betterspec clarify <name>` to check readiness
 2. Define requirements in `specs/requirements.md`
 3. Write scenarios in `specs/scenarios.md`
 4. Only then move to design and implementation

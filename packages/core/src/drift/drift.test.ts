@@ -11,7 +11,7 @@ import type { Capability } from "../types/index.js";
 const TEST_ROOT = join(import.meta.dirname, "__test_drift__");
 
 beforeEach(async () => {
-  await mkdir(join(TEST_ROOT, "forgelore"), { recursive: true });
+  await mkdir(join(TEST_ROOT, "betterspec"), { recursive: true });
   await writeConfig(TEST_ROOT, createDefaultConfig("local"));
   await scaffoldSpecDirs(TEST_ROOT);
   await scaffoldKnowledge(TEST_ROOT);
@@ -40,7 +40,7 @@ describe("stale spec detection", () => {
     const change = await createChange(TEST_ROOT, "old-proposal", "# Proposal\n\nSome old idea");
 
     // Manually backdate the metadata
-    const metaPath = join(change.path, ".forge-meta.json");
+    const metaPath = join(change.path, ".betterspec-meta.json");
     const meta = { ...change, updatedAt: daysAgo(15) };
     await writeFile(metaPath, JSON.stringify(meta, null, 2) + "\n", "utf-8");
 
@@ -55,7 +55,7 @@ describe("stale spec detection", () => {
   it("flags proposals older than 7 days as info", async () => {
     const change = await createChange(TEST_ROOT, "week-old", "# Proposal\n\nWeek old idea");
 
-    const metaPath = join(change.path, ".forge-meta.json");
+    const metaPath = join(change.path, ".betterspec-meta.json");
     const meta = { ...change, updatedAt: daysAgo(10) };
     await writeFile(metaPath, JSON.stringify(meta, null, 2) + "\n", "utf-8");
 
@@ -72,7 +72,7 @@ describe("stale spec detection", () => {
     await updateChangeStatus(TEST_ROOT, "long-running", "in-progress");
 
     // Backdate
-    const metaPath = join(change.path, ".forge-meta.json");
+    const metaPath = join(change.path, ".betterspec-meta.json");
     const raw = await import("node:fs/promises").then((fs) => fs.readFile(metaPath, "utf-8"));
     const meta = JSON.parse(raw);
     meta.updatedAt = daysAgo(10);
@@ -90,7 +90,7 @@ describe("stale spec detection", () => {
     const change = await createChange(TEST_ROOT, "stuck-validation", "# Proposal\n\nStuck validating");
     await updateChangeStatus(TEST_ROOT, "stuck-validation", "validating");
 
-    const metaPath = join(change.path, ".forge-meta.json");
+    const metaPath = join(change.path, ".betterspec-meta.json");
     const raw = await import("node:fs/promises").then((fs) => fs.readFile(metaPath, "utf-8"));
     const meta = JSON.parse(raw);
     meta.updatedAt = daysAgo(5);
@@ -107,7 +107,7 @@ describe("stale spec detection", () => {
   it("flags in-progress with all-pending tasks", async () => {
     const change = await createChange(TEST_ROOT, "no-started-tasks", "# Proposal\n\nTasks not started");
 
-    const metaPath = join(change.path, ".forge-meta.json");
+    const metaPath = join(change.path, ".betterspec-meta.json");
     const raw = await import("node:fs/promises").then((fs) => fs.readFile(metaPath, "utf-8"));
     const meta = JSON.parse(raw);
     meta.status = "in-progress";
@@ -240,7 +240,7 @@ describe("incomplete spec detection", () => {
 describe("stale knowledge detection", () => {
   it("flags missing knowledge files", async () => {
     // Remove one of the scaffolded knowledge files
-    await rm(join(TEST_ROOT, "forgelore", "knowledge", "architecture.md"));
+    await rm(join(TEST_ROOT, "betterspec", "knowledge", "architecture.md"));
 
     const report = await analyzeDrift(TEST_ROOT);
     const knowledgeItems = report.items.filter(
@@ -254,7 +254,7 @@ describe("stale knowledge detection", () => {
   it("flags knowledge files with minimal content", async () => {
     // Overwrite patterns.md with minimal content
     await writeFile(
-      join(TEST_ROOT, "forgelore", "knowledge", "patterns.md"),
+      join(TEST_ROOT, "betterspec", "knowledge", "patterns.md"),
       "# Patterns\n\n",
       "utf-8"
     );
@@ -294,7 +294,7 @@ describe("drift scoring", () => {
     await updateChangeStatus(TEST_ROOT, "warn-test", "in-progress");
 
     // Backdate to trigger stale-spec warning
-    const metaPath = join(change.path, ".forge-meta.json");
+    const metaPath = join(change.path, ".betterspec-meta.json");
     const raw = await import("node:fs/promises").then((fs) => fs.readFile(metaPath, "utf-8"));
     const meta = JSON.parse(raw);
     meta.updatedAt = daysAgo(10);

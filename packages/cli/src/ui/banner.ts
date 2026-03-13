@@ -1,9 +1,9 @@
 /**
- * forgelore CLI banner and branding
+ * betterspec CLI banner and branding
  * Big gradient text logo, like Claude Code / Gemini CLI style.
  *
  * Animation: letters materialize from ember blocks, the full logo
- * gradient sweeps from Sedona warm to lore cool, then the tagline fades in.
+ * gradient sweeps from warm to cool, then the tagline fades in.
  */
 
 import boxen from "boxen";
@@ -16,26 +16,26 @@ import { colors } from "./theme.js";
 const SEDONA         = "#CC5500"; // deep Sedona red-rock
 const SEDONA_GLOW    = "#E07020"; // bright warm Sedona
 const SEDONA_SUNSET  = "#F5A050"; // sunset gold
-const LORE_VIOLET    = "#7C3AED"; // lore violet
-const LORE_CYAN      = "#06B6D4"; // lore cyan
+const BRAND_VIOLET   = "#7C3AED"; // brand violet
+const BRAND_CYAN     = "#06B6D4"; // brand cyan
 const DARK           = "#2A2A2A"; // cold / unlit
 const FLASH_WARM     = "#FFF0D0"; // warm-white impact flash
 
-// Brand gradient: Sedona warm → lore cool
-const forgeloreGradient = gradient([SEDONA, SEDONA_SUNSET, LORE_VIOLET, LORE_CYAN]);
-const brandGradient = forgeloreGradient;
+// Brand gradient: Sedona warm → cool
+const betterspecGradient = gradient([SEDONA, SEDONA_SUNSET, BRAND_VIOLET, BRAND_CYAN]);
+const brandGradient = betterspecGradient;
 
 // ─── Big Text Logo ───────────────────────────────────────────
 //
-// FIGlet-style block letters for "FORGELORE"
+// FIGlet-style block letters for "betterspec"
 // Font style: chunky/bold, 6 lines tall
 
 const LOGO_LINES = [
-  " ███████  ██████  ██████   ██████  ███████ ██       ██████  ██████  ███████ ",
-  " ██      ██    ██ ██   ██ ██       ██      ██      ██    ██ ██   ██ ██      ",
-  " █████   ██    ██ ██████  ██   ███ █████   ██      ██    ██ ██████  █████   ",
-  " ██      ██    ██ ██   ██ ██    ██ ██      ██      ██    ██ ██   ██ ██      ",
-  " ██       ██████  ██   ██  ██████  ███████ ███████  ██████  ██   ██ ███████ ",
+  " ██████  ███████ ████████ ████████ ███████ ██████  ███████ ██████  ███████  ██████ ",
+  " ██   ██ ██         ██       ██    ██      ██   ██ ██      ██   ██ ██      ██      ",
+  " ██████  █████      ██       ██    █████   ██████  ███████ ██████  █████   ██      ",
+  " ██   ██ ██         ██       ██    ██      ██   ██      ██ ██      ██      ██      ",
+  " ██████  ███████    ██       ██    ███████ ██   ██ ███████ ██      ███████  ██████ ",
 ];
 
 const TOTAL_LOGO_LINES = LOGO_LINES.length;
@@ -90,7 +90,7 @@ function lerpHex(a: string, b: string, t: number): string {
 
 /**
  * Color the logo at a given heat level.
- *   heat  — 0 (cold/dark) to 1 (full Sedona→lore gradient)
+ *   heat  — 0 (cold/dark) to 1 (full brand gradient)
  *   flash — 0–1, push colors toward warm-white
  */
 function colorLogo(heat: number, flash = 0): string[] {
@@ -104,7 +104,7 @@ function colorLogo(heat: number, flash = 0): string[] {
   }
 
   // Build the gradient stops, modulated by heat (dark → full color)
-  const stops = [SEDONA, SEDONA_SUNSET, LORE_VIOLET, LORE_CYAN].map((c) => {
+  const stops = [SEDONA, SEDONA_SUNSET, BRAND_VIOLET, BRAND_CYAN].map((c) => {
     const base = lerpHex(DARK, c, t);
     return f > 0 ? lerpHex(base, FLASH_WARM, f) : base;
   });
@@ -166,8 +166,8 @@ function writeFrame(lines: string[], sparks: Map<number, string>): void {
  */
 export function renderBanner(): string {
   const logo = colorLogo(1).join("\n");
-  const tagline = colors.muted("  forge knowledge, shape code");
-  const version = chalk.dim("  v0.2.3");
+  const tagline = colors.muted("  better specs, better code");
+  const version = chalk.dim("  v0.3.2");
   return `\n${logo}\n\n${tagline}${version}\n`;
 }
 
@@ -199,7 +199,7 @@ export async function renderAnimatedBanner(): Promise<void> {
     }
 
     // ── Phase 2: Heat-up ──────────────────────────────────────
-    // Logo warms from dark to full Sedona → lore gradient
+    // Logo warms from dark to full brand gradient
     const heatSteps = [0.12, 0.25, 0.45, 0.65, 0.85, 1.0];
     for (const heat of heatSteps) {
       process.stdout.write(moveUp(TOTAL_LOGO_LINES));
@@ -230,7 +230,7 @@ export async function renderAnimatedBanner(): Promise<void> {
     await sleep(150);
     console.log("");
     console.log(
-      colors.muted("  forge knowledge, shape code") + chalk.dim("  v0.2.3")
+      colors.muted("  better specs, better code") + chalk.dim("  v0.3.2")
     );
     console.log("");
   } finally {

@@ -1,5 +1,5 @@
 /**
- * forgelore sync command
+ * betterspec sync command
  * Sync with global spec repository
  */
 
@@ -10,7 +10,7 @@ import { existsSync, mkdirSync } from "node:fs";
 import {
   configExists,
   readConfig,
-} from "@forgelore/core";
+} from "@betterspec/core";
 import { renderBox } from "../ui/banner.js";
 import { colors, icons, gradients } from "../ui/theme.js";
 
@@ -23,7 +23,7 @@ export async function syncCommand(options?: {
   if (!(await configExists(projectRoot))) {
     console.log(
       renderBox(
-        `${icons.error} forgelore is not initialized.\nRun ${colors.primary("forgelore init")} first.`,
+        `${icons.error} betterspec is not initialized.\nRun ${colors.primary("betterspec init")} first.`,
         "Not Initialized",
         "#EF4444"
       )
@@ -37,7 +37,7 @@ export async function syncCommand(options?: {
     console.log(
       renderBox(
         `${icons.info} Spec mode is ${colors.primary("local")}. No global repo to sync.\n` +
-          `Run ${colors.primary("forgelore config mode local+global")} to enable global specs.`,
+          `Run ${colors.primary("betterspec config mode local+global")} to enable global specs.`,
         "No Sync Needed"
       )
     );
@@ -48,7 +48,7 @@ export async function syncCommand(options?: {
     console.log(
       renderBox(
         `${icons.error} Global spec source not configured.\n` +
-          `Run ${colors.primary("forgelore config global.source <path-or-url>")} to set it.`,
+          `Run ${colors.primary("betterspec config global.source <path-or-url>")} to set it.`,
         "Not Configured",
         "#EF4444"
       )

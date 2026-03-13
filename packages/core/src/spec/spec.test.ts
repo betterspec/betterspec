@@ -18,7 +18,7 @@ import {
 const TEST_ROOT = join(import.meta.dirname, "__test_spec__");
 
 beforeEach(async () => {
-  await mkdir(join(TEST_ROOT, "forgelore"), { recursive: true });
+  await mkdir(join(TEST_ROOT, "betterspec"), { recursive: true });
   await writeConfig(TEST_ROOT, createDefaultConfig("local"));
   await scaffoldSpecDirs(TEST_ROOT);
 });
@@ -30,19 +30,19 @@ afterEach(async () => {
 describe("path helpers", () => {
   it("getChangesDir returns correct path", () => {
     expect(getChangesDir(TEST_ROOT)).toBe(
-      join(TEST_ROOT, "forgelore", "changes")
+      join(TEST_ROOT, "betterspec", "changes")
     );
   });
 
   it("getArchiveDir returns correct path", () => {
     expect(getArchiveDir(TEST_ROOT)).toBe(
-      join(TEST_ROOT, "forgelore", "changes", "archive")
+      join(TEST_ROOT, "betterspec", "changes", "archive")
     );
   });
 
   it("getChangePath returns correct path", () => {
     expect(getChangePath(TEST_ROOT, "my-change")).toBe(
-      join(TEST_ROOT, "forgelore", "changes", "my-change")
+      join(TEST_ROOT, "betterspec", "changes", "my-change")
     );
   });
 });
@@ -52,10 +52,10 @@ describe("scaffoldSpecDirs", () => {
     expect(await fileExists(getChangesDir(TEST_ROOT))).toBe(true);
     expect(await fileExists(getArchiveDir(TEST_ROOT))).toBe(true);
     expect(
-      await fileExists(join(TEST_ROOT, "forgelore", "knowledge", "capabilities"))
+      await fileExists(join(TEST_ROOT, "betterspec", "knowledge", "capabilities"))
     ).toBe(true);
     expect(
-      await fileExists(join(TEST_ROOT, "forgelore", "knowledge", "decisions"))
+      await fileExists(join(TEST_ROOT, "betterspec", "knowledge", "decisions"))
     ).toBe(true);
   });
 });
@@ -75,7 +75,7 @@ describe("createChange", () => {
     expect(await fileExists(join(changePath, "specs", "scenarios.md"))).toBe(true);
     expect(await fileExists(join(changePath, "design.md"))).toBe(true);
     expect(await fileExists(join(changePath, "tasks.md"))).toBe(true);
-    expect(await fileExists(join(changePath, ".forge-meta.json"))).toBe(true);
+    expect(await fileExists(join(changePath, ".betterspec-meta.json"))).toBe(true);
   });
 
   it("writes the proposal content", async () => {

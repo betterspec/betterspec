@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://forgelore.dev/schemas/validation-result.schema.json",
-  "title": "forgelore Validation Result",
+  "$id": "https://betterspec.dev/schemas/validation-result.schema.json",
+  "title": "betterspec Validation Result",
   "description": "Structured output from a validation agent",
   "type": "object",
   "required": ["verdict", "confidence", "requirements", "issues", "suggestions"],

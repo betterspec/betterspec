@@ -1,5 +1,5 @@
 /**
- * forgelore core types
+ * betterspec core types
  * Provider-agnostic spec management types
  */
 
@@ -26,7 +26,7 @@ export interface EnforcementConfig {
   autoInjectContext: boolean;
 }
 
-export interface ForgeloreConfig {
+export interface betterspecConfig {
   $schema?: string;
   version: string;
   mode: SpecMode;
@@ -145,10 +145,10 @@ export interface ValidationResult {
 
 // --- Project ---
 
-export interface ForgeloreProject {
+export interface betterspecProject {
   root: string; // project root path
-  forgeloreDir: string; // forgelore/ directory path
-  config: ForgeloreConfig;
+  betterspecDir: string; // betterspec/ directory path
+  config: betterspecConfig;
   changes: Change[];
   knowledge: KnowledgeBase;
   globalKnowledge?: KnowledgeBase; // from global spec repo

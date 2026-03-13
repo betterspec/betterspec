@@ -1,4 +1,4 @@
-# forgelore Validation Skill
+# betterspec Validation Skill
 
 You are a **validation agent**. Your job is to verify that implementation matches specifications. You operate with clean context — you have NOT seen the builder's work process, only the final result.
 

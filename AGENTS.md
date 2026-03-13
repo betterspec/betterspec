@@ -1,13 +1,13 @@
-# AGENTS.md — forgelore
+# AGENTS.md — betterspec
 
 Instructions for AI agents working in this repository.
 
 ## Project Overview
 
-forgelore is a spec-driven development tool consisting of two packages in a Turborepo monorepo:
+betterspec is a spec-driven development tool consisting of two packages in a Turborepo monorepo:
 
-- `packages/core` — `@forgelore/core`: Provider-agnostic spec engine (TypeScript library)
-- `packages/cli` — `@forgelore/cli`: CLI tool with animated terminal UI
+- `packages/core` — `@betterspec/core`: Provider-agnostic spec engine (TypeScript library)
+- `packages/cli` — `@betterspec/cli`: CLI tool with animated terminal UI
 
 ## Tech Stack
 
@@ -35,16 +35,16 @@ Each command is a standalone async function in `packages/cli/src/commands/<name>
 5. Uses `renderBox()` and `renderSection()` for output
 
 ### Naming conventions
-- Types: PascalCase (`ForgeloreConfig`, `Change`, `TaskSummary`)
-- Functions: camelCase (`getForgeloreDir`, `readConfig`, `listChanges`)
-- Constants: UPPER_SNAKE_CASE (`FORGELORE_DIR`, `CONFIG_FILENAME`)
+- Types: PascalCase (`betterspecConfig`, `Change`, `TaskSummary`)
+- Functions: camelCase (`getbetterspecDir`, `readConfig`, `listChanges`)
+- Constants: UPPER_SNAKE_CASE (`betterspec_DIR`, `CONFIG_FILENAME`)
 - Files: kebab-case (`dispatch-build.ts`, `on-session-created.ts`)
 
 ### Internal metadata
-Change metadata is stored in `.forge-meta.json` inside each change directory.
+Change metadata is stored in `.betterspec-meta.json` inside each change directory.
 
 ### Directory convention
-The spec directory in user projects is `forgelore/` with config at `forgelore/forgelore.json`.
+The spec directory in user projects is `betterspec/` with config at `betterspec/betterspec.json`.
 
 ## Building
 
@@ -58,6 +58,6 @@ bun run build   # builds both packages via turbo
 - `packages/core/src/types/index.ts` — All shared types
 - `packages/core/src/config/index.ts` — Config management, path helpers
 - `packages/core/src/spec/index.ts` — Change CRUD operations
-- `packages/cli/src/ui/banner.ts` — Animated anvil+book banner
-- `packages/cli/src/ui/theme.ts` — Forge-themed colors and gradients
+- `packages/cli/src/ui/banner.ts` — Animated brand banner
+- `packages/cli/src/ui/theme.ts` — Brand colors and gradients
 - `packages/cli/src/index.ts` — CLI entry point with all command registrations

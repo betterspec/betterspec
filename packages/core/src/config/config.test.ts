@@ -8,7 +8,7 @@ import {
   configExists,
   getConfigValue,
   setConfigValue,
-  getForgeloreDir,
+  getbetterspecDir,
   getConfigPath,
   fileExists,
 } from "./index.js";
@@ -16,7 +16,7 @@ import {
 const TEST_ROOT = join(import.meta.dirname, "__test_config__");
 
 beforeEach(async () => {
-  await mkdir(join(TEST_ROOT, "forgelore"), { recursive: true });
+  await mkdir(join(TEST_ROOT, "betterspec"), { recursive: true });
 });
 
 afterEach(async () => {
@@ -33,16 +33,16 @@ describe("fileExists", () => {
   });
 });
 
-describe("getForgeloreDir", () => {
-  it("returns projectRoot/forgelore", () => {
-    expect(getForgeloreDir("/my/project")).toBe("/my/project/forgelore");
+describe("getbetterspecDir", () => {
+  it("returns projectRoot/betterspec", () => {
+    expect(getbetterspecDir("/my/project")).toBe("/my/project/betterspec");
   });
 });
 
 describe("getConfigPath", () => {
-  it("returns forgelore/forgelore.json", () => {
+  it("returns betterspec/betterspec.json", () => {
     expect(getConfigPath("/my/project")).toBe(
-      "/my/project/forgelore/forgelore.json"
+      "/my/project/betterspec/betterspec.json"
     );
   });
 });
@@ -74,8 +74,8 @@ describe("writeConfig / readConfig", () => {
 
   it("throws if config does not exist", async () => {
     const emptyRoot = join(TEST_ROOT, "empty");
-    await mkdir(join(emptyRoot, "forgelore"), { recursive: true });
-    await expect(readConfig(emptyRoot)).rejects.toThrow("No forgelore config");
+    await mkdir(join(emptyRoot, "betterspec"), { recursive: true });
+    await expect(readConfig(emptyRoot)).rejects.toThrow("No betterspec config");
   });
 });
 

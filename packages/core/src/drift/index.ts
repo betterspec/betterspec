@@ -11,7 +11,7 @@
 
 import { readFile, readdir, stat } from "node:fs/promises";
 import { join, relative } from "node:path";
-import { fileExists, getForgeloreDir } from "../config/index.js";
+import { fileExists, getbetterspecDir } from "../config/index.js";
 import { listChanges, readChange, readChangeFile, getArchiveDir } from "../spec/index.js";
 import { listCapabilities } from "../knowledge/index.js";
 import type { DriftItem, DriftReport, DriftSeverity, Change } from "../types/index.js";
@@ -63,7 +63,7 @@ async function detectStaleSpecs(
         type: "stale-spec",
         severity: "info",
         spec: change.name,
-        message: `"${change.name}" proposed ${daysSinceUpdate} days ago — consider running \`forgelore clarify ${change.name}\``,
+        message: `"${change.name}" proposed ${daysSinceUpdate} days ago — consider running \`betterspec clarify ${change.name}\``,
       });
     }
 
@@ -202,8 +202,8 @@ async function detectStaleKnowledge(
   projectRoot: string,
   items: DriftItem[]
 ): Promise<void> {
-  const forgeloreDir = getForgeloreDir(projectRoot);
-  const knowledgeDir = join(forgeloreDir, "knowledge");
+  const betterspecDir = getbetterspecDir(projectRoot);
+  const knowledgeDir = join(betterspecDir, "knowledge");
 
   const knowledgeFiles = [
     { path: "architecture.md", name: "Architecture" },

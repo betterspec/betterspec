@@ -1,17 +1,17 @@
 /**
- * forgelore configuration management
- * Handles reading/writing forgelore.json config files
+ * betterspec configuration management
+ * Handles reading/writing betterspec.json config files
  */
 
 import { readFile, writeFile, access } from "node:fs/promises";
 import { join } from "node:path";
-import type { ForgeloreConfig, SpecMode } from "../types/index.js";
+import type { betterspecConfig, SpecMode } from "../types/index.js";
 
-const CONFIG_FILENAME = "forgelore.json";
-const FORGELORE_DIR = "forgelore";
+const CONFIG_FILENAME = "betterspec.json";
+const betterspec_DIR = "betterspec";
 
-const DEFAULT_CONFIG: ForgeloreConfig = {
-  $schema: "https://forgelore.dev/config.json",
+const DEFAULT_CONFIG: betterspecConfig = {
+  $schema: "https://betterspec.dev/config.json",
   version: "0.1.0",
   mode: "local",
   orchestration: {
@@ -36,35 +36,35 @@ export async function fileExists(path: string): Promise<boolean> {
   }
 }
 
-export function getForgeloreDir(projectRoot: string): string {
-  return join(projectRoot, FORGELORE_DIR);
+export function getbetterspecDir(projectRoot: string): string {
+  return join(projectRoot, betterspec_DIR);
 }
 
 export function getConfigPath(projectRoot: string): string {
-  return join(getForgeloreDir(projectRoot), CONFIG_FILENAME);
+  return join(getbetterspecDir(projectRoot), CONFIG_FILENAME);
 }
 
-export async function readConfig(projectRoot: string): Promise<ForgeloreConfig> {
+export async function readConfig(projectRoot: string): Promise<betterspecConfig> {
   const configPath = getConfigPath(projectRoot);
   if (!(await fileExists(configPath))) {
     throw new Error(
-      `No forgelore config found at ${configPath}. Run 'forgelore init' to initialize.`
+      `No betterspec config found at ${configPath}. Run 'betterspec init' to initialize.`
     );
   }
 
   const raw = await readFile(configPath, "utf-8");
-  return JSON.parse(raw) as ForgeloreConfig;
+  return JSON.parse(raw) as betterspecConfig;
 }
 
 export async function writeConfig(
   projectRoot: string,
-  config: ForgeloreConfig
+  config: betterspecConfig
 ): Promise<void> {
   const configPath = getConfigPath(projectRoot);
   await writeFile(configPath, JSON.stringify(config, null, 2) + "\n", "utf-8");
 }
 
-export function createDefaultConfig(mode: SpecMode): ForgeloreConfig {
+export function createDefaultConfig(mode: SpecMode): betterspecConfig {
   return { ...DEFAULT_CONFIG, mode };
 }
 

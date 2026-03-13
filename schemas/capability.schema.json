@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://forgelore.dev/schemas/capability.schema.json",
-  "title": "forgelore Capability",
+  "$id": "https://betterspec.dev/schemas/capability.schema.json",
+  "title": "betterspec Capability",
   "description": "A capability extracted from an archived change",
   "type": "object",
   "required": ["id", "name", "description", "sourceChange", "archivedAt", "files"],

@@ -19,7 +19,7 @@ import type { Capability, Decision } from "../types/index.js";
 const TEST_ROOT = join(import.meta.dirname, "__test_knowledge__");
 
 beforeEach(async () => {
-  await mkdir(join(TEST_ROOT, "forgelore"), { recursive: true });
+  await mkdir(join(TEST_ROOT, "betterspec"), { recursive: true });
 });
 
 afterEach(async () => {
