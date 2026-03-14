@@ -7,6 +7,28 @@
 
 export type SpecMode = "local" | "local+global" | "global";
 
+export type ToolName =
+  | "opencode"
+  | "claude-code"
+  | "gemini-cli"
+  | "cursor"
+  | "codex"
+  | "generic";
+
+export type SkillsMode = "local" | "global" | "both";
+
+export interface SkillsConfig {
+  mode: SkillsMode;
+}
+
+export interface ToolCapabilities {
+  agents: boolean;
+  subagents: boolean;
+  hooks: boolean;
+  skills: boolean;
+  memory: boolean;
+}
+
 export interface GlobalSpecConfig {
   source: string; // filesystem path or GitHub URL
   path: string; // resolved local path (cache dir for remote)
@@ -30,9 +52,42 @@ export interface betterspecConfig {
   $schema?: string;
   version: string;
   mode: SpecMode;
+  tool?: ToolName;
+  skills?: SkillsConfig;
   global?: GlobalSpecConfig;
   orchestration: OrchestrationConfig;
   enforcement: EnforcementConfig;
+}
+
+// --- Adapter ---
+
+export interface ScaffoldResult {
+  filesCreated: string[];
+  configChanges: string[];
+}
+
+export interface ToolAdapter {
+  name: ToolName;
+  displayName: string;
+  capabilities: ToolCapabilities;
+  promptConfig?(projectRoot: string): Promise<Record<string, unknown>>;
+  scaffold(
+    projectRoot: string,
+    config: Record<string, unknown>
+  ): Promise<ScaffoldResult>;
+}
+
+// --- Agent Roles ---
+
+export type AgentRole = "planner" | "builder" | "validator" | "archivist";
+
+export interface AgentRoleConfig {
+  role: AgentRole;
+  name: string;
+  description: string;
+  defaultModel: string;
+  tools: string[];
+  temperature: number;
 }
 
 // --- Spec ---

@@ -16,6 +16,9 @@ export {
   setConfigValue,
   getbetterspecDir,
   getConfigPath,
+  getLocalSkillsDir,
+  getGlobalSkillsDir,
+  getGlobalBetterspecDir,
   fileExists,
 } from "./config/index.js";
 
@@ -29,11 +32,29 @@ export {
   updateTaskStatus,
   archiveChange,
   scaffoldSpecDirs,
-  scaffoldSkill,
   getChangesDir,
   getArchiveDir,
   getChangePath,
 } from "./spec/index.js";
+
+// Skills
+export {
+  scaffoldSkills,
+  SKILL_ENTRIES,
+} from "./skills/index.js";
+
+// Agents
+export {
+  scaffoldAgents,
+  AGENT_ROLES,
+} from "./agents/index.js";
+
+// Adapters
+export {
+  getAdapter,
+  listAdapters,
+  listAdapterNames,
+} from "./adapters/index.js";
 
 // Knowledge base
 export {

@@ -33,86 +33,10 @@ export async function scaffoldSpecDirs(projectRoot: string): Promise<void> {
 }
 
 /**
- * Scaffold the betterspec skill — agent-agnostic instructions for using
- * the betterspec CLI. This goes into the project root so any agent system
- * (OpenCode, Claude Code, Cursor, etc.) can discover it.
+ * @deprecated Use scaffoldSkills from ../skills/index.js instead.
+ * Kept temporarily for backward compatibility.
  */
-export async function scaffoldSkill(projectRoot: string): Promise<void> {
-  const skillDir = join(projectRoot, "skills", "betterspec");
-  await mkdir(skillDir, { recursive: true });
-
-  const skillPath = join(skillDir, "SKILL.md");
-  if (await fileExists(skillPath)) {
-    return; // Don't overwrite existing skill
-  }
-
-  const content = `# betterspec — Spec-Driven Development
-
-This project uses **betterspec** for spec-driven development. All significant changes
-should go through the spec workflow before implementation begins.
-
-## When to Use betterspec
-
-- Before starting any new feature or significant change
-- When requirements are unclear and need to be formalized
-- When multiple agents or developers will collaborate on a change
-- Before refactoring that touches multiple modules
-
-## CLI Commands
-
-| Command | Purpose |
-|---------|---------|
-| \`betterspec status\` | Show project status dashboard — start here |
-| \`betterspec list\` | List all changes and their states |
-| \`betterspec propose "idea"\` | Create a new change proposal |
-| \`betterspec clarify <change>\` | Refine requirements interactively |
-| \`betterspec verify <change>\` | Check spec completeness (structural) |
-| \`betterspec diff <change>\` | Show drift between specs and code |
-| \`betterspec archive <change>\` | Archive a completed change, extract knowledge |
-| \`betterspec doctor\` | Health check for the betterspec setup |
-| \`betterspec capabilities\` | List all registered capabilities |
-| \`betterspec config [key] [value]\` | Get or set configuration |
-
-## Workflow
-
-1. **Propose** — \`betterspec propose "add user authentication"\`
-2. **Plan** — Fill in \`betterspec/changes/<name>/specs/requirements.md\`, \`scenarios.md\`, \`design.md\`, and \`tasks.md\`
-3. **Verify** — \`betterspec verify <name>\` to check spec completeness
-4. **Build** — Implement tasks, updating status as you go
-5. **Validate** — Review implementation against specs
-6. **Archive** — \`betterspec archive <name>\` to capture knowledge
-
-## Key Directories
-
-\`\`\`
-betterspec/
-├── betterspec.json              # Configuration
-├── changes/                    # Active change specs
-│   └── <change-name>/
-│       ├── proposal.md         # Original idea
-│       ├── specs/
-│       │   ├── requirements.md # What to build
-│       │   └── scenarios.md    # How it should work
-│       ├── design.md           # Technical approach
-│       └── tasks.md            # Atomic task breakdown
-└── knowledge/                  # Project knowledge base
-    ├── architecture.md         # System architecture
-    ├── patterns.md             # Code patterns and conventions
-    ├── glossary.md             # Domain terminology
-    ├── capabilities/           # Extracted capabilities (JSON)
-    └── decisions/              # Architecture decision records
-\`\`\`
-
-## Rules
-
-- **Spec first.** Do not start coding without a spec for non-trivial changes.
-- **Follow patterns.** Read \`betterspec/knowledge/patterns.md\` before writing code.
-- **Update tasks.** Mark task status as you work (\`pending\` → \`in-progress\` → \`implemented\`).
-- **Knowledge compounds.** After completing a change, archive it to capture capabilities and update the knowledge base.
-`;
-
-  await writeFile(skillPath, content, "utf-8");
-}
+export { scaffoldSkills as scaffoldSkill } from "../skills/index.js";
 
 // --- Create ---
 

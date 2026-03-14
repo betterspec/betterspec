@@ -5,7 +5,8 @@
 
 import { readFile, writeFile, access } from "node:fs/promises";
 import { join } from "node:path";
-import type { betterspecConfig, SpecMode } from "../types/index.js";
+import { homedir } from "node:os";
+import type { betterspecConfig, SpecMode, ToolName, SkillsMode } from "../types/index.js";
 
 const CONFIG_FILENAME = "betterspec.json";
 const betterspec_DIR = "betterspec";
@@ -44,6 +45,18 @@ export function getConfigPath(projectRoot: string): string {
   return join(getbetterspecDir(projectRoot), CONFIG_FILENAME);
 }
 
+export function getLocalSkillsDir(projectRoot: string): string {
+  return join(projectRoot, "skills");
+}
+
+export function getGlobalSkillsDir(): string {
+  return join(homedir(), ".betterspec", "skills");
+}
+
+export function getGlobalBetterspecDir(): string {
+  return join(homedir(), ".betterspec");
+}
+
 export async function readConfig(projectRoot: string): Promise<betterspecConfig> {
   const configPath = getConfigPath(projectRoot);
   if (!(await fileExists(configPath))) {
@@ -64,8 +77,17 @@ export async function writeConfig(
   await writeFile(configPath, JSON.stringify(config, null, 2) + "\n", "utf-8");
 }
 
-export function createDefaultConfig(mode: SpecMode): betterspecConfig {
-  return { ...DEFAULT_CONFIG, mode };
+export function createDefaultConfig(
+  mode: SpecMode,
+  tool?: ToolName,
+  skillsMode?: SkillsMode
+): betterspecConfig {
+  return {
+    ...DEFAULT_CONFIG,
+    mode,
+    ...(tool && { tool }),
+    ...(skillsMode && { skills: { mode: skillsMode } }),
+  };
 }
 
 export async function configExists(projectRoot: string): Promise<boolean> {

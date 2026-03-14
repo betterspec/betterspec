@@ -1,0 +1,1 @@
+{"mode":"local","enforcement":{"requireSpecForChanges":true,"warnOnUnspeccedEdits":true,"blockArchiveOnDrift":true,"autoInjectContext":true},"orchestration":{"defaultMode":"sequential","maxRetries":3,"parallelTracks":3}}
