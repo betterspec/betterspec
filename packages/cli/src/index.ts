@@ -17,6 +17,12 @@ import { doctorCommand } from "./commands/doctor.js";
 import { capabilitiesCommand } from "./commands/capabilities.js";
 import { configCommand } from "./commands/config.js";
 import { diffCommand } from "./commands/diff.js";
+import { digestCommand } from "./commands/digest.js";
+import { searchCommand } from "./commands/search.js";
+import { impactCommand } from "./commands/impact.js";
+import { onboardCommand } from "./commands/onboard.js";
+import { explainCommand } from "./commands/explain.js";
+import { serveCommand } from "./commands/serve.js";
 import { renderAnimatedBanner } from "./ui/banner.js";
 
 const program = new Command();
@@ -117,6 +123,53 @@ program
   .description("Show drift between specs and implementation")
   .option("-C, --cwd <path>", "Working directory")
   .action((change, opts) => diffCommand(change, { cwd: opts.cwd }));
+
+// --- AI-powered commands ---
+
+// --- digest ---
+program
+  .command("digest")
+  .description("Generate a knowledge digest from recent changes")
+  .option("-n, --count <count>", "Number of recent changes to include", "5")
+  .option("-o, --output <file>", "Write digest to file")
+  .option("-C, --cwd <path>", "Working directory")
+  .action((opts) => digestCommand({ count: parseInt(opts.count), output: opts.output, cwd: opts.cwd }));
+
+// --- search ---
+program
+  .command("search <query>")
+  .description("Search the project knowledge base")
+  .option("-C, --cwd <path>", "Working directory")
+  .action((query, opts) => searchCommand(query, { cwd: opts.cwd }));
+
+// --- impact ---
+program
+  .command("impact <path>")
+  .description("Analyze impact of changing a file or directory")
+  .option("-C, --cwd <path>", "Working directory")
+  .action((path, opts) => impactCommand(path, { cwd: opts.cwd }));
+
+// --- onboard ---
+program
+  .command("onboard")
+  .description("Generate a project onboarding guide")
+  .option("-o, --output <file>", "Write guide to file")
+  .option("-C, --cwd <path>", "Working directory")
+  .action((opts) => onboardCommand({ output: opts.output, cwd: opts.cwd }));
+
+// --- explain ---
+program
+  .command("explain <change>")
+  .description("Explain the full lifecycle of a change")
+  .option("-C, --cwd <path>", "Working directory")
+  .action((change, opts) => explainCommand(change, { cwd: opts.cwd }));
+
+// --- serve ---
+program
+  .command("serve")
+  .description("Start the betterspec MCP server")
+  .option("-C, --cwd <path>", "Working directory")
+  .action((opts) => serveCommand({ cwd: opts.cwd }));
 
 // Default: animated banner + help
 program.action(async () => {

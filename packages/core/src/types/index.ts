@@ -48,16 +48,50 @@ export interface EnforcementConfig {
   autoInjectContext: boolean;
 }
 
+export type AIProvider = "auto" | "tool" | "anthropic" | "openai";
+
+export interface AIConfig {
+  provider: AIProvider;
+  model: string; // "auto" or specific model ID
+  autoDigest: boolean;
+  contextBudget: number; // estimated tokens
+}
+
 export interface betterspecConfig {
   $schema?: string;
   version: string;
   mode: SpecMode;
   tool?: ToolName;
   skills?: SkillsConfig;
+  ai?: AIConfig;
   global?: GlobalSpecConfig;
   orchestration: OrchestrationConfig;
   enforcement: EnforcementConfig;
 }
+
+// --- AI ---
+
+export interface AIRunOptions {
+  systemPrompt?: string;
+  maxTokens?: number;
+  temperature?: number;
+  format?: "text" | "json";
+}
+
+export interface AIResponse {
+  text: string;
+  model?: string;
+  usage?: { inputTokens: number; outputTokens: number };
+  cost?: number;
+}
+
+export interface AIRunner {
+  name: string;
+  available(): Promise<boolean>;
+  run(prompt: string, options?: AIRunOptions): Promise<AIResponse>;
+}
+
+export type AIContextScope = "full" | "digest" | "search" | "impact";
 
 // --- Adapter ---
 
