@@ -9,6 +9,7 @@ export { Logo, Tagline } from "./Logo.js";
 export { BetterspecBox, Section } from "./Box.js";
 export { Table, ProgressBar } from "./Table.js";
 export { Spinner } from "./Spinner.js";
+export { Confirm, TextInput, Select } from "./Interactive.js";
 
 // Re-export raw INK primitives for direct use in commands
 // (some commands need InkBox for low-level layout)
