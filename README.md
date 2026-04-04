@@ -24,6 +24,48 @@ npm install -g @betterspec/cli
 bun add -g @betterspec/cli
 ```
 
+## Install for your AI coding tool
+
+betterspec works with any AI coding tool. Choose yours below:
+
+### OpenCode
+
+Add to `opencode.json`:
+```json
+{
+  "plugin": ["betterspec@git+https://github.com/betterspec/betterspec.git"]
+}
+```
+Restart OpenCode. [Full setup docs](.opencode/INSTALL.md)
+
+### Claude Code
+
+```bash
+/plugin marketplace add betterspec/betterspec-marketplace
+/plugin install betterspec@betterspec-marketplace
+```
+
+Or install from the official Claude marketplace (coming soon).
+
+### Cursor
+
+In Cursor Agent chat:
+```
+/add-plugin betterspec
+```
+or search for "betterspec" in the plugin marketplace.
+
+### Codex
+
+Tell Codex to fetch the install instructions:
+```
+Fetch and follow instructions from https://raw.githubusercontent.com/betterspec/betterspec/refs/heads/main/.codex/INSTALL.md
+```
+
+### Other tools
+
+betterspec skills are plain markdown files in the `skills/` directory. Any AI tool that supports loading external skills can use them. Point your tool's skill loader to the `skills/` directory or ask it to fetch from `https://github.com/betterspec/betterspec/tree/main/skills`.
+
 ## Quick Start
 
 ```bash
@@ -121,7 +163,27 @@ betterspec ships with **generic agent skills** in the `skills/` directory. These
 
 ### OpenCode Integration
 
-For [OpenCode](https://opencode.ai) users, the companion plugin [`opencode-betterspec`](https://github.com/betterspec/opencode-betterspec) provides multi-agent orchestration with dedicated builder, validator, planner, and archivist agents.
+For [OpenCode](https://opencode.ai) users, add betterspec to your `opencode.json`:
+
+```json
+{
+  "plugin": ["betterspec@git+https://github.com/betterspec/betterspec.git"]
+}
+```
+
+See [`.opencode/INSTALL.md`](.opencode/INSTALL.md) for full setup instructions.
+
+### Codex Integration
+
+For OpenAI Codex users, see [`.codex/INSTALL.md`](.codex/INSTALL.md).
+
+### Claude Code, Cursor, Crush
+
+See `docs/` for platform-specific setup guides:
+
+- [docs/README.claude-code.md](docs/README.claude-code.md)
+- [docs/README.cursor.md](docs/README.cursor.md)
+- [docs/README.crush.md](docs/README.crush.md)
 
 ## Development
 
