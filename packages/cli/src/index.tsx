@@ -23,7 +23,10 @@ import { impactCommand } from "./commands/impact.js";
 import { onboardCommand } from "./commands/onboard.js";
 import { explainCommand } from "./commands/explain.js";
 import { serveCommand } from "./commands/serve.js";
-import { renderAnimatedBanner } from "./ui/banner.js";
+import { render } from "ink";
+import React from "react";
+import { Logo, Tagline } from "./ui/ink/index.js";
+import { Box, Text } from "ink";
 
 const program = new Command();
 
@@ -37,7 +40,19 @@ program
   .command("init")
   .description("Initialize betterspec in the current project")
   .option("-C, --cwd <path>", "Working directory")
-  .action((opts) => initCommand({ cwd: opts.cwd }));
+  .option("--mode <mode>", "Spec mode: local, local+global, global")
+  .option("--tool <tool>", "AI tool: opencode, codex, claude-code, cursor, gemini, generic")
+  .option("--skills <mode>", "Skills mode: local, global, both")
+  .option("--global-source <source>", "Global spec source (path or GitHub URL)")
+  .action((opts) =>
+    initCommand({
+      cwd: opts.cwd,
+      mode: opts.mode,
+      tool: opts.tool,
+      skills: opts.skills,
+      "global-source": opts.globalSource,
+    })
+  );
 
 // --- propose ---
 program
@@ -173,8 +188,19 @@ program
 
 // Default: animated banner + help
 program.action(async () => {
-  await renderAnimatedBanner();
-  program.outputHelp();
+  render(
+    <Box flexDirection="column" padding={1}>
+      <Logo />
+      <Box paddingTop={1}>
+        <Tagline version="0.4.0" />
+      </Box>
+      <Box paddingTop={1}>
+        <Text dimColor>Run </Text>
+        <Text hex="#CC5500">betterspec --help</Text>
+        <Text dimColor> for all commands.</Text>
+      </Box>
+    </Box>
+  );
 });
 
 program.parse();

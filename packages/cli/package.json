@@ -1,6 +1,6 @@
 {
   "name": "@betterspec/cli",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Beautiful CLI for spec-driven development — better specs, better code",
   "type": "module",
   "bin": {
@@ -19,18 +19,10 @@
   "dependencies": {
     "@betterspec/core": "^0.3.0",
     "commander": "^13.1.0",
-    "chalk": "^5.4.0",
-    "gradient-string": "^3.0.0",
-    "ora": "^8.2.0",
-    "boxen": "^8.0.0",
-    "cli-table3": "^0.6.5",
-    "figures": "^6.1.0",
-    "@clack/prompts": "^0.10.0",
     "ink": "^6.8.0",
     "react": "^19.0.0"
   },
   "devDependencies": {
-    "@types/gradient-string": "^1.1.6",
     "@types/react": "^19.0.0",
     "tsup": "^8.4.0",
     "typescript": "^5.8.0",
