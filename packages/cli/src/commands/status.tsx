@@ -12,7 +12,7 @@ import {
   listCapabilities,
   getProjectSummary,
 } from "@betterspec/core";
-import { Logo, Tagline, Box as BetterspecBox, Section, Table, ProgressBar } from "../ui/ink/index.js";
+import { Logo, Tagline, BetterspecBox, Section, Table, ProgressBar } from "../ui/ink/index.js";
 import { colors, statusColor } from "../ui/ink/index.js";
 
 interface StatusDashboardProps {

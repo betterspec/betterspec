@@ -6,9 +6,13 @@
  */
 
 export { Logo, Tagline } from "./Logo.js";
-export { BetterspecBox as Box, Section } from "./Box.js";
+export { BetterspecBox, Section } from "./Box.js";
 export { Table, ProgressBar } from "./Table.js";
 export { Spinner } from "./Spinner.js";
+
+// Re-export raw INK primitives for direct use in commands
+// (some commands need InkBox for low-level layout)
+export { Box } from "ink";
 
 // Color helpers — hex colors mapped to INK-compatible format
 // Usage: <Text hex={colors.primary}>
