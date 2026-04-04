@@ -77,7 +77,7 @@ describe("generic adapter scaffold", () => {
 });
 
 describe("opencode adapter scaffold", () => {
-  it("scaffolds agent files and plugin file", async () => {
+  it("scaffolds agent files and config changes for global plugin", async () => {
     const adapter = await getAdapter("opencode");
     const result = await adapter.scaffold(TEST_ROOT, {});
 
@@ -90,9 +90,9 @@ describe("opencode adapter scaffold", () => {
     expect(await fileExists(join(agentDir, "betterspec-validator.md"))).toBe(true);
     expect(await fileExists(join(agentDir, "betterspec-archivist.md"))).toBe(true);
 
-    // Plugin file
-    const pluginPath = join(TEST_ROOT, ".opencode", "plugins", "betterspec.ts");
-    expect(await fileExists(pluginPath)).toBe(true);
+    // Config changes direct users to global plugin
+    expect(result.configChanges.length).toBeGreaterThan(0);
+    expect(result.configChanges.some((c) => c.includes("opencode.json") || c.includes("plugin"))).toBe(true);
   });
 });
 
