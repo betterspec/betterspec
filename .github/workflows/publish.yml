@@ -40,9 +40,15 @@ jobs:
           sed -i "s|\"workspace:\*\"|\"^${CORE_VERSION}\"|g" packages/cli/package.json
           sed -i "s|\"workspace:\*\"|\"^${CORE_VERSION}\"|g" packages/mcp/package.json
 
-      # Trusted publishing via OIDC — no NPM_TOKEN needed
-      # Use npx to run the latest npm (trusted publishing requires npm 11.5.1+)
-      # Packages publish in dependency order: core → mcp → cli
+      # Write NPM token to .npmrc so npm uses it directly (not OIDC)
+      - name: Configure npm auth
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      # Upgrade npm — trusted publishing requires npm 11.5.1+
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
+      # Publish all packages — NPM_TOKEN handles auth for new packages (OIDC doesn't support new packages)
       - name: Publish @betterspec/core
         working-directory: packages/core
         run: npx npm@latest publish --access public
