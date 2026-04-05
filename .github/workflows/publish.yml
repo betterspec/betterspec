@@ -44,19 +44,19 @@ jobs:
       - name: Configure npm auth
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
-      # Upgrade npm — trusted publishing requires npm 11.5.1+
+      # Use npx to run latest npm (trusted publishing requires npm 11.5.1+)
       - name: Upgrade npm
-        run: npm install -g npm@latest
+        run: npx npm@latest --version
 
       # Publish all packages — NPM_TOKEN handles auth for new packages (OIDC doesn't support new packages)
       - name: Publish @betterspec/core
         working-directory: packages/core
-        run: npx npm@latest publish --access public
+        run: npx npm@latest publish --access public --registry https://registry.npmjs.org
 
       - name: Publish @betterspec/mcp
         working-directory: packages/mcp
-        run: npx npm@latest publish --access public
+        run: npx npm@latest publish --access public --registry https://registry.npmjs.org
 
       - name: Publish @betterspec/cli
         working-directory: packages/cli
-        run: npx npm@latest publish --access public
+        run: npx npm@latest publish --access public --registry https://registry.npmjs.org
