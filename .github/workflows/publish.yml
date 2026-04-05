@@ -40,20 +40,16 @@ jobs:
           sed -i "s|\"workspace:\*\"|\"^${CORE_VERSION}\"|g" packages/cli/package.json
           sed -i "s|\"workspace:\*\"|\"^${CORE_VERSION}\"|g" packages/mcp/package.json
 
-      # Write NPM token to .npmrc so npm uses it directly (not OIDC)
-      - name: Configure npm auth
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+      # Trusted publishing via OIDC — no NPM_TOKEN needed
+      # All three packages are now bootstrapped; OIDC handles all future publishes
+      - name: Publish @betterspec/core
+        working-directory: packages/core
+        run: npx npm@latest publish --access public --registry https://registry.npmjs.org
 
-      # Use npx to run latest npm (trusted publishing requires npm 11.5.1+)
-      - name: Upgrade npm
-        run: npx npm@latest --version
-
-      # Publish mcp (core is already published via OIDC from a previous run)
       - name: Publish @betterspec/mcp
         working-directory: packages/mcp
         run: npx npm@latest publish --access public --registry https://registry.npmjs.org
 
-      # Publish cli (depends on core@0.4.0 which is already published)
       - name: Publish @betterspec/cli
         working-directory: packages/cli
         run: npx npm@latest publish --access public --registry https://registry.npmjs.org
