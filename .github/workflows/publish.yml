@@ -27,10 +27,12 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Build
+      - name: Build packages
         run: |
-          rm -rf packages/*/dist .turbo
-          bun run build --no-cache
+          rm -rf packages/*/dist
+          cd packages/core && bun run build && cd ../..
+          cd packages/mcp && bun run build && cd ../..
+          cd packages/cli && bun run build && cd ../..
 
       - name: Run tests
         run: bun run test
