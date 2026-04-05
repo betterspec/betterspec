@@ -33,6 +33,10 @@ jobs:
       - name: Run tests
         run: bun run test
 
+      # Upgrade npm — trusted publishing requires npm 11.5.1+
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
       # Resolve workspace:* to the actual core version before publishing dependent packages
       - name: Resolve workspace dependencies
         run: |
