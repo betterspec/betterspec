@@ -33,7 +33,7 @@ const program = new Command();
 program
   .name("betterspec")
   .description("Spec-driven development for AI-assisted teams — better specs, better code")
-  .version("0.4.0");
+  .version("0.4.1");
 
 // --- init ---
 program
