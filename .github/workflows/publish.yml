@@ -41,15 +41,8 @@ jobs:
           sed -i "s|\"workspace:\*\"|\"^${CORE_VERSION}\"|g" packages/mcp/package.json
 
       # Trusted publishing via OIDC — no NPM_TOKEN needed
-      # All three packages are now bootstrapped; OIDC handles all future publishes
-      - name: Publish @betterspec/core
-        working-directory: packages/core
-        run: npx npm@latest publish --access public --registry https://registry.npmjs.org
-
-      - name: Publish @betterspec/mcp
-        working-directory: packages/mcp
-        run: npx npm@latest publish --access public --registry https://registry.npmjs.org
-
+      # core and mcp are already bootstrapped; only cli needs publishing for v0.4.0
+      # Future releases: add all three packages back
       - name: Publish @betterspec/cli
         working-directory: packages/cli
         run: npx npm@latest publish --access public --registry https://registry.npmjs.org
