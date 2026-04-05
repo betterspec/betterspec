@@ -30,7 +30,7 @@ jobs:
       - name: Build
         run: |
           rm -rf packages/*/dist .turbo
-          bun run build --force
+          bun run build --no-cache
 
       - name: Run tests
         run: bun run test
