@@ -28,7 +28,9 @@ jobs:
         run: bun install
 
       - name: Build
-        run: bun run build --force
+        run: |
+          rm -rf packages/*/dist .turbo
+          bun run build --force
 
       - name: Run tests
         run: bun run test
