@@ -48,15 +48,12 @@ jobs:
       - name: Upgrade npm
         run: npx npm@latest --version
 
-      # Publish all packages — NPM_TOKEN handles auth for new packages (OIDC doesn't support new packages)
-      - name: Publish @betterspec/core
-        working-directory: packages/core
-        run: npx npm@latest publish --access public --registry https://registry.npmjs.org
-
+      # Publish mcp (core is already published via OIDC from a previous run)
       - name: Publish @betterspec/mcp
         working-directory: packages/mcp
         run: npx npm@latest publish --access public --registry https://registry.npmjs.org
 
+      # Publish cli (depends on core@0.4.0 which is already published)
       - name: Publish @betterspec/cli
         working-directory: packages/cli
         run: npx npm@latest publish --access public --registry https://registry.npmjs.org
