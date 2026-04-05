@@ -33,10 +33,6 @@ jobs:
       - name: Run tests
         run: bun run test
 
-      # Upgrade npm — trusted publishing requires npm 11.5.1+
-      - name: Upgrade npm
-        run: npm install -g npm@latest
-
       # Resolve workspace:* to the actual core version before publishing dependent packages
       - name: Resolve workspace dependencies
         run: |
@@ -45,15 +41,16 @@ jobs:
           sed -i "s|\"workspace:\*\"|\"^${CORE_VERSION}\"|g" packages/mcp/package.json
 
       # Trusted publishing via OIDC — no NPM_TOKEN needed
+      # Use npx to run the latest npm (trusted publishing requires npm 11.5.1+)
       # Packages publish in dependency order: core → mcp → cli
       - name: Publish @betterspec/core
         working-directory: packages/core
-        run: npm publish --access public
+        run: npx npm@latest publish --access public
 
       - name: Publish @betterspec/mcp
         working-directory: packages/mcp
-        run: npm publish --access public
+        run: npx npm@latest publish --access public
 
       - name: Publish @betterspec/cli
         working-directory: packages/cli
-        run: npm publish --access public
+        run: npx npm@latest publish --access public
