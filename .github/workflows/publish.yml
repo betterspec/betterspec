@@ -12,8 +12,6 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    outputs:
-      needs_publish: ${{ steps.changes.outputs.needs_publish }}
     steps:
       - uses: actions/checkout@v4
 
@@ -42,41 +40,51 @@ jobs:
           sed -i "s|\"workspace:\*\"|\"^${CORE_VERSION}\"|g" packages/cli/package.json
           sed -i "s|\"workspace:\*\"|\"^${CORE_VERSION}\"|g" packages/mcp/package.json
 
-      # Check which packages need publishing (only if version differs from npm)
-      - id: changes
+      # Check which packages need publishing
+      - name: Check core
+        id: check_core
         run: |
-          for pkg in core cli mcp; do
-            LOCAL_VERSION=$(node -p "require('./packages/${pkg}/package.json').version")
-            REMOTE_VERSION=$(npx npm@latest view @betterspec/${pkg} version 2>/dev/null || echo "NOT_FOUND")
-            echo "  @betterspec/${pkg}: local=${LOCAL_VERSION} remote=${REMOTE_VERSION}"
-            if [ "$LOCAL_VERSION" != "$REMOTE_VERSION" ]; then
-              echo "NEEDS_${pkg}=true" >> $GITHUB_OUTPUT
-            fi
-          done
+          LOCAL=$(node -p "require('./packages/core/package.json').version")
+          REMOTE=$(npx npm@latest view @betterspec/core version 2>/dev/null || echo "NOT_FOUND")
+          echo "core: local=$LOCAL remote=$REMOTE"
+          if [ "$LOCAL" != "$REMOTE" ]; then echo "needs_core=true" >> $GITHUB_OUTPUT; fi
 
-      # Publish only packages that changed
+      - name: Check mcp
+        id: check_mcp
+        run: |
+          LOCAL=$(node -p "require('./packages/mcp/package.json').version")
+          REMOTE=$(npx npm@latest view @betterspec/mcp version 2>/dev/null || echo "NOT_FOUND")
+          echo "mcp: local=$LOCAL remote=$REMOTE"
+          if [ "$LOCAL" != "$REMOTE" ]; then echo "needs_mcp=true" >> $GITHUB_OUTPUT; fi
+
+      - name: Check cli
+        id: check_cli
+        run: |
+          LOCAL=$(node -p "require('./packages/cli/package.json').version")
+          REMOTE=$(npx npm@latest view @betterspec/cli version 2>/dev/null || echo "NOT_FOUND")
+          echo "cli: local=$LOCAL remote=$REMOTE"
+          if [ "$LOCAL" != "$REMOTE" ]; then echo "needs_cli=true" >> $GITHUB_OUTPUT; fi
+
+      # Publish changed packages
       - name: Publish @betterspec/core
-        if: steps.changes.outputs.NEEDS_core == 'true'
+        if: steps.check_core.outputs.needs_core == 'true'
         working-directory: packages/core
         run: npx npm@latest publish --access public --registry https://registry.npmjs.org
 
       - name: Publish @betterspec/mcp
-        if: steps.changes.outputs.NEEDS_mcp == 'true'
+        if: steps.check_mcp.outputs.needs_mcp == 'true'
         working-directory: packages/mcp
         run: npx npm@latest publish --access public --registry https://registry.npmjs.org
 
       - name: Publish @betterspec/cli
-        if: steps.changes.outputs.NEEDS_cli == 'true'
+        if: steps.check_cli.outputs.needs_cli == 'true'
         working-directory: packages/cli
         run: npx npm@latest publish --access public --registry https://registry.npmjs.org
 
-      # Summary of what was (or wasn't) published
-      - name: Publish summary
+      # Summary
+      - name: Summary
         run: |
-          echo "=== Publish Summary ==="
-          for pkg in core cli mcp; do
-            LOCAL_VERSION=$(node -p "require('./packages/${pkg}/package.json').version")
-            if [ "${{ steps.changes.outputs['NEEDS_'$pkg] }}" == "true" ]; then
-              echo "  ✅ @betterspec/${pkg}@${LOCAL_VERSION} published"
-            else
-              echo "  ⏭  @betterspec/${pkg}@${LOCAL_VERSION} already up to date"
+          echo "=== betterspec publish summary ==="
+          echo "core: ${{ steps.check_core.outputs.needs_core == 'true' && 'published' || 'skipped (up to date)' }}"
+          echo "mcp:  ${{ steps.check_mcp.outputs.needs_mcp == 'true' && 'published' || 'skipped (up to date)' }}"
+          echo "cli:  ${{ steps.check_cli.outputs.needs_cli == 'true' && 'published' || 'skipped (up to date)' }}"
