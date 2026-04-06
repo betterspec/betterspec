@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { configExists } from "@betterspec/core";
 import { registerTools } from "./tools.js";
 import { registerResources } from "./resources.js";
+import { VERSION } from "./version.js";
 
 async function findProjectRoot(): Promise<string> {
   // Walk up from cwd looking for betterspec/betterspec.json
@@ -28,7 +29,7 @@ async function main() {
 
   const server = new McpServer({
     name: "betterspec",
-    version: "0.4.0",
+    version: VERSION,
   });
 
   registerTools(server, projectRoot);

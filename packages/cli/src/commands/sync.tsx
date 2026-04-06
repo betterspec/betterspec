@@ -6,8 +6,11 @@
 import React from "react";
 import { render, Box as InkBox, Text } from "ink";
 import { resolve } from "node:path";
-import { execSync } from "node:child_process";
+import { exec as execCb } from "node:child_process";
+import { promisify } from "node:util";
 import { existsSync, mkdirSync } from "node:fs";
+
+const exec = promisify(execCb);
 import { configExists, readConfig } from "@betterspec/core";
 import {
   Box as BetterspecBox,
@@ -61,16 +64,14 @@ const SyncDashboard: React.FC<SyncDashboardProps> = ({
             ...s,
             message: "Pulling latest changes...",
           }));
-          execSync("git pull --ff-only", { cwd: targetPath!, stdio: "pipe" });
+          await exec("git pull --ff-only", { cwd: targetPath! });
         } else {
           setState((s) => ({
             ...s,
             message: "Cloning global spec repo...",
           }));
           mkdirSync(targetPath!, { recursive: true });
-          execSync(`git clone ${source} ${targetPath}`, {
-            stdio: "pipe",
-          });
+          await exec(`git clone ${source} ${targetPath}`);
         }
       } else {
         if (existsSync(source!)) {

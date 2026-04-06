@@ -8,7 +8,7 @@ import { Command } from "commander";
 import { initCommand } from "./commands/init.js";
 import { proposeCommand } from "./commands/propose.js";
 import { statusCommand } from "./commands/status.js";
-import { clarifyCommand } from "./commands/clarify.js";
+import { clarifyCommand, showCommand } from "./commands/clarify.js";
 import { listCommand } from "./commands/list.js";
 import { verifyCommand } from "./commands/verify.js";
 import { archiveCommand } from "./commands/archive.js";
@@ -17,11 +17,7 @@ import { doctorCommand } from "./commands/doctor.js";
 import { capabilitiesCommand } from "./commands/capabilities.js";
 import { configCommand } from "./commands/config.js";
 import { diffCommand } from "./commands/diff.js";
-import { digestCommand } from "./commands/digest.js";
-import { searchCommand } from "./commands/search.js";
 import { impactCommand } from "./commands/impact.js";
-import { onboardCommand } from "./commands/onboard.js";
-import { explainCommand } from "./commands/explain.js";
 import { serveCommand } from "./commands/serve.js";
 import { render } from "ink";
 import React from "react";
@@ -61,12 +57,19 @@ program
   .option("-C, --cwd <path>", "Working directory")
   .action((idea, opts) => proposeCommand(idea, { cwd: opts.cwd }));
 
-// --- clarify ---
+// --- clarify (alias for show — backward compat) ---
 program
   .command("clarify <change>")
-  .description("Review and refine requirements for a change")
+  .description("View all spec files for a change (alias for show)")
   .option("-C, --cwd <path>", "Working directory")
-  .action((change, opts) => clarifyCommand(change, { cwd: opts.cwd }));
+  .action((change, opts) => showCommand(change, { cwd: opts.cwd }));
+
+// --- show ---
+program
+  .command("show [change]")
+  .description("View all spec files for a change")
+  .option("-C, --cwd <path>", "Working directory")
+  .action((change, opts) => showCommand(change, { cwd: opts.cwd }));
 
 // --- status ---
 program
@@ -139,45 +142,12 @@ program
   .option("-C, --cwd <path>", "Working directory")
   .action((change, opts) => diffCommand(change, { cwd: opts.cwd }));
 
-// --- AI-powered commands ---
-
-// --- digest ---
-program
-  .command("digest")
-  .description("Generate a knowledge digest from recent changes")
-  .option("-n, --count <count>", "Number of recent changes to include", "5")
-  .option("-o, --output <file>", "Write digest to file")
-  .option("-C, --cwd <path>", "Working directory")
-  .action((opts) => digestCommand({ count: parseInt(opts.count), output: opts.output, cwd: opts.cwd }));
-
-// --- search ---
-program
-  .command("search <query>")
-  .description("Search the project knowledge base")
-  .option("-C, --cwd <path>", "Working directory")
-  .action((query, opts) => searchCommand(query, { cwd: opts.cwd }));
-
 // --- impact ---
 program
   .command("impact <path>")
-  .description("Analyze impact of changing a file or directory")
+  .description("Show what specs and capabilities reference a file or path")
   .option("-C, --cwd <path>", "Working directory")
   .action((path, opts) => impactCommand(path, { cwd: opts.cwd }));
-
-// --- onboard ---
-program
-  .command("onboard")
-  .description("Generate a project onboarding guide")
-  .option("-o, --output <file>", "Write guide to file")
-  .option("-C, --cwd <path>", "Working directory")
-  .action((opts) => onboardCommand({ output: opts.output, cwd: opts.cwd }));
-
-// --- explain ---
-program
-  .command("explain <change>")
-  .description("Explain the full lifecycle of a change")
-  .option("-C, --cwd <path>", "Working directory")
-  .action((change, opts) => explainCommand(change, { cwd: opts.cwd }));
 
 // --- serve ---
 program
@@ -192,7 +162,7 @@ program.action(async () => {
     <Box flexDirection="column" padding={1}>
       <Logo />
       <Box paddingTop={1}>
-        <Tagline version="0.4.0" />
+        <Tagline version="0.4.1" />
       </Box>
       <Box paddingTop={1}>
         <Text dimColor>Run </Text>

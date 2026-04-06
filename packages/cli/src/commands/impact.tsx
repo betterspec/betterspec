@@ -1,6 +1,7 @@
 /**
- * betterspec impact command — INK version
- * Analyze the impact of a file or path across specs and capabilities
+ * betterspec impact command — pure data version
+ * Show what specs and capabilities reference a file or directory path.
+ * No AI — fast, deterministic output.
  */
 
 import React from "react";
@@ -11,29 +12,19 @@ import {
   listChanges,
   listCapabilities,
   readChangeFile,
-  runAI,
 } from "@betterspec/core";
-import {
-  Box as BetterspecBox,
-  Spinner,
-  colors,
-} from "../ui/ink/index.js";
+import { Box as BetterspecBox, colors } from "../ui/ink/index.js";
 
-interface Match {
-  name: string;
-  file: string;
-  match: string;
+interface SpecMatch {
+  changeName: string;
+  status: string;
+  files: string[];
 }
 
-interface ImpactResult {
-  matchedChanges: Match[];
-  matchedCapabilities: any[];
-  response: {
-    text: string;
-    usage?: { inputTokens: number; outputTokens: number };
-    cost?: number;
-    model?: string;
-  };
+interface CapMatch {
+  name: string;
+  description: string;
+  files: string[];
 }
 
 interface ImpactDashboardProps {
@@ -41,192 +32,135 @@ interface ImpactDashboardProps {
   targetPath: string;
 }
 
-type Phase = "scanning" | "analyzing" | "done" | "error";
+const SPEC_FILES = [
+  "proposal.md",
+  "specs/requirements.md",
+  "specs/scenarios.md",
+  "design.md",
+  "tasks.md",
+];
 
-const ImpactDashboard: React.FC<ImpactDashboardProps> = ({
-  projectRoot,
-  targetPath,
-}) => {
+async function scanChanges(
+  projectRoot: string,
+  needle: string
+): Promise<SpecMatch[]> {
+  const changes = await listChanges(projectRoot, true);
+  const matches: SpecMatch[] = [];
+
+  for (const change of changes) {
+    const matchedFiles: string[] = [];
+    for (const specFile of SPEC_FILES) {
+      try {
+        const content = await readChangeFile(projectRoot, change.name, specFile);
+        if (content.includes(needle)) {
+          matchedFiles.push(specFile);
+        }
+      } catch {
+        // file doesn't exist — skip
+      }
+    }
+    if (matchedFiles.length > 0) {
+      matches.push({ changeName: change.name, status: change.status, files: matchedFiles });
+    }
+  }
+
+  return matches;
+}
+
+async function scanCapabilities(
+  projectRoot: string,
+  needle: string
+): Promise<CapMatch[]> {
+  const caps = await listCapabilities(projectRoot);
+  return caps
+    .filter((c) => c.files.some((f) => f.includes(needle)))
+    .map((c) => ({ name: c.name, description: c.description, files: c.files.filter((f) => f.includes(needle)) }));
+}
+
+const ImpactDashboard: React.FC<ImpactDashboardProps> = ({ projectRoot, targetPath }) => {
   const relPath = relative(projectRoot, resolve(projectRoot, targetPath));
-
   const [state, setState] = React.useState<{
-    phase: Phase;
-    message?: string;
-    result?: ImpactResult;
+    phase: "scanning" | "done" | "error";
+    specMatches?: SpecMatch[];
+    capMatches?: CapMatch[];
     error?: string;
-  }>({ phase: "scanning", message: `Analyzing impact of ${relPath}...` });
+  }>({ phase: "scanning" });
 
   React.useEffect(() => {
-    runImpact();
+    (async () => {
+      try {
+        const [specMatches, capMatches] = await Promise.all([
+          scanChanges(projectRoot, relPath),
+          scanCapabilities(projectRoot, relPath),
+        ]);
+        setState({ phase: "done", specMatches, capMatches });
+      } catch (err: any) {
+        setState({ phase: "error", error: err.message });
+      }
+    })();
   }, []);
 
-  const runImpact = async () => {
-    try {
-      const [changes, capabilities] = await Promise.all([
-        listChanges(projectRoot),
-        listCapabilities(projectRoot),
-      ]);
-
-      setState({
-        phase: "scanning",
-        message: "Scanning specs for references...",
-      });
-
-      const matchedChanges: Match[] = [];
-      for (const change of changes) {
-        const specFiles = [
-          "proposal.md",
-          "specs/requirements.md",
-          "specs/scenarios.md",
-          "design.md",
-          "tasks.md",
-        ];
-
-        for (const file of specFiles) {
-          try {
-            const content = await readChangeFile(
-              projectRoot,
-              change.name,
-              file
-            );
-            if (content.includes(relPath) || content.includes(targetPath)) {
-              const lines = content.split("\n");
-              const matchLine = lines.find(
-                (l) => l.includes(relPath) || l.includes(targetPath)
-              );
-              matchedChanges.push({
-                name: change.name,
-                file,
-                match: matchLine?.trim() ?? "(referenced)",
-              });
-            }
-          } catch {
-            // File doesn't exist, skip
-          }
-        }
-      }
-
-      const matchedCapabilities = capabilities.filter((cap: any) =>
-        cap.files?.some(
-          (f: string) => f.includes(relPath) || f.includes(targetPath)
-        )
-      );
-
-      setState({
-        phase: "analyzing",
-        message: "Running AI impact analysis...",
-      });
-
-      const matchSummary =
-        matchedChanges.length > 0
-          ? matchedChanges
-              .map((m) => `- ${m.name}/${m.file}: ${m.match}`)
-              .join("\n")
-          : "No direct references found in specs.";
-
-      const capSummary =
-        matchedCapabilities.length > 0
-          ? matchedCapabilities
-              .map(
-                (c: any) =>
-                  `- ${c.name} (files: ${c.files?.join(", ") ?? "none"})`
-              )
-              .join("\n")
-          : "No matching capabilities.";
-
-      const response = await runAI(
-        `Analyze the impact of changes to this file/path: ${relPath}\n\n` +
-          `## Direct References in Specs\n${matchSummary}\n\n` +
-          `## Related Capabilities\n${capSummary}\n\n` +
-          `## All Active Changes\n${changes.map((c) => `- ${c.name} (${c.status})`).join("\n") || "None"}\n\n` +
-          `Provide a thorough impact analysis. What would break? What needs updating? What's the blast radius?`,
-        {
-          projectRoot,
-          scope: "impact",
-          targetPath: relPath,
-          systemPrompt:
-            "You are a software impact analyst. " +
-            "Format your response with sections: ## Direct Impact, ## Indirect Impact, ## Risk Assessment, ## Recommendations.",
-        }
-      );
-
-      setState({
-        phase: "done",
-        result: { matchedChanges, matchedCapabilities, response },
-      });
-    } catch (err: any) {
-      setState({
-        phase: "error",
-        error: err.message || "Impact analysis failed",
-      });
-    }
-  };
-
-  if (state.phase === "scanning" || state.phase === "analyzing") {
+  if (state.phase === "scanning") {
     return (
-      <BetterspecBox title="betterspec impact" borderColor="accent">
-        <Spinner label={state.message ?? "Working..."} />
+      <BetterspecBox title="Impact" borderColor="accent">
+        <Text dimColor>Scanning specs and capabilities for {relPath}...</Text>
       </BetterspecBox>
     );
   }
 
   if (state.phase === "error") {
     return (
-      <BetterspecBox title="betterspec impact" borderColor="error">
-        <Text hex={colors.error}>Impact analysis failed</Text>
-        {state.error && <Text dimColor>{state.error}</Text>}
+      <BetterspecBox title="Impact" borderColor="error">
+        <Text hex={colors.error}>{state.error}</Text>
       </BetterspecBox>
     );
   }
 
-  const { result } = state;
+  const { specMatches = [], capMatches = [] } = state;
+  const total = specMatches.length + capMatches.length;
 
   return (
-    <InkBox flexDirection="column">
-      {result?.matchedChanges.length! > 0 && (
-        <BetterspecBox
-          title={`${result!.matchedChanges.length} Direct Reference${result!.matchedChanges.length === 1 ? "" : "s"}`}
-          borderColor="info"
-        >
-          {result!.matchedChanges.map((m, i) => (
-            <Text key={i} dimColor>
-              {m.name}/{m.file}
-            </Text>
-          ))}
-        </BetterspecBox>
-      )}
+    <BetterspecBox title={`Impact: ${relPath}`} borderColor={total > 0 ? "warning" : "success"}>
+      {total === 0 ? (
+        <Text dimColor>No references found in specs or capabilities.</Text>
+      ) : (
+        <InkBox flexDirection="column" gap={1}>
+          {specMatches.length > 0 && (
+            <InkBox flexDirection="column">
+              <Text bold hex={colors.primary}>Changes ({specMatches.length})</Text>
+              {specMatches.map((m) => (
+                <InkBox key={m.changeName} flexDirection="column" paddingLeft={2}>
+                  <Text>
+                    <Text bold>{m.changeName}</Text>
+                    <Text dimColor> ({m.status})</Text>
+                  </Text>
+                  {m.files.map((f) => (
+                    <Text key={f} dimColor paddingLeft={2}>↳ {f}</Text>
+                  ))}
+                </InkBox>
+              ))}
+            </InkBox>
+          )}
 
-      {result?.matchedCapabilities.length! > 0 && (
-        <InkBox paddingTop={1}>
-          <BetterspecBox
-            title={`${result!.matchedCapabilities.length} Related Capabilit${result!.matchedCapabilities.length === 1 ? "y" : "ies"}`}
-            borderColor="info"
-          >
-            {result!.matchedCapabilities.map((c: any, i: number) => (
-              <Text key={i} dimColor>
-                {c.name}
-              </Text>
-            ))}
-          </BetterspecBox>
+          {capMatches.length > 0 && (
+            <InkBox flexDirection="column">
+              <Text bold hex={colors.primary}>Capabilities ({capMatches.length})</Text>
+              {capMatches.map((c) => (
+                <InkBox key={c.name} flexDirection="column" paddingLeft={2}>
+                  <Text>
+                    <Text bold>{c.name}</Text>
+                    <Text dimColor> — {c.description}</Text>
+                  </Text>
+                  {c.files.map((f) => (
+                    <Text key={f} dimColor paddingLeft={2}>↳ {f}</Text>
+                  ))}
+                </InkBox>
+              ))}
+            </InkBox>
+          )}
         </InkBox>
       )}
-
-      <InkBox paddingTop={1} paddingLeft={1}>
-        <Text>{result?.response.text}</Text>
-      </InkBox>
-
-      {result?.response.usage && (
-        <InkBox paddingTop={1} paddingLeft={1}>
-          <Text dimColor>
-            Tokens: {result.response.usage.inputTokens} in /{" "}
-            {result.response.usage.outputTokens} out
-            {result.response.cost &&
-              ` | Estimated cost: $${result.response.cost.toFixed(4)}`}
-            {result.response.model && ` | Model: ${result.response.model}`}
-          </Text>
-        </InkBox>
-      )}
-    </InkBox>
+    </BetterspecBox>
   );
 };
 
@@ -239,14 +173,14 @@ export async function impactCommand(
   if (!(await configExists(projectRoot))) {
     render(
       <BetterspecBox title="Not Initialized" borderColor="error">
-        <Text>betterspec is not initialized.</Text>
-        <Text dimColor> Run </Text>
-        <Text hex={colors.primary}>betterspec init</Text>
-        <Text dimColor> first.</Text>
+        <Text>betterspec is not initialized. Run <Text hex={colors.primary}>betterspec init</Text> first.</Text>
       </BetterspecBox>
     );
     process.exit(1);
   }
 
-  render(<ImpactDashboard projectRoot={projectRoot} targetPath={targetPath} />);
+  const { waitUntilExit } = render(
+    <ImpactDashboard projectRoot={projectRoot} targetPath={targetPath} />
+  );
+  await waitUntilExit();
 }

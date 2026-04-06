@@ -69,30 +69,6 @@ export interface betterspecConfig {
   enforcement: EnforcementConfig;
 }
 
-// --- AI ---
-
-export interface AIRunOptions {
-  systemPrompt?: string;
-  maxTokens?: number;
-  temperature?: number;
-  format?: "text" | "json";
-}
-
-export interface AIResponse {
-  text: string;
-  model?: string;
-  usage?: { inputTokens: number; outputTokens: number };
-  cost?: number;
-}
-
-export interface AIRunner {
-  name: string;
-  available(): Promise<boolean>;
-  run(prompt: string, options?: AIRunOptions): Promise<AIResponse>;
-}
-
-export type AIContextScope = "full" | "digest" | "search" | "impact";
-
 // --- Adapter ---
 
 export interface ScaffoldResult {
