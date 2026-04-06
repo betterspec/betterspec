@@ -29,7 +29,7 @@ const program = new Command();
 program
   .name("betterspec")
   .description("Spec-driven development for AI-assisted teams — better specs, better code")
-  .version("0.4.1");
+  .version("0.4.2");
 
 // --- init ---
 program
@@ -162,7 +162,7 @@ program.action(async () => {
     <Box flexDirection="column" padding={1}>
       <Logo />
       <Box paddingTop={1}>
-        <Tagline version="0.4.1" />
+        <Tagline version="0.4.2" />
       </Box>
       <Box paddingTop={1}>
         <Text dimColor>Run </Text>
