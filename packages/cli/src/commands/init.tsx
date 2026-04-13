@@ -112,7 +112,8 @@ const InitWizard: React.FC<{
   globalSource: string;
   tool: ToolName;
   skills: SkillsMode;
-}> = ({ projectRoot, mode, globalSource, tool, skills }) => {
+  force?: boolean;
+}> = ({ projectRoot, mode, globalSource, tool, skills, force }) => {
   const [phase, setPhase] = React.useState<Phase>("mode");
   const [modeVal, setModeVal] = React.useState<SpecMode>(mode);
   const [globalSourceVal, setGlobalSourceVal] = React.useState(globalSource);
@@ -163,7 +164,7 @@ const InitWizard: React.FC<{
       setSkillFiles(sf);
 
       const adapter = await getAdapter(toolVal);
-      const ar = await adapter.scaffold(projectRoot, {});
+      const ar = await adapter.scaffold(projectRoot, { force: force ?? false });
       setAdapterFiles(ar.filesCreated);
 
       const config = createDefaultConfig(modeVal, toolVal, val as SkillsMode);
@@ -406,6 +407,7 @@ export async function initCommand(
       globalSource={globalSource ?? ""}
       tool={tool}
       skills={skills}
+      force={opts.force}
     />,
   );
 }

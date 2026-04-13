@@ -1,6 +1,6 @@
 {
   "name": "@betterspec/mcp",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "MCP server exposing betterspec knowledge base to AI tools",
   "type": "module",
   "main": "./dist/index.js",
