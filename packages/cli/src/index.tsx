@@ -28,7 +28,9 @@ const program = new Command();
 
 program
   .name("betterspec")
-  .description("Spec-driven development for AI-assisted teams — better specs, better code")
+  .description(
+    "Spec-driven development for AI-assisted teams — better specs, better code",
+  )
   .version("0.4.2");
 
 // --- init ---
@@ -37,9 +39,13 @@ program
   .description("Initialize betterspec in the current project")
   .option("-C, --cwd <path>", "Working directory")
   .option("--mode <mode>", "Spec mode: local, local+global, global")
-  .option("--tool <tool>", "AI tool: opencode, codex, claude-code, cursor, gemini, generic")
+  .option(
+    "--tool <tool>",
+    "AI tool: opencode, codex, claude-code, cursor, gemini, generic",
+  )
   .option("--skills <mode>", "Skills mode: local, global, both")
   .option("--global-source <source>", "Global spec source (path or GitHub URL)")
+  .option("--force", "Reinstall agents and skills even if already initialized")
   .action((opts) =>
     initCommand({
       cwd: opts.cwd,
@@ -47,7 +53,8 @@ program
       tool: opts.tool,
       skills: opts.skills,
       "global-source": opts.globalSource,
-    })
+      force: opts.force,
+    }),
   );
 
 // --- propose ---
@@ -85,7 +92,13 @@ program
   .option("-a, --archived", "Include archived changes")
   .option("-s, --status <status>", "Filter by status")
   .option("-C, --cwd <path>", "Working directory")
-  .action((opts) => listCommand({ archived: opts.archived, status: opts.status, cwd: opts.cwd }));
+  .action((opts) =>
+    listCommand({
+      archived: opts.archived,
+      status: opts.status,
+      cwd: opts.cwd,
+    }),
+  );
 
 // --- verify ---
 program
@@ -100,7 +113,9 @@ program
   .description("Archive a completed change and extract capabilities")
   .option("--skip-outcome", "Skip outcome.md generation step")
   .option("-C, --cwd <path>", "Working directory")
-  .action((change, opts) => archiveCommand(change, { skipOutcome: opts.skipOutcome, cwd: opts.cwd }));
+  .action((change, opts) =>
+    archiveCommand(change, { skipOutcome: opts.skipOutcome, cwd: opts.cwd }),
+  );
 
 // --- sync ---
 program
@@ -133,7 +148,9 @@ program
   .description("Get or set configuration values")
   .option("--list", "List all config values")
   .option("-C, --cwd <path>", "Working directory")
-  .action((key, value, opts) => configCommand(key, value, { list: opts.list, cwd: opts.cwd }));
+  .action((key, value, opts) =>
+    configCommand(key, value, { list: opts.list, cwd: opts.cwd }),
+  );
 
 // --- diff ---
 program
@@ -169,7 +186,7 @@ program.action(async () => {
         <Text color="#CC5500">betterspec --help</Text>
         <Text dimColor> for all commands.</Text>
       </Box>
-    </Box>
+    </Box>,
   );
 });
 

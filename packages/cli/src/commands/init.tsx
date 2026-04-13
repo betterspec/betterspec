@@ -42,6 +42,7 @@ async function initNonInteractive(
     tool?: ToolName;
     skills?: SkillsMode;
     globalSource?: string;
+    force?: boolean;
   },
 ) {
   const mode: SpecMode = opts.mode ?? "local";
@@ -55,7 +56,9 @@ async function initNonInteractive(
 
   const skillFiles = await scaffoldSkills(projectRoot, skillsMode);
   const adapter = await getAdapter(toolName);
-  const adapterResult = await adapter.scaffold(projectRoot, {});
+  const adapterResult = await adapter.scaffold(projectRoot, {
+    force: opts.force ?? false,
+  });
 
   const config = createDefaultConfig(mode, toolName, skillsMode);
   if (opts.globalSource) {
@@ -347,12 +350,13 @@ export async function initCommand(
     skills?: SkillsMode;
     globalSource?: string;
     "global-source"?: string;
+    force?: boolean;
   } = {},
 ): Promise<void> {
   const projectRoot = resolve(opts.cwd || process.cwd());
 
-  // Check already initialized
-  if (await configExists(projectRoot)) {
+  // Check already initialized (skip if --force)
+  if (!opts.force && (await configExists(projectRoot))) {
     render(
       <InkBox flexDirection="column" padding={1}>
         <Logo />
@@ -361,6 +365,9 @@ export async function initCommand(
           <Text dimColor>Run </Text>
           <Text color={colors.primary}>betterspec status</Text>
           <Text dimColor> to see current state.</Text>
+          <Text dimColor>{"\n"}Use </Text>
+          <Text color={colors.primary}>betterspec init --force</Text>
+          <Text dimColor> to reinstall agents and skills.</Text>
         </BetterspecBox>
       </InkBox>,
     );
@@ -381,6 +388,7 @@ export async function initCommand(
         tool,
         skills,
         globalSource,
+        force: opts.force,
       });
       console.log("✓ betterspec initialized (non-interactive)");
     } catch (err) {

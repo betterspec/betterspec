@@ -19,16 +19,27 @@ This project uses **betterspec** for spec-driven development.
 const adapter: ToolAdapter = {
   name: "gemini-cli",
   displayName: "Gemini CLI",
-  capabilities: { agents: true, subagents: true, hooks: true, skills: true, memory: false },
+  capabilities: {
+    agents: true,
+    subagents: true,
+    hooks: true,
+    skills: true,
+    memory: false,
+  },
 
   async scaffold(projectRoot, config) {
     const created: string[] = [];
     const configChanges: string[] = [];
-    const modelOverrides = (config.models || {}) as Partial<Record<AgentRole, string>>;
+    const modelOverrides = (config.models || {}) as Partial<
+      Record<AgentRole, string>
+    >;
+    const force = config.force === true;
 
     // 1. Scaffold agents to .gemini/agents/ (Gemini CLI discovers them here)
     const agentDir = join(projectRoot, ".gemini", "agents");
-    const agentFiles = await scaffoldAgents(agentDir, modelOverrides);
+    const agentFiles = await scaffoldAgents(agentDir, modelOverrides, {
+      force,
+    });
     created.push(...agentFiles);
 
     // 2. Append to GEMINI.md

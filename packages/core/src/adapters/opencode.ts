@@ -26,18 +26,23 @@ const adapter: ToolAdapter = {
   async scaffold(projectRoot, config) {
     const created: string[] = [];
     const configChanges: string[] = [];
-    const modelOverrides = (config.models || {}) as Partial<Record<AgentRole, string>>;
+    const modelOverrides = (config.models || {}) as Partial<
+      Record<AgentRole, string>
+    >;
+    const force = config.force === true;
 
     // Scaffold agent definitions (planner, builder, validator, archivist)
     const agentDir = join(projectRoot, ".opencode", "agents");
-    const agentFiles = await scaffoldAgents(agentDir, modelOverrides);
+    const agentFiles = await scaffoldAgents(agentDir, modelOverrides, {
+      force,
+    });
     created.push(...agentFiles);
 
     // Direct users to install the global plugin via opencode.json.
     // The global plugin (betterspec.js at repo root) auto-discovers skills
     // and provides system prompt injection.
     configChanges.push(
-      "Add betterspec to opencode.json: plugin: [\"betterspec@git+https://github.com/betterspec/betterspec.git\"]"
+      'Add betterspec to opencode.json: plugin: ["betterspec@git+https://github.com/betterspec/betterspec.git"]',
     );
     configChanges.push("See .opencode/INSTALL.md for full setup instructions");
 

@@ -19,7 +19,8 @@ const contentMap: Record<AgentRole, (model: string) => string> = {
 
 export async function scaffoldAgents(
   targetDir: string,
-  modelOverrides?: Partial<Record<AgentRole, string>>
+  modelOverrides?: Partial<Record<AgentRole, string>>,
+  options?: { force?: boolean },
 ): Promise<string[]> {
   const created: string[] = [];
 
@@ -30,7 +31,7 @@ export async function scaffoldAgents(
     const filename = `${role.name}.md`;
     const filePath = join(targetDir, filename);
 
-    if (await fileExists(filePath)) continue;
+    if (!options?.force && (await fileExists(filePath))) continue;
 
     const content = contentMap[role.role](model);
     await writeFile(filePath, content, "utf-8");

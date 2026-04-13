@@ -106,6 +106,29 @@ describe("scaffoldAgents", () => {
     expect(created).not.toContain(existingPath);
   });
 
+  it("overwrites existing agent files when force is true", async () => {
+    const targetDir = join(TEST_ROOT, "agents");
+    await mkdir(targetDir, { recursive: true });
+
+    const existingPath = join(targetDir, `${AGENT_ROLES[0].name}.md`);
+    await writeFile(existingPath, "old content", "utf-8");
+
+    await scaffoldAgents(targetDir, undefined, { force: true });
+
+    const content = await readFile(existingPath, "utf-8");
+    expect(content).not.toBe("old content");
+    expect(content).toMatch(/^---/);
+  });
+
+  it("returns all 4 paths when force is true even if all exist", async () => {
+    const targetDir = join(TEST_ROOT, "agents");
+    await scaffoldAgents(targetDir);
+
+    const created = await scaffoldAgents(targetDir, undefined, { force: true });
+
+    expect(created).toHaveLength(4);
+  });
+
   it("applies model overrides correctly", async () => {
     const targetDir = join(TEST_ROOT, "agents");
     const customModel = "custom-model/special-v2";
