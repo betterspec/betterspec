@@ -4,7 +4,7 @@
  */
 
 import React from "react";
-import { useInput, useStdin, Text, Box } from "ink";
+import { useInput, Text, Box } from "ink";
 
 // ── Confirm ───────────────────────────────────────────────────────
 
@@ -14,11 +14,15 @@ interface ConfirmProps {
   onCancel: () => void;
 }
 
-export const Confirm: React.FC<ConfirmProps> = ({ message, onConfirm, onCancel }) => {
-  useInput((key) => {
-    if (key === "y" || key === "Y" || key === "enter") {
+export const Confirm: React.FC<ConfirmProps> = ({
+  message,
+  onConfirm,
+  onCancel,
+}) => {
+  useInput((input, key) => {
+    if (input.toLowerCase() === "y" || key.return) {
       onConfirm();
-    } else if (key === "n" || key === "N" || key === "escape") {
+    } else if (input.toLowerCase() === "n" || key.escape) {
       onCancel();
     }
   });
@@ -46,30 +50,15 @@ export const TextInput: React.FC<TextInputProps> = ({
   onSubmit,
   placeholder = "",
 }) => {
-  const { stdin, setRawMode } = useStdin();
-
-  React.useEffect(() => {
-    setRawMode?.(true);
-    return () => setRawMode?.(false);
-  }, [setRawMode]);
-
-  React.useEffect(() => {
-    if (!stdin) return;
-
-    const handleData = (chunk: Buffer) => {
-      const key = chunk.toString();
-      if (key === "\r" || key === "\n") {
-        onSubmit();
-      } else if (key === "\x7f" || key === "\b") {
-        onChange(value.slice(0, -1));
-      } else if (key.length === 1 && !key.match(/[\x00-\x1f]/)) {
-        onChange(value + key);
-      }
-    };
-
-    stdin.on("data", handleData);
-    return () => { stdin.removeListener("data", handleData); };
-  }, [stdin, value, onChange, onSubmit]);
+  useInput((input, key) => {
+    if (key.return) {
+      onSubmit();
+    } else if (key.backspace || key.delete) {
+      onChange(value.slice(0, -1));
+    } else if (input) {
+      onChange(value + input);
+    }
+  });
 
   return (
     <Text>
@@ -108,14 +97,14 @@ export const Select: React.FC<SelectProps> = ({
 }) => {
   const [selectedIndex, setSelectedIndex] = React.useState(initialIndex);
 
-  useInput((key, match) => {
-    if (match.upArrow || match.ctrlP || key === "k") {
+  useInput((input, key) => {
+    if (key.upArrow || input === "k") {
       setSelectedIndex((i) => Math.max(0, i - 1));
-    } else if (match.downArrow || match.ctrlN || key === "j") {
+    } else if (key.downArrow || input === "j") {
       setSelectedIndex((i) => Math.min(options.length - 1, i + 1));
-    } else if (key === "enter") {
+    } else if (key.return) {
       onSelect(options[selectedIndex].value);
-    } else if (key === "escape" || key === "q") {
+    } else if (key.escape || input === "q") {
       onCancel();
     }
   });
@@ -125,17 +114,17 @@ export const Select: React.FC<SelectProps> = ({
       <Text>{message}</Text>
       {options.map((opt, i) => (
         <Box key={opt.value}>
-          <Text dimColor>  </Text>
+          <Text dimColor> </Text>
           {i === selectedIndex ? (
-            <Text hex="#CC5500">▸ </Text>
+            <Text color="#CC5500">▸ </Text>
           ) : (
-            <Text dimColor>  </Text>
+            <Text dimColor> </Text>
           )}
           <Text bold={i === selectedIndex}>{opt.label}</Text>
           {opt.hint && <Text dimColor> — {opt.hint}</Text>}
         </Box>
       ))}
-      <Text dimColor>  ↑↓ navigate · enter select · esc cancel</Text>
+      <Text dimColor> ↑↓ navigate · enter select · esc cancel</Text>
     </Box>
   );
 };
