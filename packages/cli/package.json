@@ -1,6 +1,6 @@
 {
   "name": "@betterspec/cli",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Beautiful CLI for spec-driven development — better specs, better code",
   "type": "module",
   "bin": {
