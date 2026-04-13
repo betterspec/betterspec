@@ -85,14 +85,100 @@ describe("opencode adapter scaffold", () => {
 
     // Agent files
     const agentDir = join(TEST_ROOT, ".opencode", "agents");
-    expect(await fileExists(join(agentDir, "betterspec-planner.md"))).toBe(true);
-    expect(await fileExists(join(agentDir, "betterspec-builder.md"))).toBe(true);
-    expect(await fileExists(join(agentDir, "betterspec-validator.md"))).toBe(true);
-    expect(await fileExists(join(agentDir, "betterspec-archivist.md"))).toBe(true);
+    expect(await fileExists(join(agentDir, "betterspec-planner.md"))).toBe(
+      true,
+    );
+    expect(await fileExists(join(agentDir, "betterspec-builder.md"))).toBe(
+      true,
+    );
+    expect(await fileExists(join(agentDir, "betterspec-validator.md"))).toBe(
+      true,
+    );
+    expect(await fileExists(join(agentDir, "betterspec-archivist.md"))).toBe(
+      true,
+    );
 
     // Config changes direct users to global plugin
     expect(result.configChanges.length).toBeGreaterThan(0);
-    expect(result.configChanges.some((c) => c.includes("opencode.json") || c.includes("plugin"))).toBe(true);
+    expect(
+      result.configChanges.some(
+        (c) => c.includes("opencode.json") || c.includes("plugin"),
+      ),
+    ).toBe(true);
+  });
+
+  it("scaffolds slash command files in .opencode/commands/", async () => {
+    const adapter = await getAdapter("opencode");
+    await adapter.scaffold(TEST_ROOT, {});
+
+    const commandDir = join(TEST_ROOT, ".opencode", "commands");
+    expect(await fileExists(join(commandDir, "propose.md"))).toBe(true);
+    expect(await fileExists(join(commandDir, "status.md"))).toBe(true);
+    expect(await fileExists(join(commandDir, "clarify.md"))).toBe(true);
+    expect(await fileExists(join(commandDir, "verify.md"))).toBe(true);
+    expect(await fileExists(join(commandDir, "archive.md"))).toBe(true);
+    expect(await fileExists(join(commandDir, "list.md"))).toBe(true);
+  });
+
+  it("command files contain YAML frontmatter with description", async () => {
+    const adapter = await getAdapter("opencode");
+    await adapter.scaffold(TEST_ROOT, {});
+
+    const { readFile } = await import("node:fs/promises");
+    const commandDir = join(TEST_ROOT, ".opencode", "commands");
+    for (const name of [
+      "propose",
+      "status",
+      "clarify",
+      "verify",
+      "archive",
+      "list",
+    ]) {
+      const content = await readFile(join(commandDir, `${name}.md`), "utf-8");
+      expect(content).toMatch(/^---/);
+      expect(content).toMatch(/description:/);
+    }
+  });
+
+  it("propose command uses $ARGUMENTS placeholder", async () => {
+    const adapter = await getAdapter("opencode");
+    await adapter.scaffold(TEST_ROOT, {});
+
+    const { readFile } = await import("node:fs/promises");
+    const content = await readFile(
+      join(TEST_ROOT, ".opencode", "commands", "propose.md"),
+      "utf-8",
+    );
+    expect(content).toContain("$ARGUMENTS");
+  });
+
+  it("does not overwrite existing command files without force", async () => {
+    const { mkdir: mkdirFs, writeFile } = await import("node:fs/promises");
+    const commandDir = join(TEST_ROOT, ".opencode", "commands");
+    await mkdirFs(commandDir, { recursive: true });
+    await writeFile(join(commandDir, "propose.md"), "custom content", "utf-8");
+
+    const adapter = await getAdapter("opencode");
+    await adapter.scaffold(TEST_ROOT, {});
+
+    const { readFile } = await import("node:fs/promises");
+    const content = await readFile(join(commandDir, "propose.md"), "utf-8");
+    expect(content).toBe("custom content");
+  });
+
+  it("overwrites command files when force is true", async () => {
+    const adapter = await getAdapter("opencode");
+    await adapter.scaffold(TEST_ROOT, {});
+
+    const { readFile, writeFile } = await import("node:fs/promises");
+    const proposePath = join(TEST_ROOT, ".opencode", "commands", "propose.md");
+    await writeFile(proposePath, "old content", "utf-8");
+
+    await adapter.scaffold(TEST_ROOT, { force: true });
+
+    const content = await readFile(proposePath, "utf-8");
+    expect(content).not.toBe("old content");
+    expect(content).toMatch(/^---/);
   });
 });
 
@@ -105,15 +191,27 @@ describe("claude-code adapter scaffold", () => {
 
     // Agent files
     const agentDir = join(TEST_ROOT, ".claude", "agents");
-    expect(await fileExists(join(agentDir, "betterspec-planner.md"))).toBe(true);
-    expect(await fileExists(join(agentDir, "betterspec-builder.md"))).toBe(true);
-    expect(await fileExists(join(agentDir, "betterspec-validator.md"))).toBe(true);
-    expect(await fileExists(join(agentDir, "betterspec-archivist.md"))).toBe(true);
+    expect(await fileExists(join(agentDir, "betterspec-planner.md"))).toBe(
+      true,
+    );
+    expect(await fileExists(join(agentDir, "betterspec-builder.md"))).toBe(
+      true,
+    );
+    expect(await fileExists(join(agentDir, "betterspec-validator.md"))).toBe(
+      true,
+    );
+    expect(await fileExists(join(agentDir, "betterspec-archivist.md"))).toBe(
+      true,
+    );
 
     // Hook scripts
     const hookDir = join(TEST_ROOT, ".claude", "hooks");
-    expect(await fileExists(join(hookDir, "betterspec-check-unspecced.sh"))).toBe(true);
-    expect(await fileExists(join(hookDir, "betterspec-session-context.sh"))).toBe(true);
+    expect(
+      await fileExists(join(hookDir, "betterspec-check-unspecced.sh")),
+    ).toBe(true);
+    expect(
+      await fileExists(join(hookDir, "betterspec-session-context.sh")),
+    ).toBe(true);
 
     // Settings
     const settingsPath = join(TEST_ROOT, ".claude", "settings.json");

@@ -1,6 +1,9 @@
 import { join } from "node:path";
+import { mkdir, writeFile } from "node:fs/promises";
 import { scaffoldAgents } from "../agents/index.js";
+import { fileExists } from "../config/index.js";
 import type { ToolAdapter, AgentRole } from "../types/index.js";
+import { OPENCODE_COMMANDS } from "./opencode-commands.js";
 
 /**
  * OpenCode adapter for betterspec
@@ -8,7 +11,7 @@ import type { ToolAdapter, AgentRole } from "../types/index.js";
  * The betterspec global plugin (`.opencode/plugins/betterspec.js` at the repo root)
  * is the primary integration point for OpenCode users — it auto-installs via opencode.json.
  *
- * This adapter handles `betterspec init` scaffolding: agents, knowledge base, and
+ * This adapter handles `betterspec init` scaffolding: agents, commands, and
  * directs users to add the global plugin to their opencode.json.
  */
 
@@ -38,9 +41,17 @@ const adapter: ToolAdapter = {
     });
     created.push(...agentFiles);
 
+    // Scaffold slash commands
+    const commandDir = join(projectRoot, ".opencode", "commands");
+    await mkdir(commandDir, { recursive: true });
+    for (const cmd of OPENCODE_COMMANDS) {
+      const filePath = join(commandDir, `${cmd.name}.md`);
+      if (!force && (await fileExists(filePath))) continue;
+      await writeFile(filePath, cmd.content, "utf-8");
+      created.push(filePath);
+    }
+
     // Direct users to install the global plugin via opencode.json.
-    // The global plugin (betterspec.js at repo root) auto-discovers skills
-    // and provides system prompt injection.
     configChanges.push(
       'Add betterspec to opencode.json: plugin: ["betterspec@git+https://github.com/betterspec/betterspec.git"]',
     );
