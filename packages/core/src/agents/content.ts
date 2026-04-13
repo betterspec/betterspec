@@ -59,10 +59,10 @@ name: betterspec-planner
 description: Transforms proposals into complete specs with requirements, scenarios, design, and task breakdowns
 model: ${model}
 tools:
-  - read
-  - write
-  - glob
-  - grep
+  read: true
+  write: true
+  glob: true
+  grep: true
 temperature: 0.4
 ---
 
@@ -162,12 +162,12 @@ name: betterspec-builder
 description: Implements tasks from betterspec specs following established patterns
 model: ${model}
 tools:
-  - read
-  - write
-  - bash
-  - glob
-  - grep
-  - edit
+  read: true
+  write: true
+  bash: true
+  glob: true
+  grep: true
+  edit: true
 temperature: 0.3
 ---
 
@@ -266,10 +266,10 @@ name: betterspec-validator
 description: Independent verification of implementation against specs with clean context
 model: ${model}
 tools:
-  - read
-  - glob
-  - grep
-  - bash
+  read: true
+  glob: true
+  grep: true
+  bash: true
 temperature: 0.1
 ---
 
@@ -420,9 +420,9 @@ name: betterspec-archivist
 description: Archives completed changes and extracts knowledge into the project knowledge base
 model: ${model}
 tools:
-  - read
-  - write
-  - glob
+  read: true
+  write: true
+  glob: true
 temperature: 0.3
 ---
 
