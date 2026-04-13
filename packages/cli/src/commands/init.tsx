@@ -98,8 +98,8 @@ const MODE_OPTIONS = [
 ];
 
 const SKILLS_OPTIONS = [
-  { label: "Local", value: "local", hint: "skills/ in this project" },
-  { label: "Global", value: "global", hint: "~/.betterspec/skills/" },
+  { label: "Local", value: "local", hint: ".agents/skills/ in this project" },
+  { label: "Global", value: "global", hint: "~/.agents/skills/" },
   { label: "Both", value: "both", hint: "Local + global, local overrides" },
 ];
 
