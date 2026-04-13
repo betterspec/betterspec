@@ -16,7 +16,7 @@ export { Confirm, TextInput, Select } from "./Interactive.js";
 export { Box } from "ink";
 
 // Color helpers — hex colors mapped to INK-compatible format
-// Usage: <Text hex={colors.primary}>
+// Usage: <Text color={colors.primary}>
 
 export const colors = {
   primary: "#CC5500", // Sedona orange

@@ -1,0 +1,9 @@
+{
+  "id": "adr-001",
+  "title": "No LLM API calls in the CLI",
+  "status": "accepted",
+  "date": "2026-04-06",
+  "context": "The ai-integration change originally planned to embed LLM runners (subprocess, Anthropic API, OpenAI API) directly in @betterspec/core and expose AI-powered commands (digest, search, onboard, explain, impact) via the CLI. The goal was to make betterspec smarter out of the box.",
+  "decision": "The CLI will never make LLM API calls. @betterspec/core and @betterspec/cli are zero-AI packages. All AI-powered features are deferred to the future paid cloud portal (app.betterspec.dev). The MCP server exposes raw knowledge data to connected AI tools, which can perform summarization and analysis themselves.",
+  "consequences": "The CLI remains fast, deterministic, and dependency-free. No API keys required to use betterspec. AI-powered features become a paid cloud differentiator rather than a free feature. The MCP server provides a clean bridge: connected AI tools get full knowledge base access and can apply their own intelligence."
+}

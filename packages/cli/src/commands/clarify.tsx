@@ -25,9 +25,14 @@ interface ShowViewProps {
   changeName: string;
 }
 
-const SpecBlock: React.FC<{ title: string; content: string | null }> = ({ title, content }) => (
+const SpecBlock: React.FC<{ title: string; content: string | null }> = ({
+  title,
+  content,
+}) => (
   <InkBox flexDirection="column" paddingBottom={1}>
-    <Text bold hex={colors.primary}>{title}</Text>
+    <Text bold color={colors.primary}>
+      {title}
+    </Text>
     {content ? (
       <Text>{content.trim()}</Text>
     ) : (
@@ -65,7 +70,7 @@ const ShowView: React.FC<ShowViewProps> = ({ projectRoot, changeName }) => {
               // missing — show as null
             }
             return { ...s, content };
-          })
+          }),
         );
 
         setState({ phase: "done", change, sections });
@@ -86,7 +91,7 @@ const ShowView: React.FC<ShowViewProps> = ({ projectRoot, changeName }) => {
   if (state.phase === "error") {
     return (
       <BetterspecBox title="Show" borderColor="error">
-        <Text hex={colors.error}>{state.error}</Text>
+        <Text color={colors.error}>{state.error}</Text>
       </BetterspecBox>
     );
   }
@@ -94,10 +99,13 @@ const ShowView: React.FC<ShowViewProps> = ({ projectRoot, changeName }) => {
   const { change, sections = [] } = state;
 
   return (
-    <BetterspecBox title={`${changeName} (${change.status})`} borderColor="accent">
+    <BetterspecBox
+      title={`${changeName} (${change.status})`}
+      borderColor="accent"
+    >
       <InkBox flexDirection="column">
         <InkBox paddingBottom={1}>
-          <Text dimColor>Created: {change.createdAt.slice(0, 10)}  </Text>
+          <Text dimColor>Created: {change.createdAt.slice(0, 10)} </Text>
           <Text dimColor>Updated: {change.updatedAt.slice(0, 10)}</Text>
         </InkBox>
         {sections.map((s) => (
@@ -118,7 +126,9 @@ const ChangePicker: React.FC<PickerProps> = ({ projectRoot }) => {
   const [selected, setSelected] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    listChanges(projectRoot).then(setChanges).catch(() => setChanges([]));
+    listChanges(projectRoot)
+      .then(setChanges)
+      .catch(() => setChanges([]));
   }, []);
 
   if (!changes) {
@@ -128,7 +138,10 @@ const ChangePicker: React.FC<PickerProps> = ({ projectRoot }) => {
   if (changes.length === 0) {
     return (
       <BetterspecBox title="Show" borderColor="info">
-        <Text dimColor>No active changes. Run <Text hex={colors.primary}>betterspec propose</Text> to create one.</Text>
+        <Text dimColor>
+          No active changes. Run{" "}
+          <Text color={colors.primary}>betterspec propose</Text> to create one.
+        </Text>
       </BetterspecBox>
     );
   }
@@ -140,8 +153,13 @@ const ChangePicker: React.FC<PickerProps> = ({ projectRoot }) => {
   return (
     <BetterspecBox title="Show — select a change" borderColor="accent">
       <Select
-        options={changes.map((c) => ({ label: `${c.name} (${c.status})`, value: c.name }))}
+        message="Select a change to show:"
+        options={changes.map((c) => ({
+          label: `${c.name} (${c.status})`,
+          value: c.name,
+        }))}
         onSelect={setSelected}
+        onCancel={() => process.exit(0)}
       />
     </BetterspecBox>
   );
@@ -149,7 +167,7 @@ const ChangePicker: React.FC<PickerProps> = ({ projectRoot }) => {
 
 export async function showCommand(
   changeName: string | undefined,
-  options?: { cwd?: string }
+  options?: { cwd?: string },
 ): Promise<void> {
   const projectRoot = resolve(options?.cwd || process.cwd());
 
@@ -157,8 +175,11 @@ export async function showCommand(
     const { render } = await import("ink");
     render(
       <BetterspecBox title="Not Initialized" borderColor="error">
-        <Text>betterspec is not initialized. Run <Text hex={colors.primary}>betterspec init</Text> first.</Text>
-      </BetterspecBox>
+        <Text>
+          betterspec is not initialized. Run{" "}
+          <Text color={colors.primary}>betterspec init</Text> first.
+        </Text>
+      </BetterspecBox>,
     );
     process.exit(1);
   }
@@ -169,10 +190,14 @@ export async function showCommand(
   }));
 
   if (changeName) {
-    const { waitUntilExit } = render(<ShowView projectRoot={projectRoot} changeName={changeName} />);
+    const { waitUntilExit } = render(
+      <ShowView projectRoot={projectRoot} changeName={changeName} />,
+    );
     await waitUntilExit();
   } else {
-    const { waitUntilExit } = render(<ChangePicker projectRoot={projectRoot} />);
+    const { waitUntilExit } = render(
+      <ChangePicker projectRoot={projectRoot} />,
+    );
     await waitUntilExit();
   }
 }

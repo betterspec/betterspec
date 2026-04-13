@@ -166,7 +166,7 @@ program.action(async () => {
       </Box>
       <Box paddingTop={1}>
         <Text dimColor>Run </Text>
-        <Text hex="#CC5500">betterspec --help</Text>
+        <Text color="#CC5500">betterspec --help</Text>
         <Text dimColor> for all commands.</Text>
       </Box>
     </Box>

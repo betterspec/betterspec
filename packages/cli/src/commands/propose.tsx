@@ -11,12 +11,7 @@ import React from "react";
 import { render, Box as InkBox, Text } from "ink";
 import { resolve } from "node:path";
 import { configExists, createChange } from "@betterspec/core";
-import {
-  BetterspecBox,
-  Logo,
-  Spinner,
-  colors,
-} from "../ui/ink/index.js";
+import { BetterspecBox, Logo, Spinner, colors } from "../ui/ink/index.js";
 
 function slugify(text: string): string {
   return text
@@ -69,7 +64,9 @@ const ProposeView: React.FC<ProposeViewProps> = ({
   idea,
   name,
 }) => {
-  const [phase, setPhase] = React.useState<"creating" | "done" | "error">("creating");
+  const [phase, setPhase] = React.useState<"creating" | "done" | "error">(
+    "creating",
+  );
   const [changeName, setChangeName] = React.useState<string>("");
   const [files, setFiles] = React.useState<string[]>([]);
   const [error, setError] = React.useState<string>("");
@@ -104,7 +101,9 @@ const ProposeView: React.FC<ProposeViewProps> = ({
       <InkBox flexDirection="column">
         <Logo />
         <BetterspecBox title="betterspec propose" borderColor="accent">
-          <Spinner label={`Creating change "${name ?? idea.slice(0, 30)}"...`} />
+          <Spinner
+            label={`Creating change "${name ?? idea.slice(0, 30)}"...`}
+          />
         </BetterspecBox>
       </InkBox>
     );
@@ -115,7 +114,7 @@ const ProposeView: React.FC<ProposeViewProps> = ({
       <InkBox flexDirection="column">
         <Logo />
         <BetterspecBox title="Error" borderColor="error">
-          <Text hex={colors.error}>{error}</Text>
+          <Text color={colors.error}>{error}</Text>
         </BetterspecBox>
       </InkBox>
     );
@@ -126,48 +125,51 @@ const ProposeView: React.FC<ProposeViewProps> = ({
       <Logo />
       <BetterspecBox title="Proposed" borderColor="success">
         <Text>
-          <Text hex={colors.success}>✓</Text> Created change:{" "}
-          <Text hex={colors.primary}>{changeName}</Text>
+          <Text color={colors.success}>✓</Text> Created change:{" "}
+          <Text color={colors.primary}>{changeName}</Text>
         </Text>
       </BetterspecBox>
 
       <InkBox flexDirection="column" paddingTop={1} paddingLeft={1}>
         <Text bold>Files:</Text>
         {files.map((f) => (
-          <Text key={f} dimColor>  • {f}</Text>
+          <Text key={f} dimColor>
+            {" "}
+            • {f}
+          </Text>
         ))}
       </InkBox>
 
       <InkBox flexDirection="column" paddingTop={1}>
         <BetterspecBox title="Next Steps" borderColor="default">
           <InkBox flexDirection="column" gap={0}>
-            <Text dimColor>  1. Fill in </Text>
-            <Text hex={colors.primary}>    proposal.md</Text>
-            <Text dimColor>       with motivation and scope</Text>
-            <Text dimColor>  2. Define requirements in </Text>
-            <Text hex={colors.primary}>    specs/requirements.md</Text>
-            <Text dimColor>  3. Add scenarios in </Text>
-            <Text hex={colors.primary}>    specs/scenarios.md</Text>
-            <Text dimColor>  4. Describe approach in </Text>
-            <Text hex={colors.primary}>    design.md</Text>
-            <Text dimColor>  5. Break into tasks in </Text>
-            <Text hex={colors.primary}>    tasks.md</Text>
+            <Text dimColor> 1. Fill in </Text>
+            <Text color={colors.primary}> proposal.md</Text>
+            <Text dimColor> with motivation and scope</Text>
+            <Text dimColor> 2. Define requirements in </Text>
+            <Text color={colors.primary}> specs/requirements.md</Text>
+            <Text dimColor> 3. Add scenarios in </Text>
+            <Text color={colors.primary}> specs/scenarios.md</Text>
+            <Text dimColor> 4. Describe approach in </Text>
+            <Text color={colors.primary}> design.md</Text>
+            <Text dimColor> 5. Break into tasks in </Text>
+            <Text color={colors.primary}> tasks.md</Text>
           </InkBox>
         </BetterspecBox>
       </InkBox>
 
-      <Text dimColor paddingTop={1}>
-        Run{" "}
-        <Text hex={colors.primary}>betterspec clarify {changeName}</Text>
+      <InkBox paddingTop={1}>
+        <Text dimColor>Run </Text>
+        <Text color={colors.primary}>betterspec clarify {changeName}</Text>
         <Text dimColor> to refine requirements.</Text>
-      </Text>
+      </InkBox>
     </InkBox>
   );
 };
 
 export async function proposeCommand(
   idea?: string,
-  options?: { cwd?: string }
+  options?: { cwd?: string },
 ): Promise<void> {
   const projectRoot = resolve(options?.cwd || process.cwd());
 
@@ -178,10 +180,10 @@ export async function proposeCommand(
         <BetterspecBox title="Not Initialized" borderColor="error">
           <Text>betterspec is not initialized.</Text>
           <Text dimColor> Run </Text>
-          <Text hex={colors.primary}>betterspec init</Text>
+          <Text color={colors.primary}>betterspec init</Text>
           <Text dimColor> first.</Text>
         </BetterspecBox>
-      </InkBox>
+      </InkBox>,
     );
     process.exit(1);
   }
@@ -194,17 +196,12 @@ export async function proposeCommand(
           <Text>betterspec propose "your idea here"</Text>
           <Text dimColor> </Text>
           <Text dimColor>Provide the idea as an argument:</Text>
-          <Text dimColor>  betterspec propose "Add dark mode"</Text>
+          <Text dimColor> betterspec propose "Add dark mode"</Text>
         </BetterspecBox>
-      </InkBox>
+      </InkBox>,
     );
     process.exit(1);
   }
 
-  render(
-    <ProposeView
-      projectRoot={projectRoot}
-      idea={idea}
-    />
-  );
+  render(<ProposeView projectRoot={projectRoot} idea={idea} />);
 }

@@ -1,0 +1,12 @@
+{
+  "id": "agent-scaffolding",
+  "name": "Agent Scaffolding",
+  "description": "scaffoldAgents(targetDir, roles, modelOverrides, format) writes agent role files (planner, builder, validator, archivist) with format-appropriate frontmatter for each tool. Content defined as template literal functions in content.ts.",
+  "sourceChange": "init-redesign",
+  "archivedAt": "2026-04-06T00:00:00Z",
+  "files": [
+    "packages/core/src/agents/index.ts",
+    "packages/core/src/agents/content.ts"
+  ],
+  "tags": ["core", "agents", "scaffolding"]
+}

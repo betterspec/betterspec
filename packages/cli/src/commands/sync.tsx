@@ -13,7 +13,7 @@ import { existsSync, mkdirSync } from "node:fs";
 const exec = promisify(execCb);
 import { configExists, readConfig } from "@betterspec/core";
 import {
-  Box as BetterspecBox,
+  BetterspecBox,
   Spinner,
   colors,
 } from "../ui/ink/index.js";
@@ -110,7 +110,7 @@ const SyncDashboard: React.FC<SyncDashboardProps> = ({
   if (state.phase === "done") {
     return (
       <BetterspecBox title="Sync Complete" borderColor="success">
-        <Text hex={colors.success}>\u2713 Global specs synced</Text>
+        <Text color={colors.success}>\u2713 Global specs synced</Text>
         {state.source && (
           <Text dimColor>
             {" "}Source: {state.source}
@@ -128,7 +128,7 @@ const SyncDashboard: React.FC<SyncDashboardProps> = ({
   if (state.phase === "error") {
     return (
       <BetterspecBox title="Sync Failed" borderColor="error">
-        <Text hex={colors.error}>\u2717 Sync failed</Text>
+        <Text color={colors.error}>\u2717 Sync failed</Text>
         {state.error && <Text dimColor> {state.error}</Text>}
       </BetterspecBox>
     );
@@ -148,7 +148,7 @@ export async function syncCommand(options?: {
       <BetterspecBox title="Not Initialized" borderColor="error">
         <Text>betterspec is not initialized.</Text>
         <Text dimColor> Run </Text>
-        <Text hex={colors.primary}>betterspec init</Text>
+        <Text color={colors.primary}>betterspec init</Text>
         <Text dimColor> first.</Text>
       </BetterspecBox>
     );
@@ -162,11 +162,11 @@ export async function syncCommand(options?: {
       <BetterspecBox title="No Sync Needed" borderColor="info">
         <Text>
           Spec mode is{" "}
-          <Text hex={colors.primary}>local</Text>. No global repo to sync.
+          <Text color={colors.primary}>local</Text>. No global repo to sync.
         </Text>
         <Text dimColor>
           {" "}Run{" "}
-          <Text hex={colors.primary}>betterspec config mode local+global</Text>
+          <Text color={colors.primary}>betterspec config mode local+global</Text>
           <Text dimColor> to enable global specs.</Text>
         </Text>
       </BetterspecBox>
@@ -180,7 +180,7 @@ export async function syncCommand(options?: {
         <Text>Global spec source not configured.</Text>
         <Text dimColor>
           {" "}Run{" "}
-          <Text hex={colors.primary}>
+          <Text color={colors.primary}>
             betterspec config global.source &lt;path-or-url&gt;
           </Text>
           <Text dimColor> to set it.</Text>

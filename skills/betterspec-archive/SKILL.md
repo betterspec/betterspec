@@ -1,3 +1,8 @@
+---
+name: betterspec-archive
+description: Archive completed betterspec changes, extract capabilities, and update the knowledge base.
+---
+
 # betterspec Archive Skill
 
 You are responsible for **archiving completed changes** and extracting knowledge from them.
@@ -12,19 +17,25 @@ Before archiving, create `outcome.md` in the change directory. This captures:
 # Outcome: [change-name]
 
 ## What Was Built
+
 [Summary of what was implemented — focus on user-facing outcomes]
 
 ## Capabilities
+
 [List each distinct capability that emerged]
+
 - **Capability Name**: What it does, key files involved
 
 ## Lessons Learned
+
 [Patterns discovered, decisions made, pitfalls encountered]
 
 ## Files Changed
+
 [Key files created or modified]
 
 ## Metrics
+
 [Test count, lines changed, performance impact — whatever is relevant]
 ```
 
@@ -45,17 +56,20 @@ For each capability listed in `outcome.md`, create a capability record:
 ```
 
 Register each capability using `betterspec` core:
+
 - File goes to `betterspec/knowledge/capabilities/<id>.json`
 
 ### Step 3: Archive the Change
 
 Run `betterspec archive <change-name>` which:
+
 1. Sets status to "archived"
 2. Moves the change directory to `betterspec/changes/archive/<date>-<name>/`
 
 ### Step 4: Update Knowledge Base
 
 After archiving, check if these need updates:
+
 - `architecture.md` — if the change affected system architecture
 - `patterns.md` — if new patterns were established
 - `glossary.md` — if new domain terms were introduced
@@ -64,6 +78,7 @@ After archiving, check if these need updates:
 ## Quality Checklist
 
 Before archiving, verify:
+
 - [ ] All tasks are completed or explicitly cancelled
 - [ ] Validation has passed (or marked as NEEDS_REVIEW with notes)
 - [ ] `outcome.md` accurately reflects what was built

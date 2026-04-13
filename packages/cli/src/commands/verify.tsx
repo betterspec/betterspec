@@ -14,7 +14,7 @@ import {
   getChangePath,
 } from "@betterspec/core";
 import {
-  Box as BetterspecBox,
+  BetterspecBox,
   colors,
 } from "../ui/ink/index.js";
 
@@ -83,15 +83,15 @@ async function verifyChange(
 
 const VerifyRow: React.FC<{ check: VerifyCheck }> = ({ check }) => (
   <InkBox>
-    <Text hex={check.passed ? colors.success : colors.error}>
+    <Text color={check.passed ? colors.success : colors.error}>
       {check.passed ? "\u2713" : "\u2717"}
     </Text>
     <Text> </Text>
-    <Text bold={!check.passed} hex={check.passed ? colors.muted : colors.warning}>
+    <Text bold={!check.passed} color={check.passed ? colors.muted : colors.warning}>
       {check.name}
     </Text>
     <Text dimColor>: </Text>
-    <Text hex={check.passed ? colors.muted : colors.warning}>
+    <Text color={check.passed ? colors.muted : colors.warning}>
       {check.message}
     </Text>
   </InkBox>
@@ -153,7 +153,7 @@ const VerifyDashboard: React.FC<VerifyDashboardProps> = ({
       <BetterspecBox title="Nothing to Verify" borderColor="info">
         <Text>No active changes to verify.</Text>
         <Text dimColor>Run </Text>
-        <Text hex={colors.primary}>betterspec propose</Text>
+        <Text color={colors.primary}>betterspec propose</Text>
         <Text dimColor> to create one.</Text>
       </BetterspecBox>
     );
@@ -181,7 +181,7 @@ const VerifyDashboard: React.FC<VerifyDashboardProps> = ({
             title={result.changeName}
             borderColor="error"
           >
-            <Text hex={colors.error}>Change not found</Text>
+            <Text color={colors.error}>Change not found</Text>
           </BetterspecBox>
         </InkBox>
       );
@@ -197,7 +197,7 @@ const VerifyDashboard: React.FC<VerifyDashboardProps> = ({
           </InkBox>
           <InkBox paddingTop={1}>
             <Text>
-              <Text hex={allPassed ? colors.success : colors.warning}>
+              <Text color={allPassed ? colors.success : colors.warning}>
                 {passed}/{total} checks passed
               </Text>
             </Text>
@@ -219,7 +219,7 @@ const VerifyDashboard: React.FC<VerifyDashboardProps> = ({
             borderColor={allPassed ? "success" : "warning"}
           >
             <Text
-              hex={allPassed ? colors.success : colors.warning}
+              color={allPassed ? colors.success : colors.warning}
             >
               {totalPassed}/{totalChecks} total checks passed across{" "}
               {results.length} changes
@@ -242,7 +242,7 @@ export async function verifyCommand(
       <BetterspecBox title="Not Initialized" borderColor="error">
         <Text>betterspec is not initialized.</Text>
         <Text dimColor> Run </Text>
-        <Text hex={colors.primary}>betterspec init</Text>
+        <Text color={colors.primary}>betterspec init</Text>
         <Text dimColor> first.</Text>
       </BetterspecBox>
     );

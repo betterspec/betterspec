@@ -8,7 +8,7 @@ import { render, Box as InkBox, Text } from "ink";
 import { resolve } from "node:path";
 import { configExists, listCapabilities } from "@betterspec/core";
 import {
-  Box as BetterspecBox,
+  BetterspecBox,
   Table,
   colors,
 } from "../ui/ink/index.js";
@@ -34,7 +34,7 @@ const CapabilitiesDashboard: React.FC<CapabilitiesDashboardProps> = ({
   if (error) {
     return (
       <BetterspecBox title="Capabilities" borderColor="error">
-        <Text hex={colors.error}>Failed to load capabilities: {error}</Text>
+        <Text color={colors.error}>Failed to load capabilities: {error}</Text>
       </BetterspecBox>
     );
   }
@@ -54,7 +54,7 @@ const CapabilitiesDashboard: React.FC<CapabilitiesDashboardProps> = ({
         <Text dimColor>Archive a completed change to extract capabilities.</Text>
         <InkBox paddingTop={1}>
           <Text dimColor>
-            Run <Text hex={colors.primary}>betterspec archive &lt;change&gt;</Text>
+            Run <Text color={colors.primary}>betterspec archive &lt;change&gt;</Text>
           </Text>
         </InkBox>
       </BetterspecBox>
@@ -68,7 +68,7 @@ const CapabilitiesDashboard: React.FC<CapabilitiesDashboardProps> = ({
     { key: "archivedAt", header: "Archived", width: 12 },
     { key: "tags", header: "Tags", width: 14, render: (row: any) => (
       row.tags?.length ? (
-        <Text hex={colors.accent}>{row.tags.join(", ")}</Text>
+        <Text color={colors.accent}>{row.tags.join(", ")}</Text>
       ) : (
         <Text dimColor>--</Text>
       )
@@ -80,7 +80,7 @@ const CapabilitiesDashboard: React.FC<CapabilitiesDashboardProps> = ({
     description: (
       <Text dimColor>{cap.description?.slice(0, 60) ?? ""}</Text>
     ),
-    sourceChange: <Text hex={colors.secondary}>{cap.sourceChange}</Text>,
+    sourceChange: <Text color={colors.secondary}>{cap.sourceChange}</Text>,
     archivedAt: <Text dimColor>{cap.archivedAt?.slice(0, 10)}</Text>,
   }));
 
@@ -88,7 +88,7 @@ const CapabilitiesDashboard: React.FC<CapabilitiesDashboardProps> = ({
     <InkBox flexDirection="column">
       <BetterspecBox title="Capabilities" borderColor="accent">
         <Text>
-          <Text hex={colors.primary}>{capabilities.length}</Text>
+          <Text color={colors.primary}>{capabilities.length}</Text>
           <Text dimColor> capabilit{capabilities.length === 1 ? "y" : "ies"} registered</Text>
         </Text>
       </BetterspecBox>
@@ -110,7 +110,7 @@ export async function capabilitiesCommand(options?: {
       <BetterspecBox title="Not Initialized" borderColor="error">
         <Text>betterspec is not initialized.</Text>
         <Text dimColor> Run </Text>
-        <Text hex={colors.primary}>betterspec init</Text>
+        <Text color={colors.primary}>betterspec init</Text>
         <Text dimColor> first.</Text>
       </BetterspecBox>
     );

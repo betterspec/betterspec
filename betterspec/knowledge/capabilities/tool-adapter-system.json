@@ -1,0 +1,18 @@
+{
+  "id": "tool-adapter-system",
+  "name": "Tool Adapter System",
+  "description": "Pluggable adapter architecture for scaffolding betterspec integration files for different AI coding tools (OpenCode, Claude Code, Gemini CLI, Cursor, Codex, Generic). Each adapter declares capabilities and implements scaffold().",
+  "sourceChange": "init-redesign",
+  "archivedAt": "2026-04-06T00:00:00Z",
+  "files": [
+    "packages/core/src/adapters/types.ts",
+    "packages/core/src/adapters/index.ts",
+    "packages/core/src/adapters/opencode.ts",
+    "packages/core/src/adapters/claude-code.ts",
+    "packages/core/src/adapters/gemini-cli.ts",
+    "packages/core/src/adapters/cursor.ts",
+    "packages/core/src/adapters/codex.ts",
+    "packages/core/src/adapters/generic.ts"
+  ],
+  "tags": ["core", "adapters", "init", "scaffolding"]
+}

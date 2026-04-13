@@ -1,0 +1,9 @@
+{
+  "id": "betterspec-serve-command",
+  "name": "betterspec serve Command",
+  "description": "betterspec serve launches the MCP server and displays copy-paste connection instructions for Claude Code, OpenCode, Gemini CLI, and Cursor.",
+  "sourceChange": "mcp-server",
+  "archivedAt": "2026-04-06T00:00:00Z",
+  "files": ["packages/cli/src/commands/serve.tsx"],
+  "tags": ["cli", "mcp", "serve"]
+}

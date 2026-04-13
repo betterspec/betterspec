@@ -1,0 +1,9 @@
+{
+  "id": "interactive-init-wizard",
+  "name": "Interactive Init Wizard",
+  "description": "betterspec init interactive wizard that guides users through tool selection, skills location, and model selection. Falls back to non-interactive mode in CI via --tool, --mode, --skills flags.",
+  "sourceChange": "init-redesign",
+  "archivedAt": "2026-04-06T00:00:00Z",
+  "files": ["packages/cli/src/commands/init.tsx"],
+  "tags": ["cli", "init", "interactive", "ink"]
+}

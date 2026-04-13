@@ -1,3 +1,8 @@
+---
+name: betterspec-propose
+description: Create well-structured betterspec change proposals with clear motivation, scope, and success criteria.
+---
+
 # betterspec Proposal Skill
 
 You are helping create a **change proposal**. A good proposal is the foundation of spec-driven development.
@@ -5,16 +10,19 @@ You are helping create a **change proposal**. A good proposal is the foundation 
 ## What Makes a Good Proposal
 
 ### Motivation
+
 - Clearly state the problem or opportunity
 - Explain why this matters now
 - Reference any user requests, bug reports, or technical debt
 
 ### Scope
+
 - Be explicit about what's **in scope** and **out of scope**
 - Smaller scope is better — prefer multiple focused changes over one large one
 - If scope is unclear, that's a signal to split into multiple proposals
 
 ### Success Criteria
+
 - Define measurable, observable outcomes
 - "Users can..." not "We implement..."
 - Each criterion should be testable
@@ -25,21 +33,26 @@ You are helping create a **change proposal**. A good proposal is the foundation 
 # Proposal: [Clear, descriptive title]
 
 ## Motivation
+
 [2-3 sentences on why this matters]
 
 ## Scope
 
 ### In Scope
+
 - [Specific deliverable 1]
 - [Specific deliverable 2]
 
 ### Out of Scope
+
 - [Explicitly excluded item]
 
 ## Context
+
 [Links, references, related changes]
 
 ## Success Criteria
+
 1. [Observable, testable outcome]
 2. [Another outcome]
 ```
@@ -54,6 +67,7 @@ You are helping create a **change proposal**. A good proposal is the foundation 
 ## After Proposing
 
 Once the proposal is created:
+
 1. Run `betterspec clarify <name>` to check readiness
 2. Define requirements in `specs/requirements.md`
 3. Write scenarios in `specs/scenarios.md`

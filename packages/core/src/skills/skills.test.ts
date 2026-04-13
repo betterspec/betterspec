@@ -39,10 +39,10 @@ describe("SKILL_ENTRIES", () => {
 });
 
 describe("scaffoldSkills", () => {
-  it("creates skills in <project>/skills/ with mode local", async () => {
+  it("creates skills in <project>/.agents/skills/ with mode local", async () => {
     await scaffoldSkills(TEST_ROOT, "local");
 
-    const skillsDir = join(TEST_ROOT, "skills");
+    const skillsDir = join(TEST_ROOT, ".agents", "skills");
     expect(await fileExists(skillsDir)).toBe(true);
 
     for (const entry of SKILL_ENTRIES) {
@@ -55,14 +55,25 @@ describe("scaffoldSkills", () => {
     await scaffoldSkills(TEST_ROOT, "local");
 
     for (const entry of SKILL_ENTRIES) {
-      const skillPath = join(TEST_ROOT, "skills", entry.name, "SKILL.md");
+      const skillPath = join(
+        TEST_ROOT,
+        ".agents",
+        "skills",
+        entry.name,
+        "SKILL.md",
+      );
       const content = await readFile(skillPath, "utf-8");
       expect(content).toBe(entry.content);
     }
   });
 
   it("does not overwrite existing skill files", async () => {
-    const skillDir = join(TEST_ROOT, "skills", SKILL_ENTRIES[0].name);
+    const skillDir = join(
+      TEST_ROOT,
+      ".agents",
+      "skills",
+      SKILL_ENTRIES[0].name,
+    );
     const skillPath = join(skillDir, "SKILL.md");
     await mkdir(skillDir, { recursive: true });
     await writeFile(skillPath, "custom content", "utf-8");
@@ -84,7 +95,12 @@ describe("scaffoldSkills", () => {
   });
 
   it("returns fewer paths when some skills already exist", async () => {
-    const skillDir = join(TEST_ROOT, "skills", SKILL_ENTRIES[0].name);
+    const skillDir = join(
+      TEST_ROOT,
+      ".agents",
+      "skills",
+      SKILL_ENTRIES[0].name,
+    );
     const skillPath = join(skillDir, "SKILL.md");
     await mkdir(skillDir, { recursive: true });
     await writeFile(skillPath, "existing", "utf-8");

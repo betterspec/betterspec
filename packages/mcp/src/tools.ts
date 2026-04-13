@@ -10,6 +10,8 @@ import {
   readChangeFile,
   archiveChange,
   updateChangeStatus,
+  readConfig,
+  getChangePath,
 } from "@betterspec/core";
 
 export function registerTools(server: McpServer, projectRoot: string) {
@@ -22,11 +24,12 @@ export function registerTools(server: McpServer, projectRoot: string) {
         const summary = await getProjectSummary(projectRoot);
         const changes = await listChanges(projectRoot);
         const caps = await listCapabilities(projectRoot);
+        const config = await readConfig(projectRoot);
 
         let text = `# betterspec Status\n\n`;
         text += `- Active changes: ${changes.length}\n`;
         text += `- Capabilities: ${caps.length}\n`;
-        text += `- Mode: ${summary.config.mode}\n\n`;
+        text += `- Mode: ${config.mode}\n\n`;
 
         if (changes.length > 0) {
           text += `## Active Changes\n\n`;
@@ -34,7 +37,7 @@ export function registerTools(server: McpServer, projectRoot: string) {
             text += `- **${c.name}** (${c.status})`;
             if (c.tasks.length > 0) {
               const done = c.tasks.filter((t) =>
-                ["implemented", "passed"].includes(t.status)
+                ["implemented", "passed"].includes(t.status),
               ).length;
               text += ` — ${done}/${c.tasks.length} tasks done`;
             }
@@ -44,9 +47,12 @@ export function registerTools(server: McpServer, projectRoot: string) {
 
         return { content: [{ type: "text" as const, text }] };
       } catch (err: any) {
-        return { content: [{ type: "text" as const, text: `Error: ${err.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Error: ${err.message}` }],
+          isError: true,
+        };
       }
-    }
+    },
   );
 
   server.tool(
@@ -68,7 +74,9 @@ export function registerTools(server: McpServer, projectRoot: string) {
             cap.description.toLowerCase().includes(q) ||
             cap.tags?.some((t) => t.toLowerCase().includes(q))
           ) {
-            results.push(`**Capability: ${cap.name}**\n${cap.description}\nFiles: ${cap.files.join(", ")}`);
+            results.push(
+              `**Capability: ${cap.name}**\n${cap.description}\nFiles: ${cap.files.join(", ")}`,
+            );
           }
         }
 
@@ -78,19 +86,25 @@ export function registerTools(server: McpServer, projectRoot: string) {
             change.name.toLowerCase().includes(q) ||
             change.proposal?.toLowerCase().includes(q)
           ) {
-            results.push(`**Change: ${change.name}** (${change.status})\n${change.proposal?.slice(0, 200) ?? "No proposal"}`);
+            results.push(
+              `**Change: ${change.name}** (${change.status})\n${change.proposal?.slice(0, 200) ?? "No proposal"}`,
+            );
           }
         }
 
-        const text = results.length > 0
-          ? `# Search Results for "${query}"\n\n${results.join("\n\n---\n\n")}`
-          : `No results found for "${query}"`;
+        const text =
+          results.length > 0
+            ? `# Search Results for "${query}"\n\n${results.join("\n\n---\n\n")}`
+            : `No results found for "${query}"`;
 
         return { content: [{ type: "text" as const, text }] };
       } catch (err: any) {
-        return { content: [{ type: "text" as const, text: `Error: ${err.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Error: ${err.message}` }],
+          isError: true,
+        };
       }
-    }
+    },
   );
 
   server.tool(
@@ -103,7 +117,7 @@ export function registerTools(server: McpServer, projectRoot: string) {
         const changes = await listChanges(projectRoot);
 
         const matching = caps.filter((c) =>
-          c.files.some((f) => f.includes(path))
+          c.files.some((f) => f.includes(path)),
         );
 
         let text = `# Impact Analysis: ${path}\n\n`;
@@ -119,7 +133,7 @@ export function registerTools(server: McpServer, projectRoot: string) {
         text += `\n## Active Changes\n\n`;
         // Check if any active change's design mentions this path
         const relevantChanges = changes.filter((c) =>
-          c.proposal?.includes(path)
+          c.proposal?.includes(path),
         );
         if (relevantChanges.length > 0) {
           for (const c of relevantChanges) {
@@ -131,9 +145,12 @@ export function registerTools(server: McpServer, projectRoot: string) {
 
         return { content: [{ type: "text" as const, text }] };
       } catch (err: any) {
-        return { content: [{ type: "text" as const, text: `Error: ${err.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Error: ${err.message}` }],
+          isError: true,
+        };
       }
-    }
+    },
   );
 
   server.tool(
@@ -144,17 +161,26 @@ export function registerTools(server: McpServer, projectRoot: string) {
     },
     async ({ idea }) => {
       try {
-        const change = await createChange(projectRoot, idea);
+        const change = await createChange(
+          projectRoot,
+          idea,
+          `# Proposal: ${idea}\n\n## Motivation\n\n<!-- Fill in -->\n\n## Scope\n\n### In Scope\n\n### Out of Scope\n\n## Success Criteria\n\n1. \n`,
+        );
         return {
-          content: [{
-            type: "text" as const,
-            text: `Created change: ${change.name}\nPath: ${change.path}\n\nNext: fill in proposal.md with motivation, scope, and success criteria.`,
-          }],
+          content: [
+            {
+              type: "text" as const,
+              text: `Created change: ${change.name}\nPath: ${change.path}\n\nNext: fill in proposal.md with motivation, scope, and success criteria.`,
+            },
+          ],
         };
       } catch (err: any) {
-        return { content: [{ type: "text" as const, text: `Error: ${err.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Error: ${err.message}` }],
+          isError: true,
+        };
       }
-    }
+    },
   );
 
   server.tool(
@@ -165,11 +191,11 @@ export function registerTools(server: McpServer, projectRoot: string) {
       try {
         const caps = await listCapabilities(projectRoot);
         const changes = await listChanges(projectRoot);
-        const summary = await getProjectSummary(projectRoot);
+        const config = await readConfig(projectRoot);
 
         let text = `# betterspec Knowledge Digest\n\n`;
-        text += `## Project Configuration\n- Mode: ${summary.config.mode}\n`;
-        if (summary.config.tool) text += `- Tool: ${summary.config.tool}\n`;
+        text += `## Project Configuration\n- Mode: ${config.mode}\n`;
+        if (config.tool) text += `- Tool: ${config.tool}\n`;
         text += `\n`;
 
         text += `## Active Changes (${changes.length})\n\n`;
@@ -184,9 +210,12 @@ export function registerTools(server: McpServer, projectRoot: string) {
 
         return { content: [{ type: "text" as const, text }] };
       } catch (err: any) {
-        return { content: [{ type: "text" as const, text: `Error: ${err.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Error: ${err.message}` }],
+          isError: true,
+        };
       }
-    }
+    },
   );
 
   // betterspec_list — list changes with optional filters
@@ -194,8 +223,16 @@ export function registerTools(server: McpServer, projectRoot: string) {
     "betterspec_list",
     "List betterspec changes. Optionally filter by status or include archived changes.",
     {
-      status: z.string().optional().describe("Filter by status: proposed, planning, in-progress, validating, validated, archiving, archived"),
-      archived: z.boolean().optional().describe("Include archived changes (default: false)"),
+      status: z
+        .string()
+        .optional()
+        .describe(
+          "Filter by status: proposed, planning, in-progress, validating, validated, archiving, archived",
+        ),
+      archived: z
+        .boolean()
+        .optional()
+        .describe("Include archived changes (default: false)"),
     },
     async ({ status, archived }) => {
       try {
@@ -210,16 +247,21 @@ export function registerTools(server: McpServer, projectRoot: string) {
           text += `- Created: ${c.createdAt.slice(0, 10)}\n`;
           text += `- Updated: ${c.updatedAt.slice(0, 10)}\n`;
           if (c.tasks.length > 0) {
-            const done = c.tasks.filter((t) => ["implemented", "passed"].includes(t.status)).length;
+            const done = c.tasks.filter((t) =>
+              ["implemented", "passed"].includes(t.status),
+            ).length;
             text += `- Tasks: ${done}/${c.tasks.length} done\n`;
           }
           text += `\n`;
         }
         return { content: [{ type: "text" as const, text }] };
       } catch (err: any) {
-        return { content: [{ type: "text" as const, text: `Error: ${err.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Error: ${err.message}` }],
+          isError: true,
+        };
       }
-    }
+    },
   );
 
   // betterspec_show — return all spec files for a change in one call
@@ -249,9 +291,12 @@ export function registerTools(server: McpServer, projectRoot: string) {
         }
         return { content: [{ type: "text" as const, text }] };
       } catch (err: any) {
-        return { content: [{ type: "text" as const, text: `Error: ${err.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Error: ${err.message}` }],
+          isError: true,
+        };
       }
-    }
+    },
   );
 
   // betterspec_verify — structural completeness check
@@ -268,18 +313,34 @@ export function registerTools(server: McpServer, projectRoot: string) {
           { name: "Design", path: "design.md" },
           { name: "Tasks", path: "tasks.md" },
         ];
-        const results: Array<{ name: string; passed: boolean; message: string }> = [];
+        const results: Array<{
+          name: string;
+          passed: boolean;
+          message: string;
+        }> = [];
         for (const s of specFiles) {
           try {
             const content = await readChangeFile(projectRoot, change, s.path);
             const stripped = content.replace(/<!--.*?-->/gs, "").trim();
             if (stripped.length < 50) {
-              results.push({ name: s.name, passed: false, message: `Too short — has minimal content (${stripped.length} chars after stripping comments)` });
+              results.push({
+                name: s.name,
+                passed: false,
+                message: `Too short — has minimal content (${stripped.length} chars after stripping comments)`,
+              });
             } else {
-              results.push({ name: s.name, passed: true, message: `OK (${stripped.length} chars)` });
+              results.push({
+                name: s.name,
+                passed: true,
+                message: `OK (${stripped.length} chars)`,
+              });
             }
           } catch {
-            results.push({ name: s.name, passed: false, message: "File missing" });
+            results.push({
+              name: s.name,
+              passed: false,
+              message: "File missing",
+            });
           }
         }
         const passed = results.filter((r) => r.passed).length;
@@ -290,9 +351,12 @@ export function registerTools(server: McpServer, projectRoot: string) {
         }
         return { content: [{ type: "text" as const, text }] };
       } catch (err: any) {
-        return { content: [{ type: "text" as const, text: `Error: ${err.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Error: ${err.message}` }],
+          isError: true,
+        };
       }
-    }
+    },
   );
 
   // betterspec_diff — run analyzeDrift and return the drift report
@@ -326,9 +390,12 @@ export function registerTools(server: McpServer, projectRoot: string) {
         if (report.items.length === 0) text += `No drift detected. ✓\n`;
         return { content: [{ type: "text" as const, text }] };
       } catch (err: any) {
-        return { content: [{ type: "text" as const, text: `Error: ${err.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Error: ${err.message}` }],
+          isError: true,
+        };
       }
-    }
+    },
   );
 
   // betterspec_archive — archive a completed change
@@ -337,22 +404,31 @@ export function registerTools(server: McpServer, projectRoot: string) {
     "Archive a completed change. Optionally provide an outcome summary.",
     {
       change: z.string().describe("Change name to archive"),
-      outcome: z.string().optional().describe("Outcome summary — what was built, what was learned"),
+      outcome: z
+        .string()
+        .optional()
+        .describe("Outcome summary — what was built, what was learned"),
     },
     async ({ change, outcome }) => {
       try {
         if (outcome) {
           const { writeOutcome } = await import("@betterspec/core");
-          await writeOutcome(projectRoot, change, outcome);
+          const changePath = getChangePath(projectRoot, change);
+          await writeOutcome(changePath, outcome);
         }
         const archivePath = await archiveChange(projectRoot, change);
         const text = `✓ Archived: ${change}\nPath: ${archivePath}\n${
-          outcome ? `\nOutcome recorded.` : `\nNo outcome provided — consider adding one for knowledge capture.`
+          outcome
+            ? `\nOutcome recorded.`
+            : `\nNo outcome provided — consider adding one for knowledge capture.`
         }`;
         return { content: [{ type: "text" as const, text }] };
       } catch (err: any) {
-        return { content: [{ type: "text" as const, text: `Error: ${err.message}` }], isError: true };
+        return {
+          content: [{ type: "text" as const, text: `Error: ${err.message}` }],
+          isError: true,
+        };
       }
-    }
+    },
   );
 }

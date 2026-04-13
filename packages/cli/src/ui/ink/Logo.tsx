@@ -23,7 +23,11 @@ const GRADIENT_HEX = [
   "#06B6D4", // brand cyan
 ];
 
-function gradientColor(char: string, lineIndex: number, totalWidth: number): string {
+function gradientColor(
+  char: string,
+  lineIndex: number,
+  totalWidth: number,
+): string {
   // Map each character position to a gradient color
   const t = lineIndex / (LOGO_LINES.length - 1);
   const idx = Math.floor(t * (GRADIENT_HEX.length - 1));
@@ -36,17 +40,20 @@ interface LogoProps {
 
 export const Logo: React.FC<LogoProps> = ({ dim = false }) => {
   return (
-    <Text dim={dim}>
+    <Text dimColor={dim}>
       {LOGO_LINES.map((line, lineIdx) => (
         <Text key={lineIdx}>
           {line.split("").map((char, charIdx) => {
             const t = lineIdx / (LOGO_LINES.length - 1);
             const colorIdx = Math.min(
               Math.floor(t * (GRADIENT_HEX.length - 1)),
-              GRADIENT_HEX.length - 1
+              GRADIENT_HEX.length - 1,
             );
             return (
-              <Text key={charIdx} hex={dim ? "#4a4a4a" : GRADIENT_HEX[colorIdx]}>
+              <Text
+                key={charIdx}
+                color={dim ? "#4a4a4a" : GRADIENT_HEX[colorIdx]}
+              >
                 {char}
               </Text>
             );

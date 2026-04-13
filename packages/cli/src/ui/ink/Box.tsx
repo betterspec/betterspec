@@ -45,36 +45,36 @@ export const BetterspecBox: React.FC<BoxProps> = ({
     <Box flexDirection="column" padding={padding}>
       {title && (
         <Box>
-          <Text hex={bc}>{BORDER_CHARS.topLeft}</Text>
-          <Text hex={bc}>{BORDER_CHARS.horizontal.repeat(title.length + 2)}</Text>
-          <Text bold hex={bc}>
+          <Text color={bc}>{BORDER_CHARS.topLeft}</Text>
+          <Text color={bc}>{BORDER_CHARS.horizontal.repeat(title.length + 2)}</Text>
+          <Text bold color={bc}>
             {" "}
             {title.toUpperCase()}{" "}
           </Text>
-          <Text hex={bc}>{BORDER_CHARS.horizontal.repeat(2)}</Text>
-          <Text hex={bc}>{BORDER_CHARS.topRight}</Text>
+          <Text color={bc}>{BORDER_CHARS.horizontal.repeat(2)}</Text>
+          <Text color={bc}>{BORDER_CHARS.topRight}</Text>
         </Box>
       )}
       {!title && (
         <Box>
-          <Text hex={bc}>{BORDER_CHARS.topLeft}</Text>
-          <Text hex={bc}>{BORDER_CHARS.horizontal.repeat(3)}</Text>
-          <Text hex={bc}>{BORDER_CHARS.topRight}</Text>
+          <Text color={bc}>{BORDER_CHARS.topLeft}</Text>
+          <Text color={bc}>{BORDER_CHARS.horizontal.repeat(3)}</Text>
+          <Text color={bc}>{BORDER_CHARS.topRight}</Text>
         </Box>
       )}
       <Box>
-        <Text hex={bc}>{BORDER_CHARS.vertical}</Text>
+        <Text color={bc}>{BORDER_CHARS.vertical}</Text>
         <Box flexGrow={1} paddingLeft={1}>
           {children}
         </Box>
-        <Text hex={bc}>{BORDER_CHARS.vertical}</Text>
+        <Text color={bc}>{BORDER_CHARS.vertical}</Text>
       </Box>
       <Box>
-        <Text hex={bc}>{BORDER_CHARS.bottomLeft}</Text>
-        <Text hex={bc}>
+        <Text color={bc}>{BORDER_CHARS.bottomLeft}</Text>
+        <Text color={bc}>
           {BORDER_CHARS.horizontal.repeat(title ? title.length + 7 : 3)}
         </Text>
-        <Text hex={bc}>{BORDER_CHARS.bottomRight}</Text>
+        <Text color={bc}>{BORDER_CHARS.bottomRight}</Text>
       </Box>
     </Box>
   );
@@ -90,7 +90,7 @@ const SECTION_GRADIENT = ["#CC5500", "#F5A050", "#7C3AED", "#06B6D4"];
 export const Section: React.FC<SectionProps> = ({ title, children }) => (
   <Box flexDirection="column">
     <Box>
-      <Text bold hex="#CC5500">
+      <Text bold color="#CC5500">
         {" "}
         {title.toUpperCase()}{" "}
       </Text>

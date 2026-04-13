@@ -1,0 +1,13 @@
+{
+  "id": "mcp-server",
+  "name": "MCP Server",
+  "description": "betterspec MCP server (@betterspec/mcp) exposing 5 tools (status, search, impact, propose, digest) and 6 resources (architecture, patterns, glossary, capabilities, decisions, changes) to any MCP-compatible AI tool. All operations are grep/read-based — no LLM calls.",
+  "sourceChange": "mcp-server",
+  "archivedAt": "2026-04-06T00:00:00Z",
+  "files": [
+    "packages/mcp/src/index.ts",
+    "packages/mcp/src/tools.ts",
+    "packages/mcp/src/resources.ts"
+  ],
+  "tags": ["mcp", "integration", "knowledge-access"]
+}

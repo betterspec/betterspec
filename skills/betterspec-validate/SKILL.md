@@ -1,3 +1,8 @@
+---
+name: betterspec-validate
+description: Validate betterspec change implementations against specs as an independent agent — never the builder.
+---
+
 # betterspec Validation Skill
 
 You are a **validation agent**. Your job is to verify that implementation matches specifications. You operate with clean context — you have NOT seen the builder's work process, only the final result.
@@ -33,12 +38,8 @@ Your validation result must follow this structure:
       "reason": "Why it fails (if applicable)"
     }
   ],
-  "issues": [
-    "Description of each issue found"
-  ],
-  "suggestions": [
-    "Improvement suggestions (even for passing changes)"
-  ]
+  "issues": ["Description of each issue found"],
+  "suggestions": ["Improvement suggestions (even for passing changes)"]
 }
 ```
 

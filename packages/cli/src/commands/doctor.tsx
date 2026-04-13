@@ -15,7 +15,7 @@ import {
   listChanges,
 } from "@betterspec/core";
 import {
-  Box as BetterspecBox,
+  BetterspecBox,
   Spinner,
   colors,
 } from "../ui/ink/index.js";
@@ -37,15 +37,15 @@ const CheckRow: React.FC<{ check: HealthCheck; didFix?: boolean }> = ({
   didFix,
 }) => (
   <InkBox>
-    <Text hex={check.passed ? colors.success : colors.error}>
+    <Text color={check.passed ? colors.success : colors.error}>
       {check.passed ? "\u2713" : "\u2717"}
     </Text>
     <Text> </Text>
-    <Text bold={!check.passed} hex={check.passed ? colors.muted : colors.warning}>
+    <Text bold={!check.passed} color={check.passed ? colors.muted : colors.warning}>
       {check.name}
     </Text>
     <Text dimColor>: </Text>
-    <Text hex={check.passed ? colors.muted : colors.warning}>
+    <Text color={check.passed ? colors.muted : colors.warning}>
       {check.message}
       {!check.passed && check.fixable && didFix ? " (fixed)" : ""}
     </Text>
@@ -236,7 +236,7 @@ const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
   return (
     <InkBox flexDirection="column">
       <BetterspecBox title="betterspec doctor" borderColor="accent">
-        <Text hex={allPassed ? colors.success : colors.warning}>
+        <Text color={allPassed ? colors.success : colors.warning}>
           {allPassed ? "\u2713" : "\u26A0"}{" "}
         </Text>
         <Text>
@@ -258,7 +258,7 @@ const DoctorDashboard: React.FC<DoctorDashboardProps> = ({
         <InkBox paddingTop={1} paddingLeft={1}>
           <Text dimColor>
             Run{" "}
-            <Text hex={colors.primary}>betterspec doctor --fix</Text>
+            <Text color={colors.primary}>betterspec doctor --fix</Text>
             <Text dimColor> to auto-fix issues.</Text>
           </Text>
         </InkBox>

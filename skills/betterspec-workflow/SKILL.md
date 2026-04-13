@@ -1,3 +1,8 @@
+---
+name: betterspec-workflow
+description: Follow the betterspec spec-driven development workflow — propose, clarify, design, plan, build, validate, archive.
+---
+
 # betterspec Workflow Skill
 
 You are working in a project that uses **betterspec** for spec-driven development. All changes must follow the betterspec workflow.

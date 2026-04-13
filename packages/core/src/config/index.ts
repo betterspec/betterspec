@@ -6,7 +6,12 @@
 import { readFile, writeFile, access } from "node:fs/promises";
 import { join } from "node:path";
 import { homedir } from "node:os";
-import type { betterspecConfig, SpecMode, ToolName, SkillsMode } from "../types/index.js";
+import type {
+  betterspecConfig,
+  SpecMode,
+  ToolName,
+  SkillsMode,
+} from "../types/index.js";
 
 const CONFIG_FILENAME = "betterspec.json";
 const betterspec_DIR = "betterspec";
@@ -46,22 +51,24 @@ export function getConfigPath(projectRoot: string): string {
 }
 
 export function getLocalSkillsDir(projectRoot: string): string {
-  return join(projectRoot, "skills");
+  return join(projectRoot, ".agents", "skills");
 }
 
 export function getGlobalSkillsDir(): string {
-  return join(homedir(), ".betterspec", "skills");
+  return join(homedir(), ".agents", "skills");
 }
 
 export function getGlobalBetterspecDir(): string {
   return join(homedir(), ".betterspec");
 }
 
-export async function readConfig(projectRoot: string): Promise<betterspecConfig> {
+export async function readConfig(
+  projectRoot: string,
+): Promise<betterspecConfig> {
   const configPath = getConfigPath(projectRoot);
   if (!(await fileExists(configPath))) {
     throw new Error(
-      `No betterspec config found at ${configPath}. Run 'betterspec init' to initialize.`
+      `No betterspec config found at ${configPath}. Run 'betterspec init' to initialize.`,
     );
   }
 
@@ -71,7 +78,7 @@ export async function readConfig(projectRoot: string): Promise<betterspecConfig>
 
 export async function writeConfig(
   projectRoot: string,
-  config: betterspecConfig
+  config: betterspecConfig,
 ): Promise<void> {
   const configPath = getConfigPath(projectRoot);
   await writeFile(configPath, JSON.stringify(config, null, 2) + "\n", "utf-8");
@@ -80,7 +87,7 @@ export async function writeConfig(
 export function createDefaultConfig(
   mode: SpecMode,
   tool?: ToolName,
-  skillsMode?: SkillsMode
+  skillsMode?: SkillsMode,
 ): betterspecConfig {
   return {
     ...DEFAULT_CONFIG,
@@ -96,13 +103,17 @@ export async function configExists(projectRoot: string): Promise<boolean> {
 
 export async function getConfigValue(
   projectRoot: string,
-  key: string
+  key: string,
 ): Promise<unknown> {
   const config = await readConfig(projectRoot);
   const keys = key.split(".");
   let current: unknown = config;
   for (const k of keys) {
-    if (current === null || current === undefined || typeof current !== "object") {
+    if (
+      current === null ||
+      current === undefined ||
+      typeof current !== "object"
+    ) {
       return undefined;
     }
     current = (current as Record<string, unknown>)[k];
@@ -113,11 +124,14 @@ export async function getConfigValue(
 export async function setConfigValue(
   projectRoot: string,
   key: string,
-  value: unknown
+  value: unknown,
 ): Promise<void> {
   const config = await readConfig(projectRoot);
   const keys = key.split(".");
-  let current: Record<string, unknown> = config as unknown as Record<string, unknown>;
+  let current: Record<string, unknown> = config as unknown as Record<
+    string,
+    unknown
+  >;
   for (let i = 0; i < keys.length - 1; i++) {
     const k = keys[i];
     if (!(k in current) || typeof current[k] !== "object") {

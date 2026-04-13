@@ -1,3 +1,8 @@
+---
+name: betterspec-knowledge
+description: Maintain the betterspec knowledge base — architecture docs, patterns, glossary, capabilities, and architecture decision records.
+---
+
 # betterspec Knowledge Management Skill
 
 You are responsible for maintaining the project's **knowledge base**. The knowledge base is the long-term memory of the project — it survives after individual changes are archived.
@@ -16,6 +21,7 @@ betterspec/knowledge/
 ## Architecture Documentation
 
 `architecture.md` should contain:
+
 - High-level system overview
 - Component diagram or description
 - Data flow between components
@@ -27,6 +33,7 @@ betterspec/knowledge/
 ## Patterns Documentation
 
 `patterns.md` should contain:
+
 - Code patterns (how to structure new modules)
 - Naming conventions
 - Error handling patterns
@@ -38,6 +45,7 @@ betterspec/knowledge/
 ## Glossary
 
 `glossary.md` should contain:
+
 - Domain-specific terms and their definitions
 - Acronyms and abbreviations
 - Terms that have specific meaning in this project
@@ -47,6 +55,7 @@ betterspec/knowledge/
 ## Capabilities
 
 Each capability is a JSON file in `capabilities/` with:
+
 ```json
 {
   "id": "url-safe-slug",
@@ -64,6 +73,7 @@ Each capability is a JSON file in `capabilities/` with:
 ## Decisions
 
 Architecture Decision Records (ADRs) in `decisions/`:
+
 ```json
 {
   "id": "adr-001",

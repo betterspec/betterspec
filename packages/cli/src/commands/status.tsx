@@ -12,7 +12,14 @@ import {
   listCapabilities,
   getProjectSummary,
 } from "@betterspec/core";
-import { Logo, Tagline, BetterspecBox, Section, Table, ProgressBar } from "../ui/ink/index.js";
+import {
+  Logo,
+  Tagline,
+  BetterspecBox,
+  Section,
+  Table,
+  ProgressBar,
+} from "../ui/ink/index.js";
 import { colors, statusColor } from "../ui/ink/index.js";
 
 interface StatusDashboardProps {
@@ -21,9 +28,7 @@ interface StatusDashboardProps {
 
 // ── Sub-components ────────────────────────────────────────────────
 
-const Divider: React.FC = () => (
-  <Text dimColor>{"\u2500".repeat(60)}</Text>
-);
+const Divider: React.FC = () => <Text dimColor>{"\u2500".repeat(60)}</Text>;
 
 const StatItem: React.FC<{ label: string; value: string; color?: string }> = ({
   label,
@@ -31,23 +36,22 @@ const StatItem: React.FC<{ label: string; value: string; color?: string }> = ({
   color,
 }) => (
   <Text>
-    <Text bold hex={color ?? colors.primary}>{value}</Text>
+    <Text bold color={color ?? colors.primary}>
+      {value}
+    </Text>
     <Text dimColor> {label}</Text>
   </Text>
 );
 
 const StatusBadge: React.FC<{ status: string }> = ({ status }) => (
-  <Text hex={statusColor(status)}>{status}</Text>
+  <Text color={statusColor(status)}>{status}</Text>
 );
 
 const NotInitialized: React.FC<{ projectRoot: string }> = ({ projectRoot }) => (
-  <BetterspecBox
-    title="not initialized"
-    borderColor="error"
-  >
+  <BetterspecBox title="not initialized" borderColor="error">
     <Text>betterspec is not initialized in this project.</Text>
     <Text dimColor> Run </Text>
-    <Text hex={colors.primary}>betterspec init</Text>
+    <Text color={colors.primary}>betterspec init</Text>
     <Text dimColor> first.</Text>
   </BetterspecBox>
 );
@@ -91,12 +95,12 @@ const StatusDashboard: React.FC<StatusDashboardProps> = ({ projectRoot }) => {
     return (
       <Box flexDirection="column">
         <Logo />
-        <Text hex={colors.error}>{state.error}</Text>
+        <Text color={colors.error}>{state.error}</Text>
       </Box>
     );
   }
 
-  const { config, summary, capabilities } = state;
+  const { config, summary, capabilities = [] } = state;
 
   return (
     <Box flexDirection="column">
@@ -127,11 +131,7 @@ const StatusDashboard: React.FC<StatusDashboardProps> = ({ projectRoot }) => {
             color={colors.secondary}
           />
           <Text dimColor>|</Text>
-          <StatItem
-            label="mode:"
-            value={config.mode}
-            color={colors.accent}
-          />
+          <StatItem label="mode:" value={config.mode} color={colors.accent} />
         </Box>
       </BetterspecBox>
 
@@ -156,7 +156,7 @@ const StatusDashboard: React.FC<StatusDashboardProps> = ({ projectRoot }) => {
                     const ts = row.taskSummary;
                     return ts.total > 0 ? (
                       <Text>
-                        <Text hex={colors.success}>{ts.passed}</Text>
+                        <Text color={colors.success}>{ts.passed}</Text>
                         <Text dimColor>/{ts.total}</Text>
                       </Text>
                     ) : (
@@ -183,9 +183,9 @@ const StatusDashboard: React.FC<StatusDashboardProps> = ({ projectRoot }) => {
           </Section>
         ) : (
           <Section title="Active Changes">
-            <Text dimColor>  No active changes.</Text>
+            <Text dimColor> No active changes.</Text>
             <Text dimColor> Run </Text>
-            <Text hex={colors.primary}>betterspec propose</Text>
+            <Text color={colors.primary}>betterspec propose</Text>
             <Text dimColor> to create one.</Text>
           </Section>
         )}
@@ -219,7 +219,7 @@ const StatusDashboard: React.FC<StatusDashboardProps> = ({ projectRoot }) => {
               <Text dimColor>
                 {" "}
                 ...and {capabilities.length - 10} more. Run{" "}
-                <Text hex={colors.primary}>betterspec capabilities</Text>
+                <Text color={colors.primary}>betterspec capabilities</Text>
                 <Text dimColor> to see all.</Text>
               </Text>
             )}
@@ -241,24 +241,24 @@ const StatusDashboard: React.FC<StatusDashboardProps> = ({ projectRoot }) => {
           {config.global ? (
             <Box flexDirection="column" gap={0}>
               <Text>
-                <Text dimColor>  Source: </Text>
-                <Text hex={colors.secondary}>{config.global.source}</Text>
+                <Text dimColor> Source: </Text>
+                <Text color={colors.secondary}>{config.global.source}</Text>
               </Text>
               <Text>
-                <Text dimColor>  Path: </Text>
+                <Text dimColor> Path: </Text>
                 <Text dimColor>{config.global.path}</Text>
               </Text>
               <Text>
-                <Text dimColor>  Auto-sync: </Text>
-                <Text hex={config.global.autoSync ? colors.success : undefined}>
+                <Text dimColor> Auto-sync: </Text>
+                <Text
+                  color={config.global.autoSync ? colors.success : undefined}
+                >
                   {config.global.autoSync ? "enabled" : "disabled"}
                 </Text>
               </Text>
             </Box>
           ) : (
-            <Text hex={colors.warning}>
-              Global spec repo not configured.
-            </Text>
+            <Text color={colors.warning}>Global spec repo not configured.</Text>
           )}
         </Section>
       )}
@@ -268,9 +268,7 @@ const StatusDashboard: React.FC<StatusDashboardProps> = ({ projectRoot }) => {
 
 // ── Command entry point ──────────────────────────────────────────
 
-export async function statusCommand(options?: {
-  cwd?: string;
-}): Promise<void> {
+export async function statusCommand(options?: { cwd?: string }): Promise<void> {
   const projectRoot = resolve(options?.cwd || process.cwd());
 
   if (!(await configExists(projectRoot))) {
@@ -278,7 +276,7 @@ export async function statusCommand(options?: {
       <Box flexDirection="column" padding={1}>
         <Logo />
         <NotInitialized projectRoot={projectRoot} />
-      </Box>
+      </Box>,
     );
     process.exit(1);
   }

@@ -1,0 +1,12 @@
+{
+  "id": "cross-client-skill-discovery",
+  "name": "Cross-client Skill Discovery",
+  "description": "Skills scaffolded by betterspec init are placed in .agents/skills/ to be automatically discovered by agentskills.io compliant tools without custom path configuration.",
+  "sourceChange": "adopt-agentskills-directory-structure",
+  "archivedAt": "2026-04-13T00:00:00Z",
+  "files": [
+    "packages/core/src/config/index.ts",
+    "packages/cli/src/commands/init.tsx"
+  ],
+  "tags": ["core", "skills", "agentskills"]
+}

@@ -29,6 +29,7 @@ import {
   Logo,
   Select,
   Spinner,
+  TextInput,
   colors,
 } from "../ui/ink/index.js";
 
@@ -36,7 +37,12 @@ import {
 
 async function initNonInteractive(
   projectRoot: string,
-  opts: { mode?: SpecMode; tool?: ToolName; skills?: SkillsMode; globalSource?: string }
+  opts: {
+    mode?: SpecMode;
+    tool?: ToolName;
+    skills?: SkillsMode;
+    globalSource?: string;
+  },
 ) {
   const mode: SpecMode = opts.mode ?? "local";
   const toolName: ToolName = opts.tool ?? "generic";
@@ -79,8 +85,16 @@ type Phase =
 
 const MODE_OPTIONS = [
   { label: "Local only", value: "local", hint: "Specs live in this repo only" },
-  { label: "Local + Global", value: "local+global", hint: "Local specs + shared company spec repo" },
-  { label: "Global only", value: "global", hint: "Reference a shared spec repo" },
+  {
+    label: "Local + Global",
+    value: "local+global",
+    hint: "Local specs + shared company spec repo",
+  },
+  {
+    label: "Global only",
+    value: "global",
+    hint: "Reference a shared spec repo",
+  },
 ];
 
 const SKILLS_OPTIONS = [
@@ -194,11 +208,14 @@ const InitWizard: React.FC<{
         <BetterspecBox title="Init — Global Source" borderColor="accent">
           <Text>Enter the global spec source path or GitHub URL:</Text>
           <Text dimColor> </Text>
-          <Text dimColor>  /path/to/company-specs or https://github.com/org/specs</Text>
+          <Text dimColor>
+            {" "}
+            /path/to/company-specs or https://github.com/org/specs
+          </Text>
         </BetterspecBox>
         <InkBox paddingTop={1}>
           <InkBox>
-            <Text hex={colors.primary}>{">"} </Text>
+            <Text color={colors.primary}>{">"} </Text>
             <TextInput
               value={globalSourceVal}
               onChange={setGlobalSourceVal}
@@ -269,32 +286,39 @@ const InitWizard: React.FC<{
       <InkBox flexDirection="column">
         <Logo />
         <BetterspecBox title="Setup Complete" borderColor="success">
-          <Text hex={colors.success}>✓ betterspec initialized</Text>
+          <Text color={colors.success}>✓ betterspec initialized</Text>
         </BetterspecBox>
 
-        <BetterspecBox title="What was created" borderColor="default" paddingTop={1}>
-          <Text dimColor>  • betterspec/betterspec.json</Text>
-          <Text dimColor>  • betterspec/changes/</Text>
-          <Text dimColor>  • betterspec/knowledge/</Text>
-          {skillCount > 0 && (
-            <Text dimColor>  • {skillCount} skills installed ({skillsVal})</Text>
-          )}
-        </BetterspecBox>
+        <InkBox paddingTop={1}>
+          <BetterspecBox title="What was created" borderColor="default">
+            <Text dimColor> • betterspec/betterspec.json</Text>
+            <Text dimColor> • betterspec/changes/</Text>
+            <Text dimColor> • betterspec/knowledge/</Text>
+            {skillCount > 0 && (
+              <Text dimColor>
+                {" "}
+                • {skillCount} skills installed ({skillsVal})
+              </Text>
+            )}
+          </BetterspecBox>
+        </InkBox>
 
-        <BetterspecBox title="Config" borderColor="default" paddingTop={1}>
-          <Text dimColor>  Mode: </Text>
-          <Text hex={colors.primary}>{modeVal}</Text>
-          <Text dimColor>  Tool: </Text>
-          <Text hex={colors.primary}>{toolVal}</Text>
-          <Text dimColor>  Skills: </Text>
-          <Text hex={colors.primary}>{skillsVal}</Text>
-        </BetterspecBox>
+        <InkBox paddingTop={1}>
+          <BetterspecBox title="Config" borderColor="default">
+            <Text dimColor> Mode: </Text>
+            <Text color={colors.primary}>{modeVal}</Text>
+            <Text dimColor> Tool: </Text>
+            <Text color={colors.primary}>{toolVal}</Text>
+            <Text dimColor> Skills: </Text>
+            <Text color={colors.primary}>{skillsVal}</Text>
+          </BetterspecBox>
+        </InkBox>
 
-        <Text dimColor paddingTop={1}>
-          Run{" "}
-          <Text hex={colors.primary}>betterspec propose "your idea"</Text>
-          {" "}to create your first spec.
-        </Text>
+        <InkBox paddingTop={1}>
+          <Text dimColor>Run </Text>
+          <Text color={colors.primary}>betterspec propose "your idea"</Text>
+          <Text dimColor> to create your first spec.</Text>
+        </InkBox>
       </InkBox>
     );
   }
@@ -304,7 +328,7 @@ const InitWizard: React.FC<{
       <InkBox flexDirection="column">
         <Logo />
         <BetterspecBox title="Error" borderColor="error">
-          <Text hex={colors.error}>{error}</Text>
+          <Text color={colors.error}>{error}</Text>
         </BetterspecBox>
       </InkBox>
     );
@@ -323,7 +347,7 @@ export async function initCommand(
     skills?: SkillsMode;
     globalSource?: string;
     "global-source"?: string;
-  } = {}
+  } = {},
 ): Promise<void> {
   const projectRoot = resolve(opts.cwd || process.cwd());
 
@@ -335,10 +359,10 @@ export async function initCommand(
         <BetterspecBox title="Already Initialized" borderColor="warning">
           <Text>betterspec is already initialized in this project.</Text>
           <Text dimColor>Run </Text>
-          <Text hex={colors.primary}>betterspec status</Text>
+          <Text color={colors.primary}>betterspec status</Text>
           <Text dimColor> to see current state.</Text>
         </BetterspecBox>
-      </InkBox>
+      </InkBox>,
     );
     return;
   }
@@ -352,7 +376,12 @@ export async function initCommand(
   if (!isTTY || (opts.mode && opts.tool)) {
     // Non-interactive mode: use flags or defaults
     try {
-      await initNonInteractive(projectRoot, { mode, tool, skills, globalSource });
+      await initNonInteractive(projectRoot, {
+        mode,
+        tool,
+        skills,
+        globalSource,
+      });
       console.log("✓ betterspec initialized (non-interactive)");
     } catch (err) {
       console.error("Failed to initialize betterspec:", err);
@@ -369,6 +398,6 @@ export async function initCommand(
       globalSource={globalSource ?? ""}
       tool={tool}
       skills={skills}
-    />
+    />,
   );
 }

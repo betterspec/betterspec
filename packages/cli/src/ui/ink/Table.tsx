@@ -46,29 +46,29 @@ export function Table<T extends Record<string, any>>({
     <Box flexDirection="column">
       {/* Top border */}
       <Box>
-        <Text hex="#6B7280">{"\u250C"}{divider}{"\u2510"}</Text>
+        <Text color="#6B7280">{"\u250C"}{divider}{"\u2510"}</Text>
       </Box>
 
       {/* Column headers */}
       <Box>
-        <Text hex="#6B7280">{"\u2502"}</Text>
+        <Text color="#6B7280">{"\u2502"}</Text>
         {columns.map((c, i) => (
           <Box key={i} width={colWidths[i]}>
-            <Text bold hex="#6B7280">{pad(String(c.header ?? c.key), colWidths[i])}</Text>
-            <Text hex="#6B7280">{"\u2502"}</Text>
+            <Text bold color="#6B7280">{pad(String(c.header ?? c.key), colWidths[i])}</Text>
+            <Text color="#6B7280">{"\u2502"}</Text>
           </Box>
         ))}
       </Box>
 
       {/* Header–data divider */}
       <Box>
-        <Text hex="#6B7280">{"\u251C"}{divider}{"\u2524"}</Text>
+        <Text color="#6B7280">{"\u251C"}{divider}{"\u2524"}</Text>
       </Box>
 
       {/* Data rows */}
       {rows.map((row, ri) => (
         <Box key={ri}>
-          <Text hex="#6B7280">{"\u2502"}</Text>
+          <Text color="#6B7280">{"\u2502"}</Text>
           {columns.map((c, ci) => {
             const raw = c.render ? c.render(row) : String(row[c.key] ?? "");
             const cellContent =
@@ -80,7 +80,7 @@ export function Table<T extends Record<string, any>>({
                 <Box flexGrow={1} justifyContent="flex-start">
                   {cellContent}
                 </Box>
-                <Text hex="#6B7280">{"\u2502"}</Text>
+                <Text color="#6B7280">{"\u2502"}</Text>
               </Box>
             );
           })}
@@ -89,7 +89,7 @@ export function Table<T extends Record<string, any>>({
 
       {/* Bottom border */}
       <Box>
-        <Text hex="#6B7280">{"\u2514"}{divider}{"\u2518"}</Text>
+        <Text color="#6B7280">{"\u2514"}{divider}{"\u2518"}</Text>
       </Box>
     </Box>
   );
@@ -110,8 +110,8 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   const empty = width - filled;
   return (
     <Text>
-      <Text hex="#10B981">{repeatChar("\u2588", filled)}</Text>
-      <Text hex="#6B7280">{repeatChar("\u2591", empty)}</Text>
+      <Text color="#10B981">{repeatChar("\u2588", filled)}</Text>
+      <Text color="#6B7280">{repeatChar("\u2591", empty)}</Text>
       <Text dimColor> {percent}%</Text>
     </Text>
   );

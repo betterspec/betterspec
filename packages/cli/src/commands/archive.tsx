@@ -146,7 +146,7 @@ const ArchiveView: React.FC<ArchiveViewProps> = ({
         <BetterspecBox title="Step 1: Outcome" borderColor="warning">
           <Text>
             Before archiving, create an{" "}
-            <Text hex={colors.primary}>outcome.md</Text>.
+            <Text color={colors.primary}>outcome.md</Text>.
           </Text>
           <Text dimColor> This captures what was built, capabilities, and lessons.</Text>
           <Text dimColor> </Text>
@@ -172,7 +172,7 @@ const ArchiveView: React.FC<ArchiveViewProps> = ({
         <BetterspecBox title="Confirm Archive" borderColor="accent">
           <Text>
             Archive{" "}
-            <Text hex={colors.primary}>{changeName}</Text>
+            <Text color={colors.primary}>{changeName}</Text>
             ? This will move it to betterspec/changes/archive/.
           </Text>
         </BetterspecBox>
@@ -215,9 +215,9 @@ const ArchiveView: React.FC<ArchiveViewProps> = ({
         <Logo />
         <BetterspecBox title="Archived" borderColor="success">
           <Text>
-            <Text hex={colors.success}>✓</Text>{" "}
+            <Text color={colors.success}>✓</Text>{" "}
             <Text bold>Archived:</Text>{" "}
-            <Text hex={colors.primary}>{changeName}</Text>
+            <Text color={colors.primary}>{changeName}</Text>
           </Text>
           <Text dimColor>→ {archivePath}</Text>
           <Text dimColor> </Text>
@@ -236,7 +236,7 @@ const ArchiveView: React.FC<ArchiveViewProps> = ({
       <InkBox flexDirection="column">
         <Logo />
         <BetterspecBox title="Error" borderColor="error">
-          <Text hex={colors.error}>{errorMsg}</Text>
+          <Text color={colors.error}>{errorMsg}</Text>
         </BetterspecBox>
       </InkBox>
     );
@@ -263,7 +263,7 @@ export async function archiveCommand(
         <BetterspecBox title="Not Initialized" borderColor="error">
           <Text>betterspec is not initialized.</Text>
           <Text dimColor> Run </Text>
-          <Text hex={colors.primary}>betterspec init</Text>
+          <Text color={colors.primary}>betterspec init</Text>
           <Text dimColor> first.</Text>
         </BetterspecBox>
       </InkBox>

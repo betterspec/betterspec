@@ -6,11 +6,7 @@
 import React from "react";
 import { render, Box, Text } from "ink";
 import { resolve } from "node:path";
-import {
-  configExists,
-  listChanges,
-  summarizeTasks,
-} from "@betterspec/core";
+import { configExists, listChanges, summarizeTasks } from "@betterspec/core";
 import { Logo, Tagline } from "../ui/ink/index.js";
 import { BetterspecBox, Section, Table, ProgressBar } from "../ui/ink/index.js";
 import { colors, statusColor } from "../ui/ink/index.js";
@@ -59,12 +55,12 @@ const ListView: React.FC<ListViewProps> = ({
     return (
       <Box flexDirection="column">
         <Logo />
-        <Text hex={colors.error}>{state.error}</Text>
+        <Text color={colors.error}>{state.error}</Text>
       </Box>
     );
   }
 
-  const { changes } = state;
+  const { changes = [] } = state;
 
   return (
     <Box flexDirection="column">
@@ -76,15 +72,19 @@ const ListView: React.FC<ListViewProps> = ({
       {changes.length === 0 ? (
         <BetterspecBox title="Changes" borderColor="default">
           <Text>
-            <Text hex={colors.secondary}> No changes found.</Text>
+            <Text color={colors.secondary}> No changes found.</Text>
           </Text>
           <Text dimColor> Run </Text>
-          <Text hex={colors.primary}>betterspec propose</Text>
+          <Text color={colors.primary}>betterspec propose</Text>
           <Text dimColor> to create one.</Text>
         </BetterspecBox>
       ) : (
         <Box flexDirection="column" paddingTop={1}>
-          <Section title={archived ? "All Changes (including archived)" : "Active Changes"}>
+          <Section
+            title={
+              archived ? "All Changes (including archived)" : "Active Changes"
+            }
+          >
             <Table
               columns={[
                 { key: "name", header: "Name", width: 28 },
@@ -92,7 +92,9 @@ const ListView: React.FC<ListViewProps> = ({
                   key: "status",
                   header: "Status",
                   width: 14,
-                  render: (row) => <Text hex={statusColor(row.status)}>{row.status}</Text>,
+                  render: (row) => (
+                    <Text color={statusColor(row.status)}>{row.status}</Text>
+                  ),
                 },
                 {
                   key: "tasks",
@@ -102,7 +104,7 @@ const ListView: React.FC<ListViewProps> = ({
                     const ts = summarizeTasks(row.tasks);
                     return ts.total > 0 ? (
                       <Text>
-                        <Text hex={colors.success}>{ts.passed}</Text>
+                        <Text color={colors.success}>{ts.passed}</Text>
                         <Text dimColor>/{ts.total}</Text>
                       </Text>
                     ) : (
@@ -161,10 +163,10 @@ export async function listCommand(options?: {
         <BetterspecBox title="Not Initialized" borderColor="error">
           <Text>betterspec is not initialized in this project.</Text>
           <Text dimColor> Run </Text>
-          <Text hex={colors.primary}>betterspec init</Text>
+          <Text color={colors.primary}>betterspec init</Text>
           <Text dimColor> first.</Text>
         </BetterspecBox>
-      </Box>
+      </Box>,
     );
     process.exit(1);
   }
@@ -174,6 +176,6 @@ export async function listCommand(options?: {
       projectRoot={projectRoot}
       archived={options?.archived ?? false}
       statusFilter={options?.status}
-    />
+    />,
   );
 }

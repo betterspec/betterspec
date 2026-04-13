@@ -1,0 +1,12 @@
+{
+  "id": "skills-scaffolding",
+  "name": "Skills Scaffolding",
+  "description": "scaffoldSkills(projectRoot, mode) writes agentskills.io-compliant SKILL.md files to local (.agents/skills/), global (~/.agents/skills/), or both locations. Skips existing files. Returns list of created paths.",
+  "sourceChange": "init-redesign",
+  "archivedAt": "2026-04-06T00:00:00Z",
+  "files": [
+    "packages/core/src/skills/index.ts",
+    "packages/core/src/skills/content.ts"
+  ],
+  "tags": ["core", "skills", "scaffolding", "agentskills"]
+}

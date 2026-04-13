@@ -29,7 +29,7 @@ export const Spinner: React.FC<SpinnerProps> = ({
 
   return (
     <Box>
-      <Text hex={color}>{SPINNER_FRAMES[frame]}</Text>
+      <Text color={color}>{SPINNER_FRAMES[frame]}</Text>
       {label && (
         <Text dimColor> {label}</Text>
       )}

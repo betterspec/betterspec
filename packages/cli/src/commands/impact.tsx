@@ -13,7 +13,7 @@ import {
   listCapabilities,
   readChangeFile,
 } from "@betterspec/core";
-import { Box as BetterspecBox, colors } from "../ui/ink/index.js";
+import { BetterspecBox, colors } from "../ui/ink/index.js";
 
 interface SpecMatch {
   changeName: string;
@@ -42,7 +42,7 @@ const SPEC_FILES = [
 
 async function scanChanges(
   projectRoot: string,
-  needle: string
+  needle: string,
 ): Promise<SpecMatch[]> {
   const changes = await listChanges(projectRoot, true);
   const matches: SpecMatch[] = [];
@@ -51,7 +51,11 @@ async function scanChanges(
     const matchedFiles: string[] = [];
     for (const specFile of SPEC_FILES) {
       try {
-        const content = await readChangeFile(projectRoot, change.name, specFile);
+        const content = await readChangeFile(
+          projectRoot,
+          change.name,
+          specFile,
+        );
         if (content.includes(needle)) {
           matchedFiles.push(specFile);
         }
@@ -60,7 +64,11 @@ async function scanChanges(
       }
     }
     if (matchedFiles.length > 0) {
-      matches.push({ changeName: change.name, status: change.status, files: matchedFiles });
+      matches.push({
+        changeName: change.name,
+        status: change.status,
+        files: matchedFiles,
+      });
     }
   }
 
@@ -69,15 +77,22 @@ async function scanChanges(
 
 async function scanCapabilities(
   projectRoot: string,
-  needle: string
+  needle: string,
 ): Promise<CapMatch[]> {
   const caps = await listCapabilities(projectRoot);
   return caps
     .filter((c) => c.files.some((f) => f.includes(needle)))
-    .map((c) => ({ name: c.name, description: c.description, files: c.files.filter((f) => f.includes(needle)) }));
+    .map((c) => ({
+      name: c.name,
+      description: c.description,
+      files: c.files.filter((f) => f.includes(needle)),
+    }));
 }
 
-const ImpactDashboard: React.FC<ImpactDashboardProps> = ({ projectRoot, targetPath }) => {
+const ImpactDashboard: React.FC<ImpactDashboardProps> = ({
+  projectRoot,
+  targetPath,
+}) => {
   const relPath = relative(projectRoot, resolve(projectRoot, targetPath));
   const [state, setState] = React.useState<{
     phase: "scanning" | "done" | "error";
@@ -111,7 +126,7 @@ const ImpactDashboard: React.FC<ImpactDashboardProps> = ({ projectRoot, targetPa
   if (state.phase === "error") {
     return (
       <BetterspecBox title="Impact" borderColor="error">
-        <Text hex={colors.error}>{state.error}</Text>
+        <Text color={colors.error}>{state.error}</Text>
       </BetterspecBox>
     );
   }
@@ -120,22 +135,33 @@ const ImpactDashboard: React.FC<ImpactDashboardProps> = ({ projectRoot, targetPa
   const total = specMatches.length + capMatches.length;
 
   return (
-    <BetterspecBox title={`Impact: ${relPath}`} borderColor={total > 0 ? "warning" : "success"}>
+    <BetterspecBox
+      title={`Impact: ${relPath}`}
+      borderColor={total > 0 ? "warning" : "success"}
+    >
       {total === 0 ? (
         <Text dimColor>No references found in specs or capabilities.</Text>
       ) : (
         <InkBox flexDirection="column" gap={1}>
           {specMatches.length > 0 && (
             <InkBox flexDirection="column">
-              <Text bold hex={colors.primary}>Changes ({specMatches.length})</Text>
+              <Text bold color={colors.primary}>
+                Changes ({specMatches.length})
+              </Text>
               {specMatches.map((m) => (
-                <InkBox key={m.changeName} flexDirection="column" paddingLeft={2}>
+                <InkBox
+                  key={m.changeName}
+                  flexDirection="column"
+                  paddingLeft={2}
+                >
                   <Text>
                     <Text bold>{m.changeName}</Text>
                     <Text dimColor> ({m.status})</Text>
                   </Text>
                   {m.files.map((f) => (
-                    <Text key={f} dimColor paddingLeft={2}>↳ {f}</Text>
+                    <InkBox key={f} paddingLeft={2}>
+                      <Text dimColor>↳ {f}</Text>
+                    </InkBox>
                   ))}
                 </InkBox>
               ))}
@@ -144,7 +170,9 @@ const ImpactDashboard: React.FC<ImpactDashboardProps> = ({ projectRoot, targetPa
 
           {capMatches.length > 0 && (
             <InkBox flexDirection="column">
-              <Text bold hex={colors.primary}>Capabilities ({capMatches.length})</Text>
+              <Text bold color={colors.primary}>
+                Capabilities ({capMatches.length})
+              </Text>
               {capMatches.map((c) => (
                 <InkBox key={c.name} flexDirection="column" paddingLeft={2}>
                   <Text>
@@ -152,7 +180,9 @@ const ImpactDashboard: React.FC<ImpactDashboardProps> = ({ projectRoot, targetPa
                     <Text dimColor> — {c.description}</Text>
                   </Text>
                   {c.files.map((f) => (
-                    <Text key={f} dimColor paddingLeft={2}>↳ {f}</Text>
+                    <InkBox key={f} paddingLeft={2}>
+                      <Text dimColor>↳ {f}</Text>
+                    </InkBox>
                   ))}
                 </InkBox>
               ))}
@@ -166,21 +196,24 @@ const ImpactDashboard: React.FC<ImpactDashboardProps> = ({ projectRoot, targetPa
 
 export async function impactCommand(
   targetPath: string,
-  options?: { cwd?: string }
+  options?: { cwd?: string },
 ): Promise<void> {
   const projectRoot = resolve(options?.cwd || process.cwd());
 
   if (!(await configExists(projectRoot))) {
     render(
       <BetterspecBox title="Not Initialized" borderColor="error">
-        <Text>betterspec is not initialized. Run <Text hex={colors.primary}>betterspec init</Text> first.</Text>
-      </BetterspecBox>
+        <Text>
+          betterspec is not initialized. Run{" "}
+          <Text color={colors.primary}>betterspec init</Text> first.
+        </Text>
+      </BetterspecBox>,
     );
     process.exit(1);
   }
 
   const { waitUntilExit } = render(
-    <ImpactDashboard projectRoot={projectRoot} targetPath={targetPath} />
+    <ImpactDashboard projectRoot={projectRoot} targetPath={targetPath} />,
   );
   await waitUntilExit();
 }
