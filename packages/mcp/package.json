@@ -1,6 +1,6 @@
 {
   "name": "@betterspec/mcp",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "MCP server exposing betterspec knowledge base to AI tools",
   "type": "module",
   "main": "./dist/index.js",
@@ -14,7 +14,9 @@
     "test": "vitest run --passWithNoTests",
     "clean": "rm -rf dist"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "license": "MIT",
   "dependencies": {
     "@betterspec/core": "workspace:*",
@@ -22,7 +24,7 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^25.5.2",
     "tsup": "^8.4.0",
     "typescript": "^5.8.0",
     "vitest": "^3.1.0"
