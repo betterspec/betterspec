@@ -1,6 +1,6 @@
 {
   "name": "@betterspec/core",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Spec engine for betterspec: parsing, validation, drift detection, knowledge management",
   "type": "module",
   "main": "./dist/index.js",
